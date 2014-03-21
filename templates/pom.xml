@@ -4,88 +4,65 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.nesscomputing.components</groupId>
-    <artifactId>ness-server-parent</artifactId>
-    <version>2.2.5-SNAPSHOT</version>
+    <groupId>com.opentable.components</groupId>
+    <artifactId>otj-server-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>ness-server-templates</artifactId>
-  <name>ness-server-templates</name>
+  <artifactId>otj-server-templates</artifactId>
+  <name>otj-server-templates</name>
   <packaging>jar</packaging>
-
-  <properties>
-    <ness.root.dir>${project.parent.basedir}</ness.root.dir>
-  </properties>
 
   <dependencies>
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-config</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-config</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-lifecycle</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-lifecycle</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-galaxy</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-httpserver</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-httpserver</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-jaxrs</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-jersey</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-jackson</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-jackson</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-jmx</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-jdbi</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-scopes</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-jmx</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-tracking</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-scopes</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-serverinfo</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-tracking</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-serverinfo</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.sun.jersey.contribs</groupId>
-      <artifactId>jersey-guice</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.yammer.metrics</groupId>
-      <artifactId>metrics-guice</artifactId>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -109,14 +86,19 @@
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-server</artifactId>
+      <groupId>com.palominolabs.metrics</groupId>
+      <artifactId>metrics-guice</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-server</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-httpclient</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-httpclient</artifactId>
       <scope>test</scope>
     </dependency>
 

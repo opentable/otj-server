@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server.templates;
+package com.opentable.server.templates;
 
 import java.util.Map;
 
@@ -31,17 +31,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kitei.testing.lessio.AllowNetworkAccess;
+import org.kitei.testing.lessio.AllowNetworkListen;
 
-import com.nesscomputing.config.Config;
-import com.nesscomputing.config.ConfigModule;
-import com.nesscomputing.httpclient.HttpClient;
-import com.nesscomputing.httpclient.guice.HttpClientModule;
-import com.nesscomputing.httpclient.response.JsonContentConverter;
-import com.nesscomputing.lifecycle.junit.LifecycleRule;
-import com.nesscomputing.lifecycle.junit.LifecycleRunner;
-import com.nesscomputing.lifecycle.junit.LifecycleStatement;
-import com.nesscomputing.testing.lessio.AllowNetworkAccess;
-import com.nesscomputing.testing.lessio.AllowNetworkListen;
+import com.opentable.config.Config;
+import com.opentable.config.ConfigModule;
+import com.opentable.httpclient.HttpClient;
+import com.opentable.httpclient.guice.HttpClientModule;
+import com.opentable.httpclient.response.JsonContentConverter;
+import com.opentable.lifecycle.junit.LifecycleRule;
+import com.opentable.lifecycle.junit.LifecycleRunner;
+import com.opentable.lifecycle.junit.LifecycleStatement;
 
 @AllowNetworkAccess(endpoints={"127.0.0.1:*"})
 @AllowNetworkListen(ports={0})
@@ -82,7 +82,7 @@ public class TestPunyServer
             @Override
             public Config getConfig()
             {
-                return Config.getFixedConfig("galaxy.internal.port.http", "0");
+                return Config.getFixedConfig("ot.http.bind-port", "0");
             }
         };
 

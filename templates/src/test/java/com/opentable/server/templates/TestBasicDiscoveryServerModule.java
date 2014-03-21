@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server.templates;
+package com.opentable.server.templates;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -22,14 +22,14 @@ import com.google.inject.Stage;
 
 import org.junit.Test;
 
-import com.nesscomputing.config.Config;
-import com.nesscomputing.config.ConfigModule;
-import com.nesscomputing.galaxy.GalaxyConfigModule;
-import com.nesscomputing.httpserver.HttpServerModule;
-import com.nesscomputing.jackson.NessJacksonModule;
-import com.nesscomputing.lifecycle.guice.LifecycleModule;
-import com.nesscomputing.scopes.threaddelegate.ThreadDelegatedScopeModule;
-import com.nesscomputing.tracking.guice.TrackingModule;
+import com.opentable.config.Config;
+import com.opentable.config.ConfigModule;
+import com.opentable.httpserver.HttpServerModule;
+import com.opentable.jackson.OpenTableJacksonModule;
+import com.opentable.lifecycle.guice.LifecycleModule;
+import com.opentable.scopes.threaddelegate.ThreadDelegatedScopeModule;
+import com.opentable.server.templates.BasicDiscoveryServerModule;
+import com.opentable.tracking.guice.TrackingModule;
 
 public class TestBasicDiscoveryServerModule
 {
@@ -52,9 +52,8 @@ public class TestBasicDiscoveryServerModule
             public void configure()
             {
                 // Copied from DiscoveryStandaloneServer to avoid circular dep.
-                install(new GalaxyConfigModule());
                 install(new HttpServerModule(config));
-                install(new NessJacksonModule());
+                install(new OpenTableJacksonModule());
                 install(new ThreadDelegatedScopeModule());
                 install(new TrackingModule());
             }

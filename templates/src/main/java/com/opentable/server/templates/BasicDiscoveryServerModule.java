@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server.templates;
+package com.opentable.server.templates;
 
 
 import com.google.inject.AbstractModule;
-import com.sun.jersey.guice.JerseyServletModule;
-import com.yammer.metrics.guice.InstrumentationModule;
+import com.palominolabs.metrics.guice.InstrumentationModule;
 
-import com.nesscomputing.config.Config;
-import com.nesscomputing.httpserver.selftest.SelftestModule;
-import com.nesscomputing.jdbi.argument.ArgumentFactoryModule;
-import com.nesscomputing.jdbi.metrics.DatabaseMetricsModule;
-import com.nesscomputing.jersey.NessJerseyBinder;
-import com.nesscomputing.jersey.NessJerseyServletModule;
-import com.nesscomputing.jersey.exceptions.NessJerseyExceptionMapperModule;
-import com.nesscomputing.jersey.filter.BodySizeLimitResourceFilterFactory;
-import com.nesscomputing.jersey.json.NessJacksonJsonProvider;
-import com.nesscomputing.jmx.jolokia.JolokiaModule;
-import com.nesscomputing.serverinfo.ServerInfoModule;
+import com.opentable.config.Config;
+import com.opentable.httpserver.selftest.SelftestModule;
+import com.opentable.jaxrs.OpenTableJaxRsServletModule;
+import com.opentable.jaxrs.exceptions.OpenTableJaxRsExceptionMapperModule;
+import com.opentable.jaxrs.json.NessJacksonJsonProvider;
+import com.opentable.jmx.jolokia.JolokiaModule;
+import com.opentable.serverinfo.ServerInfoModule;
 
 /**
  * Defines a basic server suitable for serving REST resources using JSON over HTTP when using the Discovery service.
@@ -65,14 +60,8 @@ public class BasicDiscoveryServerModule extends AbstractModule
         install (new InstrumentationModule());
         install (new JolokiaModule());
 
-        install (new DatabaseMetricsModule());
-        install (new ArgumentFactoryModule());
-
-        install (new JerseyServletModule());
-        install (new NessJerseyServletModule(config, paths));
-        install (new NessJerseyExceptionMapperModule());
-
-        NessJerseyBinder.bindResourceFilterFactory(binder()).to(BodySizeLimitResourceFilterFactory.class);
+        install (new OpenTableJaxRsServletModule(config, paths));
+        install (new OpenTableJaxRsExceptionMapperModule());
 
         bind (NessJacksonJsonProvider.class);
 

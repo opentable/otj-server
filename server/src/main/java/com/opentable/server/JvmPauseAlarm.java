@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server;
+package com.opentable.server;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,9 +23,9 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import com.nesscomputing.lifecycle.LifecycleStage;
-import com.nesscomputing.lifecycle.guice.OnStage;
-import com.nesscomputing.logging.Log;
+import com.opentable.lifecycle.LifecycleStage;
+import com.opentable.lifecycle.guice.OnStage;
+import com.opentable.logging.Log;
 
 @Singleton
 class JvmPauseAlarm implements Runnable

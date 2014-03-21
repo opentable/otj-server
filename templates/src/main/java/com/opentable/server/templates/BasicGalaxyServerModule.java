@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server.templates;
+package com.opentable.server.templates;
 
 
 import com.google.inject.AbstractModule;
 
-import com.nesscomputing.config.Config;
-import com.nesscomputing.galaxy.GalaxyConfigModule;
-import com.nesscomputing.httpserver.HttpServerModule;
-import com.nesscomputing.jackson.NessJacksonModule;
-import com.nesscomputing.scopes.threaddelegate.ThreadDelegatedScopeModule;
-import com.nesscomputing.tracking.guice.TrackingModule;
+import com.opentable.config.Config;
+import com.opentable.httpserver.HttpServerModule;
+import com.opentable.jackson.OpenTableJacksonModule;
+import com.opentable.scopes.threaddelegate.ThreadDelegatedScopeModule;
+import com.opentable.tracking.guice.TrackingModule;
 
 /**
  * Defines a basic server suitable for serving REST resources using JSON over HTTP.
@@ -58,10 +57,9 @@ public class BasicGalaxyServerModule extends AbstractModule
     @Override
     protected void configure()
     {
-        install (new GalaxyConfigModule());
         install (new HttpServerModule(config));
 
-        install (new NessJacksonModule());
+        install (new OpenTableJacksonModule());
 
         install (new ThreadDelegatedScopeModule());
         install (new TrackingModule());

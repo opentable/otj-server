@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server.templates;
-
-import org.junit.Test;
+package com.opentable.server.templates;
 
 import com.google.inject.Guice;
 import com.google.inject.Stage;
-import com.nesscomputing.config.Config;
-import com.nesscomputing.config.ConfigModule;
-import com.nesscomputing.lifecycle.guice.LifecycleModule;
+
+import org.junit.Test;
+
+import com.opentable.config.Config;
+import com.opentable.config.ConfigModule;
+import com.opentable.lifecycle.guice.LifecycleModule;
+import com.opentable.server.templates.BasicGalaxyServerModule;
 
 public class TestBasicGalaxyServerModule
 {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server;
+package com.opentable.server;
 
 import java.util.UUID;
 
@@ -27,18 +27,16 @@ import com.google.inject.Stage;
 
 import org.apache.commons.lang3.time.StopWatch;
 
-import com.nesscomputing.config.Config;
-import com.nesscomputing.config.ConfigModule;
-import com.nesscomputing.jmx.JmxModule;
-import com.nesscomputing.jmx.starter.guice.JmxStarterModule;
-import com.nesscomputing.lifecycle.Lifecycle;
-import com.nesscomputing.lifecycle.LifecycleStage;
-import com.nesscomputing.lifecycle.guice.LifecycleModule;
-import com.nesscomputing.log.jmx.guice.JmxLoggingModule;
-import com.nesscomputing.log4j.ConfigureStandaloneLogging;
-import com.nesscomputing.logging.AssimilateForeignLogging;
-import com.nesscomputing.logging.Log;
-import com.nesscomputing.serverinfo.ServerInfo;
+import com.opentable.config.Config;
+import com.opentable.config.ConfigModule;
+import com.opentable.jmx.JmxModule;
+import com.opentable.jmx.starter.guice.JmxStarterModule;
+import com.opentable.lifecycle.Lifecycle;
+import com.opentable.lifecycle.LifecycleStage;
+import com.opentable.lifecycle.guice.LifecycleModule;
+import com.opentable.logging.AssimilateForeignLogging;
+import com.opentable.logging.Log;
+import com.opentable.serverinfo.ServerInfo;
 
 /**
  * Standalone main class.
@@ -84,9 +82,6 @@ public abstract class StandaloneServer
     public StandaloneServer()
     {
         serverToken = UUID.randomUUID().toString();
-
-        // Hook up logging.
-        ConfigureStandaloneLogging.configure(getServerType());
 
         // Suck java.util.logging into log4j
         AssimilateForeignLogging.assimilate();
@@ -187,7 +182,6 @@ public abstract class StandaloneServer
 
                 binder.install(new JmxModule());
                 binder.install(new JmxStarterModule(config));
-                binder.install(new JmxLoggingModule(getServerType()));
 
                 binder.install(new JvmPauseAlarmModule());
             }

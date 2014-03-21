@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server;
+package com.opentable.server;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -22,10 +22,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kitei.testing.lessio.AllowNetworkAccess;
+import org.kitei.testing.lessio.AllowNetworkListen;
 
-import com.nesscomputing.config.Config;
-import com.nesscomputing.testing.lessio.AllowNetworkAccess;
-import com.nesscomputing.testing.lessio.AllowNetworkListen;
+import com.opentable.config.Config;
+import com.opentable.server.StandaloneServer;
 
 @AllowNetworkListen(ports= {0})
 @AllowNetworkAccess(endpoints= {"127.0.0.1:0"})

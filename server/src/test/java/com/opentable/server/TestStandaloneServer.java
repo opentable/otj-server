@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server;
+package com.opentable.server;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.kitei.testing.lessio.AllowNetworkAccess;
+import org.kitei.testing.lessio.AllowNetworkListen;
 
-import com.nesscomputing.config.Config;
-import com.nesscomputing.server.AnnouncingStandaloneServer;
-import com.nesscomputing.server.StandaloneServer;
-import com.nesscomputing.testing.lessio.AllowNetworkAccess;
-import com.nesscomputing.testing.lessio.AllowNetworkListen;
+import com.opentable.config.Config;
+import com.opentable.server.AnnouncingStandaloneServer;
+import com.opentable.server.StandaloneServer;
 
 
 @AllowNetworkListen(ports= {0})

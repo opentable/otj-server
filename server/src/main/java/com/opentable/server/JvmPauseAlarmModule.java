@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server;
+package com.opentable.server;
 
-import com.nesscomputing.lifecycle.LifecycleStage;
-import com.nesscomputing.lifecycle.ServiceDiscoveryLifecycle;
-import com.nesscomputing.lifecycle.guice.LifecycleModule;
+import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 
-import com.google.inject.Module;
+import com.opentable.config.ConfigProvider;
 
-/**
- * Standalone server that uses the ServiceDiscovery Lifecycle. No additional
- * announcements etc. are done.
- */
-public abstract class AnnouncingStandaloneServer extends StandaloneServer
+class JvmPauseAlarmModule extends AbstractModule
 {
     @Override
-    protected LifecycleStage getStartStage()
+    public void configure()
     {
-        return LifecycleStage.ANNOUNCE_STAGE;
+        bind (JvmPauseAlarm.class).asEagerSingleton();
+        bind (JvmPauseAlarmConfig.class).toProvider(ConfigProvider.of(JvmPauseAlarmConfig.class)).in(Scopes.SINGLETON);
     }
 
     @Override
-    protected Module getLifecycleModule()
+    public int hashCode()
     {
-        return new LifecycleModule(ServiceDiscoveryLifecycle.class);
+        return getClass().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        return obj != null && obj.getClass() == getClass();
     }
 }

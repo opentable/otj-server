@@ -4,48 +4,39 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.nesscomputing.components</groupId>
-    <artifactId>ness-server-parent</artifactId>
-    <version>2.2.5-SNAPSHOT</version>
+    <groupId>com.opentable.components</groupId>
+    <artifactId>otj-server-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>ness-server</artifactId>
-  <name>ness-server</name>
+  <artifactId>otj-server</artifactId>
+  <name>otj-server</name>
   <packaging>jar</packaging>
-
-  <properties>
-    <ness.root.dir>${project.parent.basedir}</ness.root.dir>
-  </properties>
 
   <dependencies>
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-serverinfo</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-serverinfo</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-config</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-config</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-lifecycle</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-lifecycle</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-logging</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-logging</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-jmx4log</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.nesscomputing.components</groupId>
-      <artifactId>ness-jmx</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-jmx</artifactId>
     </dependency>
 
     <dependency>

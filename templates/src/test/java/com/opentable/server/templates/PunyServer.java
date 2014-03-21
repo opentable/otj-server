@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server.templates;
+package com.opentable.server.templates;
+
+import java.io.IOException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -27,9 +29,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 
-import com.nesscomputing.config.Config;
-import com.nesscomputing.httpserver.HttpServer;
-import com.nesscomputing.server.StandaloneServer;
+import com.opentable.config.Config;
+import com.opentable.httpserver.HttpServer;
+import com.opentable.server.StandaloneServer;
+import com.opentable.server.templates.BasicGalaxyServerModule;
 
 /**
  * This is the smallest REST server implementation that actually serves data.
@@ -70,7 +73,7 @@ public class PunyServer extends StandaloneServer
     }
 
     @VisibleForTesting
-    int getPort()
+    int getPort() throws IOException
     {
         return httpServer.getConnectors().get("internal-http").getPort();
     }

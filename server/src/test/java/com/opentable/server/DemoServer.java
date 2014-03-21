@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nesscomputing.server;
+package com.opentable.server;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
-import com.nesscomputing.config.Config;
+import com.opentable.config.Config;
+import com.opentable.server.StandaloneServer;
 
-class AnnouncingDemoServer extends AnnouncingStandaloneServer
+class DemoServer extends StandaloneServer
 {
-    private static AnnouncingDemoServer server = null;
+    private static DemoServer server = null;
     private final Config config;
 
-    public AnnouncingDemoServer(Config config) {
+    public DemoServer(Config config) {
         this.config = config;
     }
 
     public static void main(final String [] args)
     {
-        server = new AnnouncingDemoServer(null);
+        server = new DemoServer(null);
         server.startServer();
     }
 
@@ -43,7 +44,7 @@ class AnnouncingDemoServer extends AnnouncingStandaloneServer
         return super.getConfig();
     }
 
-    public static AnnouncingStandaloneServer getServer()
+    public static StandaloneServer getServer()
     {
         return server;
     }
@@ -62,6 +63,6 @@ class AnnouncingDemoServer extends AnnouncingStandaloneServer
     @Override
     public String getServerType()
     {
-        return "announcing-demo";
+        return "demo";
     }
 }
