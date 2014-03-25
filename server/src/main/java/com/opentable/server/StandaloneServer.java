@@ -76,6 +76,9 @@ public abstract class StandaloneServer
     @Inject
     private Lifecycle lifecycle;
 
+    @Inject
+    private Injector injector;
+
     private boolean started = false;
     private boolean stopped = false;
 
@@ -198,6 +201,10 @@ public abstract class StandaloneServer
 
     public final Injector getInjector()
     {
+        if (injector != null) {
+            return injector;
+        }
+
         final Config config = getConfig();
 
         // Initialize Guice off the main module. Add a tiny
