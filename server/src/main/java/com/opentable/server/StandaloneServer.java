@@ -44,9 +44,8 @@ import com.opentable.serverinfo.ServerInfo;
  * Environment properties:
  *
  * <ul>
- *  <li>ness.config.location - An URI to load configuration from</li>
- *  <li>ness.config - A configuration path to load from the config URI</li>
- *  <li>log4j.configuration - An URI to load the logging configuration from.</li>
+ *  <li>ot.config.location - An URI to load configuration from</li>
+ *  <li>ot.config - A configuration path to load from the config URI</li>
  * </ul>
  *
  * This installs a basic set of Guice modules that every server should use:
