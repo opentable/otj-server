@@ -30,7 +30,6 @@ import org.apache.commons.lang3.time.StopWatch;
 import com.opentable.config.Config;
 import com.opentable.config.ConfigModule;
 import com.opentable.jmx.JmxModule;
-import com.opentable.jmx.starter.guice.JmxStarterModule;
 import com.opentable.lifecycle.Lifecycle;
 import com.opentable.lifecycle.LifecycleStage;
 import com.opentable.lifecycle.guice.LifecycleModule;
@@ -183,7 +182,6 @@ public abstract class StandaloneServer
                 binder.install(getLifecycleModule());
 
                 binder.install(new JmxModule());
-                binder.install(new JmxStarterModule(config));
 
                 binder.install(new JvmPauseAlarmModule());
             }
