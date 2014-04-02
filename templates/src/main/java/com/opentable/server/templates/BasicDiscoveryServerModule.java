@@ -15,7 +15,6 @@
  */
 package com.opentable.server.templates;
 
-
 import com.google.inject.AbstractModule;
 import com.palominolabs.metrics.guice.InstrumentationModule;
 
@@ -23,7 +22,7 @@ import com.opentable.config.Config;
 import com.opentable.httpserver.selftest.SelftestModule;
 import com.opentable.jaxrs.OpenTableJaxRsServletModule;
 import com.opentable.jaxrs.exceptions.OpenTableJaxRsExceptionMapperModule;
-import com.opentable.jaxrs.json.NessJacksonJsonProvider;
+import com.opentable.jaxrs.json.OTJacksonJsonProvider;
 import com.opentable.jmx.jolokia.JolokiaModule;
 import com.opentable.serverinfo.ServerInfoModule;
 
@@ -63,7 +62,7 @@ public class BasicDiscoveryServerModule extends AbstractModule
         install (new OpenTableJaxRsServletModule(config, paths));
         install (new OpenTableJaxRsExceptionMapperModule());
 
-        bind (NessJacksonJsonProvider.class);
+        bind (OTJacksonJsonProvider.class);
 
         install (new SelftestModule());
         install (new ServerInfoModule());
