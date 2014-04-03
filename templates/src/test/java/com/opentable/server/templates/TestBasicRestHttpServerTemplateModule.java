@@ -24,7 +24,7 @@ import com.opentable.config.Config;
 import com.opentable.config.ConfigModule;
 import com.opentable.lifecycle.guice.LifecycleModule;
 
-public class TestBasicDiscoveryServerModule
+public class TestBasicRestHttpServerTemplateModule
 {
     @Test
     public void testSimple()
@@ -34,6 +34,6 @@ public class TestBasicDiscoveryServerModule
         Guice.createInjector(Stage.PRODUCTION,
                              new LifecycleModule(),
                              new ConfigModule(config),
-                             new BasicDiscoveryServerModule(config));
+                             new BasicRestHttpServerTemplateModule(config));
     }
 }

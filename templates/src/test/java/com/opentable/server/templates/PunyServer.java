@@ -65,7 +65,7 @@ public class PunyServer extends StandaloneServer
         @Override
         public void configure()
         {
-            install (new BasicDiscoveryServerModule(config));
+            install (new BasicRestHttpServerTemplateModule(config));
 
             bind(PunyResource.class);
         }

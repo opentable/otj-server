@@ -31,7 +31,7 @@ import com.opentable.serverinfo.ServerInfoModule;
 import com.opentable.tracking.guice.TrackingModule;
 
 /**
- * Defines a basic server suitable for serving REST resources using JSON over HTTP when using the Discovery service.
+ * Defines a basic server suitable for serving REST resources using JSON over HTTP.
  *
  * <ul>
  *   <li>Codahale metrics</li>
@@ -41,17 +41,17 @@ import com.opentable.tracking.guice.TrackingModule;
  *   <li>selftest endpoint</li>
  * </ul>
  */
-public class BasicDiscoveryServerModule extends AbstractModule
+public class BasicRestHttpServerTemplateModule extends AbstractModule
 {
     private final Config config;
     private final String[] paths;
 
-    public BasicDiscoveryServerModule(final Config config)
+    public BasicRestHttpServerTemplateModule(final Config config)
     {
         this(config, "/*");
     }
 
-    public BasicDiscoveryServerModule(final Config config, final String... paths)
+    public BasicRestHttpServerTemplateModule(final Config config, final String... paths)
     {
         this.config = config;
         this.paths = paths;
