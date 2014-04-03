@@ -32,7 +32,6 @@ import com.google.inject.Module;
 import com.opentable.config.Config;
 import com.opentable.httpserver.HttpServer;
 import com.opentable.server.StandaloneServer;
-import com.opentable.server.templates.BasicGalaxyServerModule;
 
 /**
  * This is the smallest REST server implementation that actually serves data.
@@ -66,7 +65,7 @@ public class PunyServer extends StandaloneServer
         @Override
         public void configure()
         {
-            install (new BasicGalaxyServerModule(config));
+            install (new BasicDiscoveryServerModule(config));
 
             bind(PunyResource.class);
         }

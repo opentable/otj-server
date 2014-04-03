@@ -19,21 +19,25 @@ import com.google.inject.AbstractModule;
 import com.palominolabs.metrics.guice.InstrumentationModule;
 
 import com.opentable.config.Config;
+import com.opentable.httpserver.HttpServerModule;
 import com.opentable.httpserver.selftest.SelftestModule;
+import com.opentable.jackson.OpenTableJacksonModule;
 import com.opentable.jaxrs.OpenTableJaxRsServletModule;
 import com.opentable.jaxrs.exceptions.OpenTableJaxRsExceptionMapperModule;
 import com.opentable.jaxrs.json.OTJacksonJsonProvider;
 import com.opentable.jmx.jolokia.JolokiaModule;
+import com.opentable.scopes.threaddelegate.ThreadDelegatedScopeModule;
 import com.opentable.serverinfo.ServerInfoModule;
+import com.opentable.tracking.guice.TrackingModule;
 
 /**
  * Defines a basic server suitable for serving REST resources using JSON over HTTP when using the Discovery service.
  *
  * <ul>
- *   <li>Yammer metrics</li>
+ *   <li>Codahale metrics</li>
  *   <li>Jolokia JMX access over HTTP</li>
  *   <li>JDBI database configuration</li>
- *   <li>Jersey with exception handling</li>
+ *   <li>JAX-RS with exception handling</li>
  *   <li>selftest endpoint</li>
  * </ul>
  */
@@ -56,16 +60,20 @@ public class BasicDiscoveryServerModule extends AbstractModule
     @Override
     protected void configure()
     {
+        install (new ThreadDelegatedScopeModule());
+
         install (new InstrumentationModule());
         install (new JolokiaModule());
 
+        install (new HttpServerModule(config));
         install (new OpenTableJaxRsServletModule(config, paths));
         install (new OpenTableJaxRsExceptionMapperModule());
 
         bind (OTJacksonJsonProvider.class);
+        install (new OpenTableJacksonModule());
 
         install (new SelftestModule());
         install (new ServerInfoModule());
-
+        install (new TrackingModule());
     }
 }

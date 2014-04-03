@@ -15,21 +15,14 @@
  */
 package com.opentable.server.templates;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
-import com.google.inject.Module;
 import com.google.inject.Stage;
 
 import org.junit.Test;
 
 import com.opentable.config.Config;
 import com.opentable.config.ConfigModule;
-import com.opentable.httpserver.HttpServerModule;
-import com.opentable.jackson.OpenTableJacksonModule;
 import com.opentable.lifecycle.guice.LifecycleModule;
-import com.opentable.scopes.threaddelegate.ThreadDelegatedScopeModule;
-import com.opentable.server.templates.BasicDiscoveryServerModule;
-import com.opentable.tracking.guice.TrackingModule;
 
 public class TestBasicDiscoveryServerModule
 {
@@ -39,24 +32,8 @@ public class TestBasicDiscoveryServerModule
         final Config config = Config.getEmptyConfig();
 
         Guice.createInjector(Stage.PRODUCTION,
-                             getPlumbing(config),
                              new LifecycleModule(),
                              new ConfigModule(config),
                              new BasicDiscoveryServerModule(config));
-    }
-
-    private Module getPlumbing(final Config config)
-    {
-        return new AbstractModule() {
-            @Override
-            public void configure()
-            {
-                // Copied from DiscoveryStandaloneServer to avoid circular dep.
-                install(new HttpServerModule(config));
-                install(new OpenTableJacksonModule());
-                install(new ThreadDelegatedScopeModule());
-                install(new TrackingModule());
-            }
-        };
     }
 }
