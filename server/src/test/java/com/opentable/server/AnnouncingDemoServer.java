@@ -15,11 +15,10 @@
  */
 package com.opentable.server;
 
-import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.util.Modules;
 
 import com.opentable.config.Config;
-import com.opentable.server.AnnouncingStandaloneServer;
 
 class AnnouncingDemoServer extends AnnouncingStandaloneServer
 {
@@ -52,12 +51,13 @@ class AnnouncingDemoServer extends AnnouncingStandaloneServer
     @Override
     public Module getMainModule(final Config config)
     {
-        return new Module() {
-            @Override
-            public void configure(final Binder binder)
-            {
-            }
-        };
+        return Modules.EMPTY_MODULE;
+    }
+
+    @Override
+    protected Module getServerTemplateModule(Config config)
+    {
+        return Modules.EMPTY_MODULE;
     }
 
     @Override

@@ -94,6 +94,11 @@ public abstract class StandaloneServer
     protected abstract Module getMainModule(final Config config);
 
     /**
+     * Returns the server template module.
+     */
+    protected abstract Module getServerTemplateModule(final Config config);
+
+    /**
      * Returns the server type. Must be set so that the server info contains
      * the right server type.
      */
@@ -206,10 +211,11 @@ public abstract class StandaloneServer
         // Initialize Guice off the main module. Add a tiny
         // bit of special sauce to ensure explicit bindings.
 
-        final Injector injector = Guice.createInjector(
+        injector = Guice.createInjector(
             Stage.PRODUCTION,
             getPlumbingModules(config),
             getMainModule(config),
+            getServerTemplateModule(config),
 
             new Module() {
                 @Override

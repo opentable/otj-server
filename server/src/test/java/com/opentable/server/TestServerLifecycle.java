@@ -15,8 +15,8 @@
  */
 package com.opentable.server;
 
-import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.util.Modules;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -26,7 +26,6 @@ import org.kitei.testing.lessio.AllowNetworkAccess;
 import org.kitei.testing.lessio.AllowNetworkListen;
 
 import com.opentable.config.Config;
-import com.opentable.server.StandaloneServer;
 
 @AllowNetworkListen(ports= {0})
 @AllowNetworkAccess(endpoints= {"127.0.0.1:0"})
@@ -46,11 +45,13 @@ public class TestServerLifecycle
 
             @Override
             protected Module getMainModule(final Config config) {
-                return new Module() {
-                    @Override
-                    public void configure(final Binder binder) {
-                    }
-                };
+                return Modules.EMPTY_MODULE;
+            }
+
+            @Override
+            protected Module getServerTemplateModule(Config config)
+            {
+                return Modules.EMPTY_MODULE;
             }
 
             @Override

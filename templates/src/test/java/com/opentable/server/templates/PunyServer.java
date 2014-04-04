@@ -44,7 +44,13 @@ public class PunyServer extends StandaloneServer
     @Override
     public Module getMainModule(final Config config)
     {
-        return new PunyModule(config);
+        return new PunyModule();
+    }
+
+    @Override
+    protected Module getServerTemplateModule(Config config)
+    {
+        return new BasicRestHttpServerTemplateModule(config);
     }
 
     @Override
@@ -55,18 +61,9 @@ public class PunyServer extends StandaloneServer
 
     public static class PunyModule extends AbstractModule
     {
-        private final Config config;
-
-        PunyModule(final Config config)
-        {
-            this.config = config;
-        }
-
         @Override
         public void configure()
         {
-            install (new BasicRestHttpServerTemplateModule(config));
-
             bind(PunyResource.class);
         }
     }
