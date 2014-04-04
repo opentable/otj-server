@@ -120,8 +120,7 @@ public abstract class StandaloneServer
         final StopWatch timer = new StopWatch();
         timer.start();
 
-        final Injector injector = getInjector();
-
+        injector = getInjector();
         injector.injectMembers(this);
 
         timer.stop();
