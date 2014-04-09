@@ -79,7 +79,7 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-httpclient</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
       </dependency>
 
       <dependency>
@@ -91,7 +91,7 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-httpserver</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
       </dependency>
 
       <dependency>
