@@ -15,6 +15,7 @@
  */
 package com.opentable.server;
 
+import java.time.Clock;
 import java.util.UUID;
 
 import com.google.common.base.Preconditions;
@@ -182,6 +183,8 @@ public abstract class StandaloneServer
         return new Module() {
             @Override
             public void configure(final Binder binder) {
+                binder.bind(Clock.class).toInstance(Clock.systemUTC());
+
                 binder.install(new ConfigModule(config));
                 binder.install(getLifecycleModule());
 
