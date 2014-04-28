@@ -20,12 +20,13 @@ import com.palominolabs.metrics.guice.InstrumentationModule;
 
 import com.opentable.config.Config;
 import com.opentable.httpserver.HttpServerModule;
-import com.opentable.httpserver.selftest.SelftestModule;
 import com.opentable.jackson.OpenTableJacksonModule;
 import com.opentable.jaxrs.OpenTableJaxRsServletModule;
 import com.opentable.jaxrs.exceptions.OpenTableJaxRsExceptionMapperModule;
 import com.opentable.jaxrs.json.OTJacksonJsonProvider;
 import com.opentable.jmx.jolokia.JolokiaModule;
+import com.opentable.metrics.DefaultMetricsModule;
+import com.opentable.metrics.http.MetricsHttpModule;
 import com.opentable.scopes.threaddelegate.ThreadDelegatedScopeModule;
 import com.opentable.serverinfo.ServerInfoModule;
 import com.opentable.tracking.guice.TrackingModule;
@@ -66,14 +67,16 @@ public class BasicRestHttpServerTemplateModule extends AbstractModule
         install (new JolokiaModule());
 
         install (new HttpServerModule(config));
-        install (new OpenTableJaxRsServletModule(config, paths));
-        install (new OpenTableJaxRsExceptionMapperModule());
 
         bind (OTJacksonJsonProvider.class);
         install (new OpenTableJacksonModule());
 
-        install (new SelftestModule());
+        install (new DefaultMetricsModule());
+        install (new MetricsHttpModule());
         install (new ServerInfoModule());
         install (new TrackingModule());
+
+        install (new OpenTableJaxRsServletModule(config, paths));
+        install (new OpenTableJaxRsExceptionMapperModule());
     }
 }

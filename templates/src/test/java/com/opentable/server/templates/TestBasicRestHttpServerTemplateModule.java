@@ -19,6 +19,7 @@ import com.google.inject.Guice;
 import com.google.inject.Stage;
 
 import org.junit.Test;
+import org.weakref.jmx.testing.TestingMBeanModule;
 
 import com.opentable.config.Config;
 import com.opentable.config.ConfigModule;
@@ -32,6 +33,7 @@ public class TestBasicRestHttpServerTemplateModule
         final Config config = Config.getEmptyConfig();
 
         Guice.createInjector(Stage.PRODUCTION,
+                             new TestingMBeanModule(),
                              new LifecycleModule(),
                              new ConfigModule(config),
                              new BasicRestHttpServerTemplateModule(config));

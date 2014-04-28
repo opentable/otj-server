@@ -31,6 +31,11 @@
 
     <dependency>
       <groupId>com.opentable.components</groupId>
+      <artifactId>otj-metrics</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.opentable.components</groupId>
       <artifactId>otj-jaxrs</artifactId>
     </dependency>
 
