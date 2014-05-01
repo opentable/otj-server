@@ -49,13 +49,13 @@ class AnnouncingDemoServer extends AnnouncingStandaloneServer
     }
 
     @Override
-    public Module getMainModule(final Config config)
+    public Module getMainModule(final Config myConfig)
     {
         return Modules.EMPTY_MODULE;
     }
 
     @Override
-    protected Module getServerTemplateModule(Config config)
+    protected Module getServerTemplateModule(Config myConfig)
     {
         return Modules.EMPTY_MODULE;
     }
