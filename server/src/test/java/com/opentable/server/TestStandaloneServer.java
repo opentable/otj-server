@@ -15,14 +15,14 @@
  */
 package com.opentable.server;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Module;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitei.testing.lessio.AllowNetworkAccess;
 import org.kitei.testing.lessio.AllowNetworkListen;
 
 import com.opentable.config.Config;
-import com.opentable.server.AnnouncingStandaloneServer;
-import com.opentable.server.StandaloneServer;
 
 
 @AllowNetworkListen(ports= {0})
@@ -75,6 +75,41 @@ public class TestStandaloneServer
             server.stopServer();
             Assert.assertTrue(server.isStarted());
             Assert.assertTrue(server.isStopped());
+        }
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void getPortWithoutProviderThrowsException() throws Exception
+    {
+        final AnnouncingStandaloneServer server = new AnnouncingDemoServer(Config.getEmptyConfig());
+        server.startServer();
+        try {
+            server.getPort();
+        }
+        finally {
+            server.stopServer();
+        }
+    }
+
+    @Test
+    public void getPortWorksIfProviderConfigured() throws Exception
+    {
+        final AnnouncingStandaloneServer server = new AnnouncingDemoServer(Config.getEmptyConfig()) {
+            @Override
+            public Module getMainModule(final Config myConfig) {
+                return new AbstractModule() {
+                    public void configure() {
+                        bind(PortNumberProvider.class).toInstance(() -> 8910);
+                    }
+                };
+            }
+        };
+        server.startServer();
+        try {
+            Assert.assertEquals(8910, server.getPort());
+        }
+        finally {
+            server.stopServer();
         }
     }
 }

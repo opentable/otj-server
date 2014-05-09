@@ -15,6 +15,7 @@
  */
 package com.opentable.server;
 
+import java.io.IOException;
 import java.time.Clock;
 import java.util.UUID;
 
@@ -25,7 +26,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Stage;
-
 import org.apache.commons.lang3.time.StopWatch;
 
 import com.opentable.config.Config;
@@ -77,6 +77,9 @@ public abstract class StandaloneServer
 
     @Inject
     private Injector injector;
+
+    @Inject(optional = true)
+    private PortNumberProvider portInfoProvider;
 
     private boolean started = false;
     private boolean stopped = false;
@@ -250,4 +253,13 @@ public abstract class StandaloneServer
     {
         return serverToken;
     }
+
+    public final int getPort() throws IOException
+    {
+        if (portInfoProvider == null) {
+            throw new IllegalStateException("You need to bind a PortNumberProvider for getPort to work");
+        }
+        return portInfoProvider.getPort();
+    }
+
 }
