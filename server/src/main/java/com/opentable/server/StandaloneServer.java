@@ -79,7 +79,7 @@ public abstract class StandaloneServer
     private Injector injector;
 
     @Inject(optional = true)
-    private PortNumberProvider portInfoProvider;
+    private PortNumberProvider portNumberProvider;
 
     private boolean started = false;
     private boolean stopped = false;
@@ -256,10 +256,10 @@ public abstract class StandaloneServer
 
     public final int getPort() throws IOException
     {
-        if (portInfoProvider == null) {
+        if (portNumberProvider == null) {
             throw new IllegalStateException("You need to bind a PortNumberProvider for getPort to work");
         }
-        return portInfoProvider.getPort();
+        return portNumberProvider.getPort();
     }
 
 }
