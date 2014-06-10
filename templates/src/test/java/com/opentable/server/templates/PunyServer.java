@@ -25,11 +25,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Module;
-import com.google.inject.Provides;
 
 import com.opentable.config.Config;
 import com.opentable.httpserver.HttpServer;
-import com.opentable.server.PortNumberProvider;
 import com.opentable.server.StandaloneServer;
 
 /**
@@ -64,11 +62,6 @@ public class PunyServer extends StandaloneServer
         public void configure()
         {
             bind(PunyResource.class);
-        }
-
-        @Provides
-        public PortNumberProvider portLookup() {
-            return () -> httpServer.getConnectors().get("internal-http").getPort();
         }
     }
 
