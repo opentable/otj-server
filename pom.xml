@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.opentable</groupId>
     <artifactId>otj-parent</artifactId>
-    <version>7</version>
+    <version>10</version>
   </parent>
 
   <scm>
@@ -91,7 +91,7 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-httpserver</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.4-SNAPSHOT</version>
       </dependency>
 
       <dependency>
