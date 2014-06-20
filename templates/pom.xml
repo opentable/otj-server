@@ -67,7 +67,6 @@
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -102,8 +101,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-httpclient</artifactId>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
       <scope>test</scope>
     </dependency>
 

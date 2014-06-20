@@ -17,15 +17,15 @@ package com.opentable.server.templates;
 
 import java.util.Map;
 
+import javax.ws.rs.client.ClientBuilder;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Stage;
-import com.google.inject.name.Named;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,9 +36,6 @@ import org.kitei.testing.lessio.AllowNetworkListen;
 
 import com.opentable.config.Config;
 import com.opentable.config.ConfigModule;
-import com.opentable.httpclient.HttpClient;
-import com.opentable.httpclient.guice.HttpClientModule;
-import com.opentable.httpclient.response.JsonContentConverter;
 import com.opentable.lifecycle.junit.LifecycleRule;
 import com.opentable.lifecycle.junit.LifecycleRunner;
 import com.opentable.lifecycle.junit.LifecycleStatement;
@@ -50,10 +47,6 @@ public class TestPunyServer
 {
     @LifecycleRule
     public final LifecycleStatement lifecycleRule = LifecycleStatement.serviceDiscoveryLifecycle();
-
-    @Inject
-    @Named("test")
-    public HttpClient httpClient;
 
     @Before
     public void setUp()
@@ -67,7 +60,6 @@ public class TestPunyServer
                                                       }
                                                   },
                                                   ConfigModule.forTesting(),
-                                                  new HttpClientModule("test"),
                                                   lifecycleRule.getLifecycleModule());
 
         inj.injectMembers(this);
@@ -91,7 +83,8 @@ public class TestPunyServer
 
         final String baseUrl = String.format("http://localhost:%d/puny", punyServer.getPort());
 
-        final Map<String, Object> result = httpClient.get(baseUrl, JsonContentConverter.getResponseHandler(new TypeReference<Map<String, Object>>() {}, new ObjectMapper())).perform();
+        final byte[] bytes = ClientBuilder.newClient().target(baseUrl).request().get(byte[].class);
+        final Map<String, Object> result = new ObjectMapper().readValue(bytes, new TypeReference<Map<String, Object>>() {});
 
         Assert.assertNotNull(result);
         Assert.assertEquals(1, result.size());
