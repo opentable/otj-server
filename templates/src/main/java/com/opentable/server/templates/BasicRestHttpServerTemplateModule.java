@@ -24,6 +24,7 @@ import com.opentable.jackson.OpenTableJacksonModule;
 import com.opentable.jaxrs.OpenTableJaxRsServletModule;
 import com.opentable.jaxrs.exceptions.OpenTableJaxRsExceptionMapperModule;
 import com.opentable.jaxrs.json.OTJacksonJsonProvider;
+import com.opentable.jmx.JmxServerModule;
 import com.opentable.jmx.jolokia.JolokiaModule;
 import com.opentable.metrics.DefaultMetricsModule;
 import com.opentable.metrics.http.MetricsHttpModule;
@@ -64,6 +65,7 @@ public class BasicRestHttpServerTemplateModule extends AbstractModule
         install (new ThreadDelegatedScopeModule());
 
         install (new InstrumentationModule());
+        install (new JmxServerModule());
         install (new JolokiaModule());
 
         install (new HttpServerModule(config));

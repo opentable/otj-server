@@ -67,13 +67,13 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-logging</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.2</version>
       </dependency>
 
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-jmx</artifactId>
-        <version>1.0.2</version>
+        <version>1.1.0</version>
       </dependency>
 
       <dependency>
