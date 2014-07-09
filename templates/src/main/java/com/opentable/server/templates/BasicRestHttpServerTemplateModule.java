@@ -28,9 +28,9 @@ import com.opentable.jmx.JmxServerModule;
 import com.opentable.jmx.jolokia.JolokiaModule;
 import com.opentable.metrics.DefaultMetricsModule;
 import com.opentable.metrics.http.MetricsHttpModule;
+import com.opentable.requestid.guice.RequestIdModule;
 import com.opentable.scopes.threaddelegate.ThreadDelegatedScopeModule;
 import com.opentable.serverinfo.ServerInfoModule;
-import com.opentable.tracking.guice.TrackingModule;
 
 /**
  * Defines a basic server suitable for serving REST resources using JSON over HTTP.
@@ -76,7 +76,7 @@ public class BasicRestHttpServerTemplateModule extends AbstractModule
         install (new DefaultMetricsModule());
         install (new MetricsHttpModule());
         install (new ServerInfoModule());
-        install (new TrackingModule());
+        install (new RequestIdModule());
 
         install (new OpenTableJaxRsServletModule(config, paths));
         install (new OpenTableJaxRsExceptionMapperModule());

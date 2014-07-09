@@ -56,7 +56,7 @@
 
     <dependency>
       <groupId>com.opentable.components</groupId>
-      <artifactId>otj-tracking</artifactId>
+      <artifactId>otj-requestid</artifactId>
     </dependency>
 
     <dependency>
