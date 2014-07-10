@@ -15,6 +15,9 @@
  */
 package com.opentable.server.templates;
 
+import java.time.Clock;
+
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Stage;
 
@@ -36,6 +39,13 @@ public class TestBasicRestHttpServerTemplateModule
                              new TestingMBeanModule(),
                              new LifecycleModule(),
                              new ConfigModule(config),
-                             new BasicRestHttpServerTemplateModule(config));
+                             new BasicRestHttpServerTemplateModule(config),
+                             new AbstractModule() {
+                                @Override
+                                protected void configure()
+                                {
+                                    bind (Clock.class).toProvider(Clock::systemUTC);
+                                }
+                            });
     }
 }
