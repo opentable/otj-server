@@ -210,9 +210,9 @@ public abstract class StandaloneServer
     }
 
     /**
-     * Can be overridden in tests.
+     * @return the configuration this server uses
      */
-    public Config getConfig()
+    protected final Config getConfig()
     {
         return config;
     }
