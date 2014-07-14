@@ -23,10 +23,9 @@ import com.opentable.config.Config;
 class DemoServer extends StandaloneServer
 {
     private static DemoServer server = null;
-    private final Config config;
 
     public DemoServer(Config config) {
-        this.config = config;
+        super(config);
     }
 
     public static void main(final String [] args)
@@ -35,27 +34,19 @@ class DemoServer extends StandaloneServer
         server.startServer();
     }
 
-    @Override
-    public Config getConfig() {
-        if (config != null) {
-            return config;
-        }
-        return super.getConfig();
-    }
-
     public static StandaloneServer getServer()
     {
         return server;
     }
 
     @Override
-    public Module getMainModule(final Config myConfig)
+    public Module getMainModule()
     {
         return Modules.EMPTY_MODULE;
     }
 
     @Override
-    protected Module getServerTemplateModule(Config myConfig)
+    protected Module getServerTemplateModule()
     {
         return Modules.EMPTY_MODULE;
     }

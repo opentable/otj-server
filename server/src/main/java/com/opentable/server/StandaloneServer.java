@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.time.Clock;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
@@ -26,6 +28,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Stage;
+
 import org.apache.commons.lang3.time.StopWatch;
 
 import com.opentable.config.Config;
@@ -61,6 +64,7 @@ public abstract class StandaloneServer
 {
     private static final Log LOG = Log.findLog();
 
+    private final Config config;
     private final String serverToken;
 
     private final Thread shutdownThread = new Thread("Server Shutdown Thread")
@@ -84,9 +88,16 @@ public abstract class StandaloneServer
     private boolean started = false;
     private boolean stopped = false;
 
-    public StandaloneServer()
+    /**
+     * Create a StandaloneServer with a given config.
+     * If no config is provided (null) then the config
+     * is loaded from the system environment via
+     * {@link Config#getConfig()}.
+     */
+    public StandaloneServer(@Nullable final Config config)
     {
-        serverToken = UUID.randomUUID().toString();
+        this.config = config == null ? Config.getConfig() : config;
+        this.serverToken = UUID.randomUUID().toString();
 
         // Suck java.util.logging into log4j
         AssimilateForeignLogging.assimilate();
@@ -95,12 +106,12 @@ public abstract class StandaloneServer
     /**
      * Returns the main guice module for the server.
      */
-    protected abstract Module getMainModule(final Config config);
+    protected abstract Module getMainModule();
 
     /**
      * Returns the server template module.
      */
-    protected abstract Module getServerTemplateModule(final Config config);
+    protected abstract Module getServerTemplateModule();
 
     /**
      * Returns the server type. Must be set so that the server info contains
@@ -181,7 +192,7 @@ public abstract class StandaloneServer
     /**
      * Can be overridden in tests.
      */
-    public Module getPlumbingModules(final Config config)
+    public Module getPlumbingModules()
     {
         return new Module() {
             @Override
@@ -199,11 +210,11 @@ public abstract class StandaloneServer
     }
 
     /**
-     * Can be overridden in tests.
+     * @return the configuration this server uses
      */
-    public Config getConfig()
+    protected final Config getConfig()
     {
-        return Config.getConfig();
+        return config;
     }
 
     public final Injector getInjector()
@@ -212,16 +223,14 @@ public abstract class StandaloneServer
             return injector;
         }
 
-        final Config config = getConfig();
-
         // Initialize Guice off the main module. Add a tiny
         // bit of special sauce to ensure explicit bindings.
 
         injector = Guice.createInjector(
             Stage.PRODUCTION,
-            getPlumbingModules(config),
-            getMainModule(config),
-            getServerTemplateModule(config),
+            getPlumbingModules(),
+            getMainModule(),
+            getServerTemplateModule(),
 
             new Module() {
                 @Override
@@ -261,5 +270,4 @@ public abstract class StandaloneServer
         }
         return portNumberProvider.getPort();
     }
-
 }

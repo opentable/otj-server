@@ -37,19 +37,14 @@ public class TestServerLifecycle
     public void setUp()
     {
         Assert.assertNull(server);
-        server = new StandaloneServer() {
+        server = new StandaloneServer(Config.getEmptyConfig()) {
             @Override
-            public Config getConfig() {
-                return Config.getEmptyConfig();
-            }
-
-            @Override
-            protected Module getMainModule(final Config config) {
+            protected Module getMainModule() {
                 return Modules.EMPTY_MODULE;
             }
 
             @Override
-            protected Module getServerTemplateModule(Config config)
+            protected Module getServerTemplateModule()
             {
                 return Modules.EMPTY_MODULE;
             }

@@ -70,13 +70,7 @@ public class TestPunyServer
     @Test
     public void testPunyServer() throws Exception
     {
-        final PunyServer punyServer = new PunyServer() {
-            @Override
-            public Config getConfig()
-            {
-                return Config.getFixedConfig("ot.http.bind-port", "0");
-            }
-        };
+        final PunyServer punyServer = new PunyServer(Config.getFixedConfig("ot.http.bind-port", "0"));
 
         punyServer.startServer();
         Assert.assertTrue(punyServer.isStarted());
