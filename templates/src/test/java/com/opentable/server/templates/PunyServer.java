@@ -35,9 +35,6 @@ import com.opentable.server.StandaloneServer;
  */
 public class PunyServer extends StandaloneServer
 {
-    @Inject
-    private HttpServer httpServer;
-
     @Override
     public Module getMainModule(final Config config)
     {
