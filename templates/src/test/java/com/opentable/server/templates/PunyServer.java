@@ -23,11 +23,9 @@ import javax.ws.rs.core.Response;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
 import com.google.inject.Module;
 
 import com.opentable.config.Config;
-import com.opentable.httpserver.HttpServer;
 import com.opentable.server.StandaloneServer;
 
 /**
@@ -35,16 +33,21 @@ import com.opentable.server.StandaloneServer;
  */
 public class PunyServer extends StandaloneServer
 {
+    public PunyServer(final Config config)
+    {
+        super(config);
+    }
+
     @Override
-    public Module getMainModule(final Config config)
+    public Module getMainModule()
     {
         return new PunyModule();
     }
 
     @Override
-    protected Module getServerTemplateModule(Config config)
+    protected Module getServerTemplateModule()
     {
-        return new BasicRestHttpServerTemplateModule(config);
+        return new BasicRestHttpServerTemplateModule(getConfig());
     }
 
     @Override

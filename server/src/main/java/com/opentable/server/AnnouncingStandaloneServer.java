@@ -17,6 +17,7 @@ package com.opentable.server;
 
 import com.google.inject.Module;
 
+import com.opentable.config.Config;
 import com.opentable.lifecycle.LifecycleStage;
 import com.opentable.lifecycle.ServiceDiscoveryLifecycle;
 import com.opentable.lifecycle.guice.LifecycleModule;
@@ -27,6 +28,11 @@ import com.opentable.lifecycle.guice.LifecycleModule;
  */
 public abstract class AnnouncingStandaloneServer extends StandaloneServer
 {
+    protected AnnouncingStandaloneServer(final Config config)
+    {
+        super(config);
+    }
+
     @Override
     protected LifecycleStage getStartStage()
     {

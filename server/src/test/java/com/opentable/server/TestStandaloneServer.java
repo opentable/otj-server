@@ -17,6 +17,7 @@ package com.opentable.server;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitei.testing.lessio.AllowNetworkAccess;
@@ -96,8 +97,9 @@ public class TestStandaloneServer
     {
         final AnnouncingStandaloneServer server = new AnnouncingDemoServer(Config.getEmptyConfig()) {
             @Override
-            public Module getMainModule(final Config myConfig) {
+            public Module getMainModule() {
                 return new AbstractModule() {
+                    @Override
                     public void configure() {
                         bind(PortNumberProvider.class).toInstance(() -> 8910);
                     }
