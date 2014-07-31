@@ -31,8 +31,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kitei.testing.lessio.AllowNetworkAccess;
-import org.kitei.testing.lessio.AllowNetworkListen;
 
 import com.opentable.config.Config;
 import com.opentable.config.ConfigModule;
@@ -40,8 +38,6 @@ import com.opentable.lifecycle.junit.LifecycleRule;
 import com.opentable.lifecycle.junit.LifecycleRunner;
 import com.opentable.lifecycle.junit.LifecycleStatement;
 
-@AllowNetworkAccess(endpoints={"127.0.0.1:*"})
-@AllowNetworkListen(ports={0})
 @RunWith(LifecycleRunner.class)
 public class TestPunyServer
 {

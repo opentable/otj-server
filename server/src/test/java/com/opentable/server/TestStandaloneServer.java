@@ -20,14 +20,9 @@ import com.google.inject.Module;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kitei.testing.lessio.AllowNetworkAccess;
-import org.kitei.testing.lessio.AllowNetworkListen;
 
 import com.opentable.config.Config;
 
-
-@AllowNetworkListen(ports= {0})
-@AllowNetworkAccess(endpoints= {"127.0.0.1:0"})
 public class TestStandaloneServer
 {
     @Test
