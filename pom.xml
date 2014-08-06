@@ -97,7 +97,7 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-metrics</artifactId>
-        <version>0.2.0</version>
+        <version>0.2.1</version>
       </dependency>
 
       <dependency>
