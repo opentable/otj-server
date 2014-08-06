@@ -30,7 +30,7 @@
 
   <properties>
     <dep.jackson.version>2.3.2</dep.jackson.version>
-    <dep.otj-logging.version>1.3.0-SNAPSHOT</dep.otj-logging.version>
+    <dep.otj-logging.version>1.3.0</dep.otj-logging.version>
   </properties>
 
   <dependencyManagement>
@@ -91,7 +91,7 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-httpserver</artifactId>
-        <version>1.2.2-SNAPSHOT</version>
+        <version>1.2.2</version>
       </dependency>
 
       <dependency>
