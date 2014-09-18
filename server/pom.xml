@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>otj-server</artifactId>
@@ -23,10 +23,18 @@
       <groupId>com.opentable.components</groupId>
       <artifactId>otj-config</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-config-guice</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>com.opentable.components</groupId>
       <artifactId>otj-lifecycle</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-lifecycle-guice</artifactId>
     </dependency>
 
     <dependency>
