@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.opentable</groupId>
     <artifactId>otj-parent</artifactId>
-    <version>23-SNAPSHOT</version>
+    <version>24-SNAPSHOT</version>
   </parent>
 
   <scm>
@@ -29,9 +29,9 @@
   </modules>
 
   <properties>
-    <dep.otj-config.version>1.3.0-SNAPSHOT</dep.otj-config.version>
-    <dep.otj-lifecycle.version>1.2.0-SNAPSHOT</dep.otj-lifecycle.version>
-    <dep.otj-logging.version>1.4.0-SNAPSHOT</dep.otj-logging.version>
+    <dep.otj-config.version>1.3.0</dep.otj-config.version>
+    <dep.otj-lifecycle.version>1.2.0</dep.otj-lifecycle.version>
+    <dep.otj-logging.version>1.4.0</dep.otj-logging.version>
     <dep.otj-jaxrs.version>1.4.0-SNAPSHOT</dep.otj-jaxrs.version>
   </properties>
 
@@ -52,7 +52,7 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-core</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0</version>
       </dependency>
 
       <dependency>
@@ -135,7 +135,7 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-jackson</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.1</version>
       </dependency>
 
       <dependency>
@@ -153,7 +153,7 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-serverinfo</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
