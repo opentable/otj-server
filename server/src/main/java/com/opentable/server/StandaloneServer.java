@@ -17,6 +17,7 @@ package com.opentable.server;
 
 import java.io.IOException;
 import java.time.Clock;
+import java.time.Duration;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -40,6 +41,7 @@ import com.opentable.lifecycle.guice.LifecycleModule;
 import com.opentable.logging.AssimilateForeignLogging;
 import com.opentable.logging.Log;
 import com.opentable.serverinfo.ServerInfo;
+import com.opentable.util.JvmFallbackShutdown;
 
 /**
  * Standalone main class.
@@ -153,7 +155,17 @@ public abstract class StandaloneServer
 
         LOG.info("Starting Service");
         timer.start();
-        lifecycle.executeTo(getStartStage());
+        try {
+            lifecycle.executeTo(getStartStage());
+        } catch (RuntimeException e) {
+            fallbackTerminate();
+            try {
+                lifecycle.execute(getStopStage());
+            } catch (Exception innerExc) {
+                LOG.error(innerExc, "Failed to stop");
+            }
+            throw e;
+        }
         timer.stop();
 
         started = true;
@@ -162,6 +174,7 @@ public abstract class StandaloneServer
 
     public void stopServer()
     {
+        fallbackTerminate();
         doStopServer(false);
     }
 
@@ -269,5 +282,12 @@ public abstract class StandaloneServer
             throw new IllegalStateException("You need to bind a PortNumberProvider for getPort to work");
         }
         return portNumberProvider.getPort();
+    }
+
+    private void fallbackTerminate()
+    {
+        if (config.getConfiguration().getBoolean("ot.fallback-terminate", false)) {
+            JvmFallbackShutdown.fallbackTerminate(Duration.ofSeconds(10));
+        }
     }
 }
