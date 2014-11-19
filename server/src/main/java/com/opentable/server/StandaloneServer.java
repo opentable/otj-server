@@ -160,6 +160,7 @@ public abstract class StandaloneServer
         } catch (RuntimeException e) {
             fallbackTerminate();
             try {
+                removeShutdownHook();
                 lifecycle.execute(getStopStage());
             } catch (Exception innerExc) {
                 LOG.error(innerExc, "Failed to stop");
@@ -186,10 +187,14 @@ public abstract class StandaloneServer
         LOG.info("Stopping Service");
         lifecycle.executeTo(getStopStage());
         if (!fromHook) {
-            Runtime.getRuntime().removeShutdownHook(shutdownThread);
+            removeShutdownHook();
         }
 
         stopped = true;
+    }
+
+    private void removeShutdownHook() {
+        Runtime.getRuntime().removeShutdownHook(shutdownThread);
     }
 
     public boolean isStarted()
