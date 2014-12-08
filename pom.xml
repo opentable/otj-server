@@ -89,7 +89,7 @@
       </dependency>
       <dependency>
         <groupId>com.opentable.components</groupId>
-        <artifactId>otj-logging-redis</artifactId>
+        <artifactId>otj-logging-kafka</artifactId>
         <version>${dep.otj-logging.version}</version>
       </dependency>
       <dependency>

@@ -38,7 +38,7 @@
 
     <dependency>
       <groupId>com.opentable.components</groupId>
-      <artifactId>otj-logging-redis</artifactId>
+      <artifactId>otj-logging-kafka</artifactId>
       <scope>runtime</scope>
     </dependency>
 
