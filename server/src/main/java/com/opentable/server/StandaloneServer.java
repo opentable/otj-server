@@ -22,7 +22,10 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.codahale.metrics.health.HealthCheck;
+import com.codahale.metrics.health.HealthCheck.Result;
 import com.google.common.base.Preconditions;
+import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -40,6 +43,7 @@ import com.opentable.lifecycle.LifecycleStage;
 import com.opentable.lifecycle.guice.LifecycleModule;
 import com.opentable.logging.AssimilateForeignLogging;
 import com.opentable.logging.Log;
+import com.opentable.metrics.HealthCheckBinder;
 import com.opentable.serverinfo.ServerInfo;
 import com.opentable.util.JvmFallbackShutdown;
 
@@ -249,6 +253,7 @@ public abstract class StandaloneServer
             getPlumbingModules(),
             getMainModule(),
             getServerTemplateModule(),
+            getServerHealthcheckModule(),
 
             new Module() {
                 @Override
@@ -271,6 +276,21 @@ public abstract class StandaloneServer
         return LifecycleStage.STOP_STAGE;
     }
 
+    protected Module getServerHealthcheckModule()
+    {
+        return new AbstractModule() {
+            @Override
+            protected void configure() {
+                HealthCheckBinder.bind(binder(), "server-started").toInstance(new HealthCheck() {
+                    @Override
+                    protected Result check() throws Exception {
+                        return checkServerStarted();
+                    }
+                });
+            }
+        };
+    }
+
     protected Module getLifecycleModule()
     {
         return new LifecycleModule();
@@ -287,6 +307,16 @@ public abstract class StandaloneServer
             throw new IllegalStateException("You need to bind a PortNumberProvider for getPort to work");
         }
         return portNumberProvider.getPort();
+    }
+
+    protected Result checkServerStarted() throws Exception {
+        if (stopped) {
+            return Result.unhealthy("Server has been stopped.");
+        }
+        if (!started) {
+            return Result.unhealthy("Server not yet started.");
+        }
+        return Result.healthy();
     }
 
     private void fallbackTerminate()
