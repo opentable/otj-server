@@ -179,7 +179,7 @@ public abstract class StandaloneServer
         doStopServer(false);
     }
 
-    private final void doStopServer(boolean fromHook) {
+    private void doStopServer(boolean fromHook) {
         Preconditions.checkState(!stopped, "Server was already stopped, double-stop denied!");
 
         Preconditions.checkNotNull(lifecycle, "No Lifecycle Object was injected!");
