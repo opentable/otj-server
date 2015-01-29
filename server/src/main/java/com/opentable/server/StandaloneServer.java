@@ -208,6 +208,23 @@ public abstract class StandaloneServer
     }
 
     /**
+     * Create the Guice policy module, by default will
+     * require explicit bindings and disable circular proxies.
+     * These settings are strongly encouraged - removing them can
+     * cause serious and difficult to debug problems.
+     */
+    protected Module getGuicePolicyModule()
+    {
+        return new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.requireExplicitBindings();
+                binder.disableCircularProxies();
+            }
+        };
+    }
+
+    /**
      * Can be overridden in tests.
      */
     public Module getPlumbingModules()
@@ -253,14 +270,7 @@ public abstract class StandaloneServer
                 getPlumbingModules(),
                 getMainModule(),
                 getServerTemplateModule(),
-
-                new Module() {
-                    @Override
-                    public void configure(final Binder binder) {
-                        binder.requireExplicitBindings();
-                        binder.disableCircularProxies();
-                    }
-                });
+                getGuicePolicyModule());
     }
 
     protected LifecycleStage getStartStage()
