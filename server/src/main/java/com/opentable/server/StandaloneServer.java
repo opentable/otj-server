@@ -240,25 +240,27 @@ public abstract class StandaloneServer
         if (injector != null) {
             return injector;
         }
+        injector = createInjector();
+        return injector;
+    }
 
+    protected Injector createInjector()
+    {
         // Initialize Guice off the main module. Add a tiny
         // bit of special sauce to ensure explicit bindings.
+        return Guice.createInjector(
+                Stage.PRODUCTION,
+                getPlumbingModules(),
+                getMainModule(),
+                getServerTemplateModule(),
 
-        injector = Guice.createInjector(
-            Stage.PRODUCTION,
-            getPlumbingModules(),
-            getMainModule(),
-            getServerTemplateModule(),
-
-            new Module() {
-                @Override
-                public void configure(final Binder binder) {
-                    binder.requireExplicitBindings();
-                    binder.disableCircularProxies();
-                }
-            });
-
-        return injector;
+                new Module() {
+                    @Override
+                    public void configure(final Binder binder) {
+                        binder.requireExplicitBindings();
+                        binder.disableCircularProxies();
+                    }
+                });
     }
 
     protected LifecycleStage getStartStage()
