@@ -23,6 +23,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -229,17 +230,17 @@ public abstract class StandaloneServer
      */
     public Module getPlumbingModules()
     {
-        return new Module() {
+        return new AbstractModule() {
             @Override
-            public void configure(final Binder binder) {
-                binder.bind(Clock.class).toInstance(Clock.systemUTC());
+            public void configure() {
+                bind(Clock.class).toInstance(Clock.systemUTC());
 
-                binder.install(new ConfigModule(config));
-                binder.install(getLifecycleModule());
+                install(new ConfigModule(config));
+                install(getLifecycleModule());
 
-                binder.install(new JmxModule());
+                install(new JmxModule());
 
-                binder.install(new JvmPauseAlarmModule());
+                install(new JvmPauseAlarmModule());
             }
         };
     }
