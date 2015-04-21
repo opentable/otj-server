@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.opentable</groupId>
     <artifactId>otj-parent</artifactId>
-    <version>33</version>
+    <version>34</version>
   </parent>
 
   <scm>
@@ -102,6 +102,12 @@
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-jmx</artifactId>
         <version>1.2.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.opentable.components</groupId>
+        <artifactId>otj-pausedetector</artifactId>
+        <version>1.0.0</version>
       </dependency>
 
       <dependency>

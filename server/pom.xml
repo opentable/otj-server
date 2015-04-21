@@ -53,8 +53,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.skife.config</groupId>
-      <artifactId>config-magic</artifactId>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-pausedetector</artifactId>
     </dependency>
 
     <dependency>

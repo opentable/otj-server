@@ -41,6 +41,7 @@ import com.opentable.lifecycle.LifecycleStage;
 import com.opentable.lifecycle.guice.LifecycleModule;
 import com.opentable.logging.AssimilateForeignLogging;
 import com.opentable.logging.Log;
+import com.opentable.pausedetector.JvmPauseAlarmModule;
 import com.opentable.serverinfo.ServerInfo;
 import com.opentable.util.JvmFallbackShutdown;
 
