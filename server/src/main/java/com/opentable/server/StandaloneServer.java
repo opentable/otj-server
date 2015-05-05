@@ -144,8 +144,13 @@ public abstract class StandaloneServer
         final StopWatch timer = new StopWatch();
         timer.start();
 
-        injector = getInjector();
-        injector.injectMembers(this);
+        try {
+            injector = getInjector();
+            injector.injectMembers(this);
+        } catch (RuntimeException e) {
+            fallbackTerminate();
+            throw e;
+        }
 
         timer.stop();
         final long injectorTime = timer.getTime();
