@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.opentable</groupId>
     <artifactId>otj-parent</artifactId>
-    <version>34</version>
+    <version>35</version>
   </parent>
 
   <scm>
@@ -29,73 +29,15 @@
   </modules>
 
   <properties>
-    <dep.otj-config.version>1.3.1</dep.otj-config.version>
-    <dep.otj-lifecycle.version>1.2.0</dep.otj-lifecycle.version>
-    <dep.otj-logging.version>1.6.2</dep.otj-logging.version>
-    <dep.otj-jaxrs.version>1.5.0</dep.otj-jaxrs.version>
+    <dep.otj-server.version>${project.version}</dep.otj-server.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>com.opentable.components</groupId>
-        <artifactId>otj-server</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-server-templates</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.opentable.components</groupId>
         <artifactId>otj-core</artifactId>
         <version>1.3.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-config</artifactId>
-        <version>${dep.otj-config.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-config-guice</artifactId>
-        <version>${dep.otj-config.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-lifecycle</artifactId>
-        <version>${dep.otj-lifecycle.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-lifecycle-guice</artifactId>
-        <version>${dep.otj-lifecycle.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-logging</artifactId>
-        <version>${dep.otj-logging.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-logging-core</artifactId>
-        <version>${dep.otj-logging.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-logging-kafka</artifactId>
-        <version>${dep.otj-logging.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-logging-jetty</artifactId>
-        <version>${dep.otj-logging.version}</version>
       </dependency>
 
       <dependency>
@@ -119,28 +61,7 @@
       <dependency>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-metrics</artifactId>
-        <version>0.5.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-jaxrs-shared</artifactId>
-        <version>${dep.otj-jaxrs.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-jaxrs-client-guice</artifactId>
-        <version>${dep.otj-jaxrs.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-jaxrs-clientfactory-resteasy</artifactId>
-        <version>${dep.otj-jaxrs.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-jaxrs-server</artifactId>
-        <version>${dep.otj-jaxrs.version}</version>
+        <version>0.7.1</version>
       </dependency>
 
       <dependency>
