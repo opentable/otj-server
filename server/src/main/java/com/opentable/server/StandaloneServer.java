@@ -32,6 +32,10 @@ import com.google.inject.Module;
 import com.google.inject.Stage;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.BasicConfigurator;
+import ch.qos.logback.classic.LoggerContext;
 
 import com.opentable.config.Config;
 import com.opentable.config.ConfigModule;
@@ -198,6 +202,12 @@ public abstract class StandaloneServer
         }
 
         stopped = true;
+
+        if (shouldFallbackTerminate()) {
+            LOG.info("Terminating default logging context");
+            ((LoggerContext) LoggerFactory.getILoggerFactory()).reset();
+            BasicConfigurator.configureDefaultContext();
+        }
     }
 
     private void removeShutdownHook() {
@@ -310,8 +320,12 @@ public abstract class StandaloneServer
 
     private void fallbackTerminate()
     {
-        if (config.getConfiguration().getBoolean("ot.fallback-terminate", false)) {
+        if (shouldFallbackTerminate()) {
             JvmFallbackShutdown.fallbackTerminate(Duration.ofSeconds(10));
         }
+    }
+
+    private boolean shouldFallbackTerminate() {
+        return config.getConfiguration().getBoolean("ot.fallback-terminate", false);
     }
 }
