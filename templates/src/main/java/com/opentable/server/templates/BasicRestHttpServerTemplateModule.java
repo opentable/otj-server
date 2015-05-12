@@ -28,7 +28,7 @@ import com.opentable.jmx.JmxServerModule;
 import com.opentable.jmx.jolokia.JolokiaModule;
 import com.opentable.metrics.DefaultMetricsModule;
 import com.opentable.metrics.http.MetricsHttpModule;
-import com.opentable.requestid.guice.RequestIdModule;
+import com.opentable.conservedheaders.guice.ConservedHeadersModule;
 import com.opentable.scopes.threaddelegate.ThreadDelegatedScopeModule;
 import com.opentable.serverinfo.ServerInfoModule;
 
@@ -76,7 +76,7 @@ public class BasicRestHttpServerTemplateModule extends AbstractModule
         install (new DefaultMetricsModule());
         install (new MetricsHttpModule());
         install (new ServerInfoModule());
-        install (new RequestIdModule());
+        install (new ConservedHeadersModule());
 
         install (new OpenTableJaxRsServletModule(config, paths));
         install (new OpenTableJaxRsExceptionMapperModule());
