@@ -250,6 +250,7 @@ public abstract class StandaloneServer
         return new AbstractModule() {
             @Override
             public void configure() {
+                bind(StandaloneServer.class).toInstance(StandaloneServer.this);
                 bind(Clock.class).toInstance(Clock.systemUTC());
 
                 install(new ConfigModule(config));
