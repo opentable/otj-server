@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.opentable</groupId>
     <artifactId>otj-parent</artifactId>
-    <version>35</version>
+    <version>36</version>
   </parent>
 
   <scm>
@@ -30,6 +30,7 @@
 
   <properties>
     <dep.otj-server.version>${project.version}</dep.otj-server.version>
+    <dep.otj-jaxrs.version>1.5.1</dep.otj-jaxrs.version>
   </properties>
 
   <dependencyManagement>
