@@ -169,7 +169,7 @@ public abstract class StandaloneServer
         try {
             lifecycle.executeTo(getStartStage());
         } catch (RuntimeException e) {
-            LOG.error("Aborting startup", e);
+            LOG.error(e, "Aborting startup");
             fallbackTerminate();
             try {
                 removeShutdownHook();
