@@ -45,6 +45,7 @@ import com.opentable.lifecycle.LifecycleStage;
 import com.opentable.lifecycle.guice.LifecycleModule;
 import com.opentable.logging.AssimilateForeignLogging;
 import com.opentable.logging.Log;
+import com.opentable.metrics.HealthCheckBinder;
 import com.opentable.pausedetector.JvmPauseAlarmModule;
 import com.opentable.serverinfo.ServerInfo;
 import com.opentable.util.JvmFallbackShutdown;
@@ -259,6 +260,8 @@ public abstract class StandaloneServer
                 install(new JmxModule());
 
                 install(new JvmPauseAlarmModule());
+
+                HealthCheckBinder.bind(binder(), "standalone-server").to(StandaloneServerHealth.class);
             }
         };
     }

@@ -49,12 +49,22 @@
 
     <dependency>
       <groupId>com.opentable.components</groupId>
+      <artifactId>otj-metrics</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.opentable.components</groupId>
       <artifactId>otj-jmx</artifactId>
     </dependency>
 
     <dependency>
       <groupId>com.opentable.components</groupId>
       <artifactId>otj-pausedetector</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.codahale.metrics</groupId>
+      <artifactId>metrics-healthchecks</artifactId>
     </dependency>
 
     <dependency>
