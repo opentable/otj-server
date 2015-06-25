@@ -97,6 +97,10 @@ public abstract class StandaloneServer
     private boolean started = false;
     private boolean stopped = false;
 
+    {
+        ServerInfo.registerServerInfo(getClass());
+    }
+
     /**
      * Create a StandaloneServer with a given config.
      * If no config is provided (null) then the config
