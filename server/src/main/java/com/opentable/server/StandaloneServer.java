@@ -22,6 +22,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.codahale.metrics.health.HealthCheck;
+import com.codahale.metrics.health.HealthCheck.Result;
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
@@ -296,6 +298,7 @@ public abstract class StandaloneServer
                 getPlumbingModules(),
                 getMainModule(),
                 getServerTemplateModule(),
+                getServerHealthcheckModule(),
                 getGuicePolicyModule());
     }
 
@@ -307,6 +310,21 @@ public abstract class StandaloneServer
     protected LifecycleStage getStopStage()
     {
         return LifecycleStage.STOP_STAGE;
+    }
+
+    protected Module getServerHealthcheckModule()
+    {
+        return new AbstractModule() {
+            @Override
+            protected void configure() {
+                HealthCheckBinder.bind(binder(), "server-started").toInstance(new HealthCheck() {
+                    @Override
+                    protected Result check() throws Exception {
+                        return checkServerStarted();
+                    }
+                });
+            }
+        };
     }
 
     protected Module getLifecycleModule()
@@ -325,6 +343,16 @@ public abstract class StandaloneServer
             throw new IllegalStateException("You need to bind a PortNumberProvider for getPort to work");
         }
         return portNumberProvider.getPort();
+    }
+
+    protected Result checkServerStarted() throws Exception {
+        if (stopped) {
+            return Result.unhealthy("Server has been stopped.");
+        }
+        if (!started) {
+            return Result.unhealthy("Server not yet started.");
+        }
+        return Result.healthy();
     }
 
     private void fallbackTerminate()
