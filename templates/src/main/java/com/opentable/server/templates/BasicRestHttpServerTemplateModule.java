@@ -19,16 +19,19 @@ import com.google.inject.AbstractModule;
 import com.palominolabs.metrics.guice.InstrumentationModule;
 
 import com.opentable.config.Config;
+import com.opentable.conservedheaders.ClientConservedHeadersFeature;
+import com.opentable.conservedheaders.guice.ConservedHeadersModule;
 import com.opentable.httpserver.HttpServerModule;
 import com.opentable.jackson.OpenTableJacksonModule;
+import com.opentable.jaxrs.JaxRsClientBinder;
 import com.opentable.jaxrs.OpenTableJaxRsServletModule;
+import com.opentable.jaxrs.StandardFeatureGroup;
 import com.opentable.jaxrs.exceptions.OpenTableJaxRsExceptionMapperModule;
 import com.opentable.jaxrs.json.OTJacksonJsonProvider;
 import com.opentable.jmx.JmxServerModule;
 import com.opentable.jmx.jolokia.JolokiaModule;
 import com.opentable.metrics.DefaultMetricsModule;
 import com.opentable.metrics.http.MetricsHttpModule;
-import com.opentable.requestid.guice.RequestIdModule;
 import com.opentable.scopes.threaddelegate.ThreadDelegatedScopeModule;
 import com.opentable.serverinfo.ServerInfoModule;
 
@@ -76,7 +79,9 @@ public class BasicRestHttpServerTemplateModule extends AbstractModule
         install (new DefaultMetricsModule());
         install (new MetricsHttpModule());
         install (new ServerInfoModule());
-        install (new RequestIdModule());
+        install (new ConservedHeadersModule());
+        JaxRsClientBinder.bindFeatureToGroup(binder(), StandardFeatureGroup.PLATFORM_INTERNAL)
+            .to(ClientConservedHeadersFeature.class);
 
         install (new OpenTableJaxRsServletModule(config, paths));
         install (new OpenTableJaxRsExceptionMapperModule());
