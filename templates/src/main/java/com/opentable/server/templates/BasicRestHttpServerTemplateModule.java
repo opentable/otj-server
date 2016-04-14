@@ -15,8 +15,10 @@
  */
 package com.opentable.server.templates;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
 import com.google.inject.AbstractModule;
-import com.palominolabs.metrics.guice.InstrumentationModule;
+import com.palominolabs.metrics.guice.MetricsInstrumentationModule;
 
 import com.opentable.config.Config;
 import com.opentable.conservedheaders.ClientConservedHeadersFeature;
@@ -67,7 +69,12 @@ public class BasicRestHttpServerTemplateModule extends AbstractModule
     {
         install (new ThreadDelegatedScopeModule());
 
-        install (new InstrumentationModule());
+        // TODO Perhaps place these into a separate module?
+        final MetricRegistry metricRegistry = new MetricRegistry();
+        bind(MetricRegistry.class).toInstance(metricRegistry);
+        install (new MetricsInstrumentationModule(metricRegistry));
+        bind(HealthCheckRegistry.class).toInstance(new HealthCheckRegistry());
+
         install (new JmxServerModule());
         install (new JolokiaModule());
 
