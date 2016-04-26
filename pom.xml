@@ -5,30 +5,96 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.opentable</groupId>
-    <artifactId>otj-parent</artifactId>
-    <version>49</version>
+    <artifactId>otj-parent-spring</artifactId>
+    <version>52-SNAPSHOT</version>
   </parent>
 
-  <scm>
-    <connection>scm:git:git://github.com/opentable/otj-server.git</connection>
-    <developerConnection>scm:git:git@github.com:opentable/otj-server.git</developerConnection>
-    <url>http://github.com/opentable/otj-server</url>
-    <tag>HEAD</tag>
-  </scm>
-
   <groupId>com.opentable.components</groupId>
-  <artifactId>otj-server-parent</artifactId>
-  <version>1.11.1-SNAPSHOT</version>
-  <name>otj-server-parent</name>
-  <packaging>pom</packaging>
-  <description>OpenTable server component. Startup and shutdown logic for services.</description>
+  <artifactId>otj-server</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
 
-  <modules>
-    <module>server</module>
-    <module>templates</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-pausedetector</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-jackson</artifactId>
+    </dependency>
 
-  <properties>
-    <dep.otj-server.version>${project.version}</dep.otj-server.version>
-  </properties>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
