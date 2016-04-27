@@ -14,7 +14,13 @@ import com.opentable.pausedetector.EnablePauseDetector;
 @Configuration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({ EmbeddedJetty.class, ResteasyAutoConfiguration.class, OpenTableJacksonConfiguration.class, ServerLoggingConfiguration.class })
+@Import({
+    EmbeddedJetty.class,
+    ResteasyAutoConfiguration.class,
+    OpenTableJacksonConfiguration.class,
+    ServerLoggingConfiguration.class,
+    StaticResourceConfiguration.class
+})
 @EnablePauseDetector
 public @interface RestHttpServer {
 }
