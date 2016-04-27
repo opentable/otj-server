@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.ws.rs.ext.RuntimeDelegate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -30,6 +31,10 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 @Configuration
 public class ResteasyAutoConfiguration {
+
+    // We need access to the javax.ws.rs-api at compile scope, otherwise
+    // you fail with bizarre access exceptions -- so fake out the analyzer
+    static final Class<?> RUNTIME_DELEGATE = RuntimeDelegate.class;
 
     @Bean(name = "resteasyDispatcher")
     public ServletRegistrationBean resteasyServletRegistration() {
