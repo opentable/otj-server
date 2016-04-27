@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import org.jboss.resteasy.core.Dispatcher;
-import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+import org.jboss.resteasy.plugins.server.servlet.FilterDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ListenerBootstrap;
 import org.jboss.resteasy.plugins.spring.SpringBeanProcessor;
 import org.jboss.resteasy.spi.Registry;
@@ -19,8 +19,8 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
-import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -37,10 +37,10 @@ public class ResteasyAutoConfiguration {
     static final Class<?> RUNTIME_DELEGATE = RuntimeDelegate.class;
 
     @Bean(name = "resteasyDispatcher")
-    public ServletRegistrationBean resteasyServletRegistration() {
-        ServletRegistrationBean registrationBean = new ServletRegistrationBean(new HttpServletDispatcher(), "/*");
+    public FilterRegistrationBean resteasyServletRegistration() {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean(new FilterDispatcher());
+        registrationBean.addUrlPatterns("/*");
         registrationBean.setInitParameters(Collections.singletonMap("resteasy.servlet.mapping.prefix", "/")); // set prefix here
-        registrationBean.setLoadOnStartup(1);
         return registrationBean;
     }
 
