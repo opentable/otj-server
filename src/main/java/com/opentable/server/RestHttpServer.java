@@ -19,6 +19,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     ResteasyAutoConfiguration.class,
     OpenTableJacksonConfiguration.class,
     ServerLoggingConfiguration.class,
+    ServerConfigConfiguration.class,
     StaticResourceConfiguration.class
 })
 @EnablePauseDetector
