@@ -14,7 +14,7 @@ public class StaticResourceConfiguration {
         ServletRegistrationBean bean = new ServletRegistrationBean(servlet, "/static/*");
         bean.addInitParameter("gzip", "true");
         bean.addInitParameter("etags", "true");
-        bean.addInitParameter("resourceBase", Resource.newClassPathResource("/static/..").getURI().toString());
+        bean.addInitParameter("resourceBase", Resource.newClassPathResource("/static/").getURI().resolve("..").toString());
         return bean;
     }
 }
