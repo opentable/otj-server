@@ -20,7 +20,8 @@ import com.opentable.pausedetector.EnablePauseDetector;
     OpenTableJacksonConfiguration.class,
     ServerLoggingConfiguration.class,
     ServerConfigConfiguration.class,
-    StaticResourceConfiguration.class
+    StaticResourceConfiguration.class,
+    BogusHealthCheck.class
 })
 @EnablePauseDetector
 public @interface RestHttpServer {
