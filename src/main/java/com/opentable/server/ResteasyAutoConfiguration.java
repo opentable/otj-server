@@ -67,7 +67,10 @@ public class ResteasyAutoConfiguration {
         private ConfigurableListableBeanFactory beanFactory;
 
         public void cleanup() {
-            deployment.stop();
+            if (deployment != null) {
+                deployment.stop();
+                deployment = null;
+            }
         }
 
         @Override
