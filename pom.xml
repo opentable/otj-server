@@ -33,6 +33,22 @@
     </dependency>
 
     <dependency>
+      <groupId>com.opentable</groupId>
+      <artifactId>discovery-client-spring</artifactId>
+      <version>1.0.43-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jackson2-provider</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.opentable.components</groupId>
+          <artifactId>otj-logging-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
     </dependency>
