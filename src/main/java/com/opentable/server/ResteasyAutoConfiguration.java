@@ -54,6 +54,11 @@ public class ResteasyAutoConfiguration {
         return new JacksonJsonProvider(mapper);
     }
 
+    @Bean
+    public OTCorsFilter corsFilter() {
+        return new OTCorsFilter();
+    }
+
     public static class RestEasySpringInitializer
             implements
                 ServletContextInitializer,
