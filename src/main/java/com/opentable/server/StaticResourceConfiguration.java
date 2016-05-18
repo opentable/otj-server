@@ -25,7 +25,7 @@ public class StaticResourceConfiguration {
         }
 
         DefaultServlet servlet = new DefaultServlet();
-        ServletRegistrationBean bean = new ServletRegistrationBean(servlet, "/*");
+        ServletRegistrationBean bean = new ServletRegistrationBean(servlet, "/static/*");
         bean.addInitParameter("gzip", "true");
         bean.addInitParameter("etags", "true");
         bean.addInitParameter("resourceBase", StringUtils.substringBeforeLast(rsrc.toString(), "static"));
