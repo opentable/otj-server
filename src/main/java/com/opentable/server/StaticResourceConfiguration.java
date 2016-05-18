@@ -1,5 +1,6 @@
 package com.opentable.server;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ public class StaticResourceConfiguration {
     public ServletRegistrationBean staticResourceServlet() {
 
         final Resource rsrc = Resource.newClassPathResource("/static/");
+        LOG.debug("Found static resources at {}", rsrc);
 
         if (rsrc == null) {
             LOG.warn("Didn't find '/static' on classpath, not serving static files");
@@ -23,11 +25,11 @@ public class StaticResourceConfiguration {
         }
 
         DefaultServlet servlet = new DefaultServlet();
-        ServletRegistrationBean bean = new ServletRegistrationBean(servlet, "/static/*");
+        ServletRegistrationBean bean = new ServletRegistrationBean(servlet, "/*");
         bean.addInitParameter("gzip", "true");
         bean.addInitParameter("etags", "true");
-        bean.addInitParameter("resourceBase", rsrc.getURI().resolve("..").toString());
-        LOG.info("Configuring static resources: {}", bean.getInitParameters());
+        bean.addInitParameter("resourceBase", StringUtils.substringBeforeLast(rsrc.toString(), "static"));
+        LOG.debug("Configuring static resources: {}", bean.getInitParameters());
         return bean;
     }
 }
