@@ -21,7 +21,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     ServerLoggingConfiguration.class,
     ServerConfigConfiguration.class,
     StaticResourceConfiguration.class,
-    BogusHealthCheck.class,
+    MediocreHealthCheck.class,
     DiscoverySetup.class
 })
 @EnablePauseDetector
