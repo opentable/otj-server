@@ -33,6 +33,7 @@ import com.opentable.jaxrs.json.OTJacksonJsonProvider;
 import com.opentable.jmx.JmxServerModule;
 import com.opentable.jmx.jolokia.JolokiaModule;
 import com.opentable.metrics.DefaultMetricsModule;
+import com.opentable.metrics.http.HealthHttpModule;
 import com.opentable.scopes.threaddelegate.ThreadDelegatedScopeModule;
 import com.opentable.serverinfo.ServerInfoModule;
 
@@ -83,6 +84,7 @@ public class BasicRestHttpServerTemplateModule extends AbstractModule
         install (new OpenTableJacksonModule());
 
         install (new DefaultMetricsModule());
+        install (new HealthHttpModule());
         install (new ServerInfoModule());
         install (new ConservedHeadersModule());
         JaxRsClientBinder.bindFeatureToGroup(binder(), StandardFeatureGroup.PLATFORM_INTERNAL)
