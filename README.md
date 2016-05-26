@@ -19,5 +19,13 @@ extends this to include automatic service discovery announcements.
 The [BasicDiscoveryServerModule](https://github.com/opentable/otj-server/blob/master/templates/src/main/java/com/opentable/server/templates/BasicDiscoveryServerModule.java)
 is the actual meat of the server template - it pulls together all of the modules into Guice.
 
+Historical Note
+---------------
+Prior to version `1.11.2`, `BasicRestHttpServerTemplateModule` would
+install the `otj-metrics` `MetricsHttpModule` at `/metrics` by default.
+It no longer does this implicitly.  If you want this functionality, you
+must install this module in your service.  See the `otj-metrics`
+documentation for more details.
+
 ----
 Copyright (C) 2014 OpenTable, Inc.
