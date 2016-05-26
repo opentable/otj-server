@@ -214,7 +214,10 @@ public abstract class StandaloneServer
         if (shouldFallbackTerminate()) {
             LOG.info("Terminating default logging context");
             ((LoggerContext) LoggerFactory.getILoggerFactory()).reset();
-            BasicConfigurator.configureDefaultContext();
+            final LoggerContext ctx = (LoggerContext)LoggerFactory.getILoggerFactory();
+            final BasicConfigurator bc = new BasicConfigurator();
+            bc.setContext(ctx);
+            bc.configure(ctx);
         }
     }
 
