@@ -19,6 +19,8 @@ extends this to include automatic service discovery announcements.
 The [BasicDiscoveryServerModule](https://github.com/opentable/otj-server/blob/master/templates/src/main/java/com/opentable/server/templates/BasicDiscoveryServerModule.java)
 is the actual meat of the server template - it pulls together all of the modules into Guice.
 
+The [BasicRestHttpServerTemplateModule](https://github.com/opentable/otj-server/blob/master/templates/src/main/java/com/opentable/server/templates/BasicRestHttpServerTemplateModule.java) module installs from `otj-metrics` the `HealthHttpModule` by default, which provides a healthcheck endpoint at `/health` for your application.
+
 Historical Note
 ---------------
 Prior to version `1.11.2`, `BasicRestHttpServerTemplateModule` would
