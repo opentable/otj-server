@@ -1,5 +1,8 @@
 package com.opentable.server;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.util.resource.Resource;
@@ -21,7 +24,12 @@ public class StaticResourceConfiguration {
 
         if (rsrc == null) {
             LOG.warn("Didn't find '/static' on classpath, not serving static files");
-            return new ServletRegistrationBean();
+            return new ServletRegistrationBean() {
+                // TODO: less hacky way to do this?
+                @Override
+                public void onStartup(ServletContext servletContext) throws ServletException {
+                }
+            };
         }
 
         DefaultServlet servlet = new DefaultServlet();
