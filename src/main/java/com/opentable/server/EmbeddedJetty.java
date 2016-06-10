@@ -20,4 +20,9 @@ public class EmbeddedJetty {
         factory.setSessionTimeout(10, TimeUnit.MINUTES);
         return factory;
     }
+
+    @Bean
+    public HttpServerInfo serverInfo() {
+        return new HttpServerInfo(httpBindPort);
+    }
 }
