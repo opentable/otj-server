@@ -25,9 +25,9 @@ class ServerLoggingConfiguration implements ApplicationListener<ApplicationEvent
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ApplicationEnvironmentPreparedEvent) {
             ApplicationEnvironmentPreparedEvent castEvent = (ApplicationEnvironmentPreparedEvent) event;
-            String componentName = castEvent.getEnvironment().getProperty("info.component");
-            LOG.info("Setting service name to {}", componentName);
-            CommonLogHolder.setServiceType(componentName);
+            String serviceName = castEvent.getSpringApplication().getMainApplicationClass().getPackage().getImplementationTitle();
+            LOG.info("Setting service name to {}", serviceName);
+            CommonLogHolder.setServiceType(serviceName);
         }
         if (event instanceof ApplicationFailedEvent) {
             LOG.info("Terminating default logging context");
