@@ -1,3 +1,7 @@
-=======
-=======> OpenTable service bootstrap complete, starting ${application.title}${application.formatted-version} (Spring Boot ${spring-boot.version})
-=======
+
+O  P  E  N  T  A  B  L  E
+
+service bootstrap complete
+starting ${application.title}${application.formatted-version}
+(Spring Boot ${spring-boot.version})
+
