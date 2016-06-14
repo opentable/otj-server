@@ -18,7 +18,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     EmbeddedJetty.class,
     ResteasyAutoConfiguration.class,
     OpenTableJacksonConfiguration.class,
-    ServerLoggingConfiguration.class,
+    //ServerLoggingConfiguration.class,
     ServerConfigConfiguration.class,
     StaticResourceConfiguration.class,
     MediocreHealthCheck.class,
