@@ -2,20 +2,14 @@ package com.opentable.server;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
-import org.springframework.format.support.DefaultFormattingConversionService;
-import org.springframework.format.support.FormattingConversionService;
+
+import com.opentable.spring.ConversionServiceConfiguration;
 
 @Configuration
+@Import(ConversionServiceConfiguration.class)
 public class ServerConfigConfiguration {
-    @Bean
-    public static FormattingConversionService conversionService() {
-        final FormattingConversionService reg = new DefaultFormattingConversionService();
-        new DateTimeFormatterRegistrar().registerFormatters(reg);
-        return reg;
-    }
-
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfig() {
         return new PropertySourcesPlaceholderConfigurer();

@@ -20,6 +20,10 @@
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
+      <artifactId>otj-spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.opentable.components</groupId>
       <artifactId>otj-pausedetector</artifactId>
     </dependency>
     <dependency>
