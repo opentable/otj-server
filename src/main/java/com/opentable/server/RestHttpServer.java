@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.opentable.jackson.OpenTableJacksonConfiguration;
+import com.opentable.jaxrs.JaxRsClientConfiguration;
 import com.opentable.pausedetector.EnablePauseDetector;
 
 @Configuration
@@ -18,6 +19,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     EmbeddedJetty.class,
     ResteasyAutoConfiguration.class,
     OpenTableJacksonConfiguration.class,
+    JaxRsClientConfiguration.class,
     //ServerLoggingConfiguration.class,
     ServerConfigConfiguration.class,
     StaticResourceConfiguration.class,
