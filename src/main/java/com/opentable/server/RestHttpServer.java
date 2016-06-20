@@ -22,7 +22,6 @@ import com.opentable.pausedetector.EnablePauseDetector;
     ServerConfigConfiguration.class,
     StaticResourceConfiguration.class,
     MediocreHealthCheck.class,
-    DiscoverySetup.class,
     StartupFailedHandler.class
 })
 @EnablePauseDetector
