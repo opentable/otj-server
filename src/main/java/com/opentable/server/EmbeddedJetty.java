@@ -17,6 +17,10 @@ import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletConta
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * TODO Add all the different types of injected handlers from the old server?
+ * https://github.com/opentable/otj-httpserver/blob/master/src/main/java/com/opentable/httpserver/AbstractJetty9HttpServer.java
+ */
 @Configuration
 public class EmbeddedJetty {
     @Value("${ot.http.bind-port:${PORT0:0}}")
