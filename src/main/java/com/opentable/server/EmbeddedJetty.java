@@ -12,10 +12,8 @@ import javax.servlet.ServletContextListener;
 import com.google.common.base.Preconditions;
 
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
@@ -53,9 +51,11 @@ public class EmbeddedJetty {
         }
         factory.addInitializers(servletContext -> listeners.forEach(servletContext::addListener));
         factory.addServerCustomizers(server -> {
-            Handler customizedHandler = new StatisticsHandler();
-            for (final Function<Handler, Handler> customizer : handlerCustomizers) {
-                customizedHandler = customizer.apply(customizedHandler);
+            Handler customizedHandler = server.getHandler();
+            if (handlerCustomizers.isPresent()) {
+                for (final Function<Handler, Handler> customizer : handlerCustomizers.get()) {
+                    customizedHandler = customizer.apply(customizedHandler);
+                }
             }
             server.setHandler(customizedHandler);
         });
