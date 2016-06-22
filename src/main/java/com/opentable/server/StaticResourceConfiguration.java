@@ -23,7 +23,7 @@ public class StaticResourceConfiguration {
         LOG.debug("Found static resources at {}", rsrc);
 
         if (rsrc == null) {
-            LOG.warn("Didn't find '/static' on classpath, not serving static files");
+            LOG.info("Didn't find '/static' on classpath, not serving static files");
             return new ServletRegistrationBean() {
                 // TODO: less hacky way to do this?
                 @Override
