@@ -38,18 +38,26 @@ public class EmbeddedJetty {
      */
     private Integer httpActualPort;
 
+    @Inject
+    Optional<Provider<QueuedThreadPool>> qtpProvider;
+
+    @Inject
+    Optional<Collection<ServletContextListener>> listeners;
+
+    @Inject
+    Optional<Collection<Function<Handler, Handler>>> handlerCustomizers;
+
     @Bean
-    public EmbeddedServletContainerFactory servletContainer(
-            final Optional<Provider<QueuedThreadPool>> qtpProvider,
-            final Collection<ServletContextListener> listeners,
-            final Collection<Function<Handler, Handler>> handlerCustomizers) {
+    public EmbeddedServletContainerFactory servletContainer() {
         JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory();
         factory.setPort(httpBindPort);
         factory.setSessionTimeout(10, TimeUnit.MINUTES);
         if (qtpProvider.isPresent()) {
             factory.setThreadPool(qtpProvider.get().get());
         }
-        factory.addInitializers(servletContext -> listeners.forEach(servletContext::addListener));
+        if (listeners.isPresent()) {
+            factory.addInitializers(servletContext -> listeners.get().forEach(servletContext::addListener));
+        }
         factory.addServerCustomizers(server -> {
             Handler customizedHandler = server.getHandler();
             if (handlerCustomizers.isPresent()) {
