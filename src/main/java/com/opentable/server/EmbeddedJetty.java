@@ -5,17 +5,24 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.ServletContextListener;
+
+import com.google.common.base.Preconditions;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.event.EventListener;
 
 /**
  * TODO Add all the different types of injected handlers from the old server?
@@ -24,7 +31,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EmbeddedJetty {
     @Value("${ot.http.bind-port:${PORT0:0}}")
-    int httpBindPort;
+    private int httpBindPort;
+
+    /**
+     * In the case that we bind to port 0, we'll get back a port from the OS.
+     * With {@link #containerInitialized(EmbeddedServletContainerInitializedEvent)}, we capture this value
+     * and store it here.
+     */
+    private Integer httpActualPort;
 
     @Bean
     public EmbeddedServletContainerFactory servletContainer(
@@ -48,8 +62,18 @@ public class EmbeddedJetty {
         return factory;
     }
 
+    @EventListener
+    public void containerInitialized(final EmbeddedServletContainerInitializedEvent evt) {
+        final int port = evt.getEmbeddedServletContainer().getPort();
+        if (port != -1) {
+            httpActualPort = port;
+        }
+    }
+
+    @Lazy
     @Bean
     public HttpServerInfo serverInfo() {
-        return new HttpServerInfo(httpBindPort);
+        Preconditions.checkState(httpActualPort != null, "http port not yet initialized");
+        return new HttpServerInfo(httpActualPort);
     }
 }
