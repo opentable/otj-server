@@ -7,7 +7,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -52,13 +51,7 @@ public class RestHttpServerTest {
 
     @Test
     public void testHello() throws IOException {
-        final CloseableHttpClient client = HttpClients.createMinimal();
-        final HttpGet get = new HttpGet("http://localhost:" + port);
-        try (final CloseableHttpResponse resp = client.execute(get)) {
-            Assert.assertEquals(200, resp.getStatusLine().getStatusCode());
-            final HttpEntity ent = resp.getEntity();
-            Assert.assertEquals(TestResource.HELLO_WORLD, IOUtils.toString(ent.getContent()));
-        }
+        Assert.assertEquals(TestResource.HELLO_WORLD, readString("/"));
     }
 
     @Configuration
@@ -87,5 +80,18 @@ public class RestHttpServerTest {
         public String get() {
             return HELLO_WORLD;
         }
+    }
+
+    private byte[] readBytes(final String path) throws IOException {
+        final CloseableHttpClient client = HttpClients.createMinimal();
+        final HttpGet get = new HttpGet("http://localhost:" + port + path);
+        try (final CloseableHttpResponse resp = client.execute(get)) {
+            Assert.assertEquals(200, resp.getStatusLine().getStatusCode());
+            return IOUtils.toByteArray(resp.getEntity().getContent());
+        }
+    }
+
+    private String readString(final String path) throws IOException {
+        return new String(readBytes(path));
     }
 }
