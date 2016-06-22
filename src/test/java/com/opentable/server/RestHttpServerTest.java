@@ -19,9 +19,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.opentable.service.ServiceInfo;
 
 @RunWith(SpringRunner.class)
 @Configuration
@@ -61,7 +64,20 @@ public class RestHttpServerTest {
     @Configuration
     @RestHttpServer
     @Import(TestResource.class)
-    public static class TestServer {}
+    public static class TestServer {
+        @Configuration
+        public static class ServiceInfoConfiguration {
+            @Bean
+            public ServiceInfo getServiceInfo() {
+                return new ServiceInfo() {
+                    @Override
+                    public String getName() {
+                        return "test";
+                    }
+                };
+            }
+        }
+    }
 
     @Named
     @Path("/")
