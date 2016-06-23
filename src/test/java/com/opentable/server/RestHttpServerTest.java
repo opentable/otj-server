@@ -51,7 +51,17 @@ public class RestHttpServerTest {
 
     @Test
     public void testHello() throws IOException {
-        Assert.assertEquals(TestResource.HELLO_WORLD, readString("/"));
+        Assert.assertEquals(TestResource.HELLO_WORLD, readString("/", null));
+    }
+
+    @Test
+    public void testStatic_txt() throws IOException {
+        testStatic("static/test.txt", "text/plain");
+    }
+
+    @Test
+    public void testStatic_png() throws IOException {
+        testStatic("static/test.png", "image/png");
     }
 
     @Configuration
@@ -82,16 +92,25 @@ public class RestHttpServerTest {
         }
     }
 
-    private byte[] readBytes(final String path) throws IOException {
+    private byte[] readBytes(final String path, final String expectedContentType) throws IOException {
         final CloseableHttpClient client = HttpClients.createMinimal();
         final HttpGet get = new HttpGet("http://localhost:" + port + path);
         try (final CloseableHttpResponse resp = client.execute(get)) {
             Assert.assertEquals(200, resp.getStatusLine().getStatusCode());
+            if (expectedContentType != null) {
+                Assert.assertEquals(expectedContentType, resp.getFirstHeader("Content-Type").getValue());
+            }
             return IOUtils.toByteArray(resp.getEntity().getContent());
         }
     }
 
-    private String readString(final String path) throws IOException {
-        return new String(readBytes(path));
+    private String readString(final String path, final String expectedContentType) throws IOException {
+        return new String(readBytes(path, expectedContentType));
+    }
+
+    private void testStatic(final String path, final String expectedContentType) throws IOException {
+        final byte[] expected = IOUtils.toByteArray(ClassLoader.getSystemResourceAsStream(path));
+        final byte[] actual = readBytes("/" + path, expectedContentType);
+        Assert.assertArrayEquals(expected, actual);
     }
 }
