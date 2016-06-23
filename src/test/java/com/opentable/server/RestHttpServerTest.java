@@ -25,8 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.opentable.service.ServiceInfo;
 
-@RunWith(SpringRunner.class)
-@Configuration
 public class RestHttpServerTest {
     private ConfigurableApplicationContext context;
     private Integer port;
@@ -51,7 +49,7 @@ public class RestHttpServerTest {
 
     @Test
     public void testHello() throws IOException {
-        Assert.assertEquals(TestResource.HELLO_WORLD, readString("/", null));
+        Assert.assertEquals(TestServer.HELLO_WORLD, readString("/", null));
     }
 
     @Test
@@ -69,34 +67,6 @@ public class RestHttpServerTest {
     @Test
     public void testStatic_png() throws IOException {
         testStatic("static/test.png", "image/png");
-    }
-
-    @Configuration
-    @RestHttpServer
-    @Import(TestResource.class)
-    public static class TestServer {
-        @Configuration
-        public static class ServiceInfoConfiguration {
-            @Bean
-            public ServiceInfo getServiceInfo() {
-                return new ServiceInfo() {
-                    @Override
-                    public String getName() {
-                        return "test";
-                    }
-                };
-            }
-        }
-    }
-
-    @Named
-    @Path("/")
-    public static class TestResource {
-        static final String HELLO_WORLD = "Hello, world!";
-        @GET
-        public String get() {
-            return HELLO_WORLD;
-        }
     }
 
     private CloseableHttpResponse getResponse(final String path) throws IOException {
