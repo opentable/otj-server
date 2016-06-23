@@ -1,5 +1,8 @@
 TODO Update for Spring.
 
+The `RestHttpServer` provides health checking at `/health` via
+`otj-metrics`.
+
 OpenTable Server Component
 ==========================
 
