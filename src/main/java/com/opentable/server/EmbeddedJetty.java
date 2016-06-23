@@ -1,6 +1,7 @@
 package com.opentable.server;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -12,6 +13,7 @@ import javax.servlet.ServletContextListener;
 import com.google.common.base.Preconditions;
 
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
@@ -29,7 +31,7 @@ import org.springframework.context.event.EventListener;
 @Configuration
 public class EmbeddedJetty {
     @Value("${ot.http.bind-port:${PORT0:0}}")
-    private int httpBindPort;
+    private List<Integer> httpBindPort;
 
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
@@ -49,8 +51,12 @@ public class EmbeddedJetty {
 
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
+        if (httpBindPort.isEmpty()) {
+            throw new IllegalStateException("Must specify at least one 'ot.http.bind-port'");
+        }
+
         JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory();
-        factory.setPort(httpBindPort);
+        factory.setPort(httpBindPort.get(0));
         factory.setSessionTimeout(10, TimeUnit.MINUTES);
         if (qtpProvider.isPresent()) {
             factory.setThreadPool(qtpProvider.get().get());
@@ -66,6 +72,12 @@ public class EmbeddedJetty {
                 }
             }
             server.setHandler(customizedHandler);
+
+            for (int i = 1; i < httpBindPort.size(); i++) {
+                final ServerConnector connector = new ServerConnector(server);
+                connector.setPort(httpBindPort.get(i));
+                server.addConnector(connector);
+            }
         });
         return factory;
     }
