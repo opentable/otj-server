@@ -12,6 +12,8 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+// TODO Don't serve directory indexes.
+
 @Configuration
 public class StaticResourceConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(StaticResourceConfiguration.class);
