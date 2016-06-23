@@ -16,16 +16,13 @@ import com.opentable.metrics.http.HealthHttpConfiguration;
         HealthHttpConfiguration.class,
 })
 public class MetricsConfiguration {
-    private final MetricRegistry metrics = new MetricRegistry();
-    private final HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
-
     @Bean
     public MetricRegistry getMetrics() {
-        return metrics;
+        return new MetricRegistry();
     }
 
     @Bean
     public HealthCheckRegistry getHealthCheckRegistry() {
-        return healthCheckRegistry;
+        return new HealthCheckRegistry();
     }
 }
