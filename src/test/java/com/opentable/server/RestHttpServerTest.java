@@ -55,6 +55,13 @@ public class RestHttpServerTest {
     }
 
     @Test
+    public void testMissing() throws IOException {
+        try (final CloseableHttpResponse resp = getResponse("/not/found/omg/wtf/bbq")) {
+            Assert.assertEquals(404, resp.getStatusLine().getStatusCode());
+        }
+    }
+
+    @Test
     public void testStatic_txt() throws IOException {
         testStatic("static/test.txt", "text/plain");
     }
@@ -92,10 +99,14 @@ public class RestHttpServerTest {
         }
     }
 
-    private byte[] readBytes(final String path, final String expectedContentType) throws IOException {
+    private CloseableHttpResponse getResponse(final String path) throws IOException {
         final CloseableHttpClient client = HttpClients.createMinimal();
         final HttpGet get = new HttpGet("http://localhost:" + port + path);
-        try (final CloseableHttpResponse resp = client.execute(get)) {
+        return client.execute(get);
+    }
+
+    private byte[] readBytes(final String path, final String expectedContentType) throws IOException {
+        try (final CloseableHttpResponse resp = getResponse(path)) {
             Assert.assertEquals(200, resp.getStatusLine().getStatusCode());
             if (expectedContentType != null) {
                 Assert.assertEquals(expectedContentType, resp.getFirstHeader("Content-Type").getValue());
