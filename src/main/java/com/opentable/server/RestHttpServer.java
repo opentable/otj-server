@@ -17,6 +17,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
     EmbeddedJetty.class,
+    ConservedHeadersConfiguration.class,
     ResteasyAutoConfiguration.class,
     OpenTableJacksonConfiguration.class,
     JaxRsClientConfiguration.class,
@@ -26,7 +27,6 @@ import com.opentable.pausedetector.EnablePauseDetector;
     MBeanServerConfiguration.class,
     MetricsConfiguration.class,
     StartupFailedHandler.class,
-    ConservedHeadersConfiguration.class,
 })
 @EnablePauseDetector
 public @interface RestHttpServer {
