@@ -25,7 +25,8 @@ import com.opentable.pausedetector.EnablePauseDetector;
     StaticResourceConfiguration.class,
     MBeanServerConfiguration.class,
     MetricsConfiguration.class,
-    StartupFailedHandler.class
+    StartupFailedHandler.class,
+    ConservedHeadersConfiguration.class,
 })
 @EnablePauseDetector
 public @interface RestHttpServer {
