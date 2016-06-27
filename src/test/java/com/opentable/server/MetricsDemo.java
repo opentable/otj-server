@@ -13,6 +13,7 @@ import com.opentable.metrics.http.MetricsHttpConfiguration;
 /**
  * Demonstration of serving Dropwizard Metrics AdminServlet.
  * Navigate to /metrics.
+ * Uncomment in {@link #testProperties()} to test Graphite reporting.
  */
 @Configuration
 @Import({
