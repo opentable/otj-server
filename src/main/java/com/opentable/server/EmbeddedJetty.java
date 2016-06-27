@@ -1,5 +1,6 @@
 package com.opentable.server;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -14,14 +15,19 @@ import com.google.common.base.Preconditions;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 
 /**
@@ -30,8 +36,13 @@ import org.springframework.context.event.EventListener;
  */
 @Configuration
 public class EmbeddedJetty {
+    private static final Logger LOG = LoggerFactory.getLogger(EmbeddedJetty.class);
+
     @Value("${ot.http.bind-port:${PORT0:0}}")
     private List<Integer> httpBindPort;
+
+    @Value("${ot.httpserver.shutdown-timeout:PT5s}")
+    private Duration shutdownTimeout;
 
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
@@ -48,6 +59,8 @@ public class EmbeddedJetty {
 
     @Inject
     Optional<Collection<Function<Handler, Handler>>> handlerCustomizers;
+
+    private EmbeddedServletContainer container;
 
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
@@ -71,23 +84,40 @@ public class EmbeddedJetty {
                     customizedHandler = customizer.apply(customizedHandler);
                 }
             }
-            server.setHandler(customizedHandler);
+
+            // Required for graceful shutdown to work
+            StatisticsHandler stats = new StatisticsHandler();
+            stats.setHandler(customizedHandler);
+
+            server.setHandler(stats);
 
             for (int i = 1; i < httpBindPort.size(); i++) {
                 final ServerConnector connector = new ServerConnector(server);
                 connector.setPort(httpBindPort.get(i));
                 server.addConnector(connector);
             }
+
+            server.setStopTimeout(shutdownTimeout.toMillis());
         });
         return factory;
     }
 
     @EventListener
     public void containerInitialized(final EmbeddedServletContainerInitializedEvent evt) {
-        final int port = evt.getEmbeddedServletContainer().getPort();
+        container = evt.getEmbeddedServletContainer();
+        final int port = container.getPort();
         if (port != -1) {
             httpActualPort = port;
         }
+    }
+
+    // XXX: this is a workaround for
+    // https://github.com/spring-projects/spring-boot/issues/4657
+    @EventListener
+    public void gracefulShutdown(ContextClosedEvent evt) {
+        LOG.info("Early shutdown of Jetty connectors");
+        container.stop();
+        LOG.info("Jetty is stopped.");
     }
 
     @Lazy
