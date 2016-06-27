@@ -11,7 +11,7 @@ public class StartupFailedDemo {
             SpringApplication.run(App.class, args);
         } catch (BeanCreationException e) {
             // No problem... wait for the T-1000.
-            Thread.sleep(StartupFailedHandler.timeout.toMillis() * 2);
+            Thread.sleep(StartupShutdownFailedHandler.timeout.toMillis() * 2);
         }
         throw new RuntimeException("should never be reached");
     }
