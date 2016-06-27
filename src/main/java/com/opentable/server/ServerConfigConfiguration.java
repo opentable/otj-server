@@ -12,12 +12,16 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.opentable.server.ServerConfigConfiguration.LogAppConfig;
+import com.opentable.service.AppInfo;
+import com.opentable.service.EnvInfo;
 import com.opentable.spring.ConversionServiceConfiguration;
 
 @Configuration
 @Import({
     ConversionServiceConfiguration.class,
-    LogAppConfig.class
+    LogAppConfig.class,
+    AppInfo.class,
+    EnvInfo.class
 })
 public class ServerConfigConfiguration {
     @Bean
