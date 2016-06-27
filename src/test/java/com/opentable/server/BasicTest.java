@@ -11,12 +11,12 @@ import org.junit.Test;
 public class BasicTest extends ServerTestBase {
     @Test
     public void testHello() throws IOException {
-        Assert.assertEquals(TestServer.HELLO_WORLD, request("/").readEntity(String.class));
+        Assert.assertEquals(TestServer.HELLO_WORLD, request("/").get().readEntity(String.class));
     }
 
     @Test
     public void testMissing() throws IOException {
-        Response r = request("/not/found/omg/wtf/bbq");
+        Response r = request("/not/found/omg/wtf/bbq").get();
         Assert.assertEquals(404, r.getStatus());
     }
 
@@ -32,7 +32,7 @@ public class BasicTest extends ServerTestBase {
 
     private void testStatic(final String path, final String expectedContentType) throws IOException {
         final byte[] expected = IOUtils.toByteArray(ClassLoader.getSystemResourceAsStream(path));
-        final byte[] actual = request(path, expectedContentType).readEntity(byte[].class);
+        final byte[] actual = request(path, expectedContentType).get().readEntity(byte[].class);
         Assert.assertArrayEquals(expected, actual);
     }
 }
