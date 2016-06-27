@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-public class RestHttpServerTest {
+public abstract class ServerTestBase {
     private Client client;
     private ConfigurableApplicationContext context;
     private Integer port;
@@ -39,34 +39,7 @@ public class RestHttpServerTest {
         context = null;
     }
 
-    @Test
-    public void testHello() throws IOException {
-        Assert.assertEquals(TestServer.HELLO_WORLD, request("/").readEntity(String.class));
-    }
-
-    @Test
-    public void testMissing() throws IOException {
-        Response r = request("/not/found/omg/wtf/bbq");
-        Assert.assertEquals(404, r.getStatus());
-    }
-
-    @Test
-    public void testStatic_txt() throws IOException {
-        testStatic("static/test.txt", "text/plain");
-    }
-
-    @Test
-    public void testStatic_png() throws IOException {
-        testStatic("static/test.png", "image/png");
-    }
-
-    private Response request(final String path, final String ... expectedContentType) throws IOException {
+    protected Response request(final String path, final String ... expectedContentType) throws IOException {
         return client.target("http://localhost:" + port).path(path).request(expectedContentType).get();
-    }
-
-    private void testStatic(final String path, final String expectedContentType) throws IOException {
-        final byte[] expected = IOUtils.toByteArray(ClassLoader.getSystemResourceAsStream(path));
-        final byte[] actual = request(path, expectedContentType).readEntity(byte[].class);
-        Assert.assertArrayEquals(expected, actual);
     }
 }
