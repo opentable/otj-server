@@ -166,6 +166,14 @@
       <artifactId>metrics-healthchecks</artifactId>
     </dependency>
 
+    <!-- jmxmp support -->
+    <dependency>
+      <groupId>com.betfair.net.java.opendmk</groupId>
+      <artifactId>jmx-optional</artifactId>
+      <version>1.0-b02</version>
+      <scope>runtime</scope>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
