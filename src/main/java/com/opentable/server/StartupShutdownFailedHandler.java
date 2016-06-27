@@ -14,7 +14,7 @@ import com.opentable.util.JvmFallbackShutdown;
 @Component
 class StartupShutdownFailedHandler {
     @VisibleForTesting
-    static final Duration timeout = Duration.ofSeconds(5);
+    static final Duration timeout = Duration.ofSeconds(30);
 
     @EventListener
     public void onFailure(ApplicationFailedEvent event) {
