@@ -1,17 +1,16 @@
 package com.opentable.server;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
+import org.springframework.core.env.PropertySource;
 
-import com.opentable.server.ServerConfigConfiguration.LogAppConfig;
 import com.opentable.service.AppInfo;
 import com.opentable.service.EnvInfo;
 import com.opentable.spring.ConversionServiceConfiguration;
@@ -19,9 +18,8 @@ import com.opentable.spring.ConversionServiceConfiguration;
 @Configuration
 @Import({
     ConversionServiceConfiguration.class,
-    LogAppConfig.class,
     AppInfo.class,
-    EnvInfo.class
+    EnvInfo.class,
 })
 public class ServerConfigConfiguration {
     @Bean
@@ -29,14 +27,9 @@ public class ServerConfigConfiguration {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    @Component
-    static class LogAppConfig implements EnvironmentAware {
-        @Override
-        public void setEnvironment(Environment environment) {
-            Logger log = LoggerFactory.getLogger(LogAppConfig.class);
-            ((ConfigurableEnvironment) environment).getPropertySources().forEach(ps -> {
-                log.debug("Application uses property source {}", ps);
-            });
-        }
+    @Inject
+    public void logAppConfig(final ConfigurableEnvironment env) {
+        final Logger log = LoggerFactory.getLogger(ServerConfigConfiguration.class);
+        log.info(env.toString());
     }
 }
