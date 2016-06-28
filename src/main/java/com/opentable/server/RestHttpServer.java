@@ -12,6 +12,11 @@ import com.opentable.jackson.OpenTableJacksonConfiguration;
 import com.opentable.jaxrs.JaxRsClientConfiguration;
 import com.opentable.pausedetector.EnablePauseDetector;
 
+/**
+ * REST HTTP Server.
+ *
+ * @see ServerLoggingConfiguration for its special setup.
+ */
 @Configuration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -21,7 +26,6 @@ import com.opentable.pausedetector.EnablePauseDetector;
     ResteasyAutoConfiguration.class,
     OpenTableJacksonConfiguration.class,
     JaxRsClientConfiguration.class,
-    //ServerLoggingConfiguration.class,
     ServerConfigConfiguration.class,
     StaticResourceConfiguration.class,
     JmxConfiguration.class,
