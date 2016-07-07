@@ -42,7 +42,7 @@ public class JmxConfiguration {
         @Value("${ot.jmx.port:${PORT1:#{null}}}")
         private Integer jmxPort;
 
-        @Value("${ot.jmx.address:${TASK_HOST:#{null}}}")
+        @Value("${ot.jmx.address:#{null}}")
         private String jmxAddress;
 
         @Value("${ot.jmx.url-format:service:jmx:jmxmp://%s:%s}")
