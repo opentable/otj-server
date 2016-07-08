@@ -1,8 +1,5 @@
 package com.opentable.server;
 
-import java.util.HashMap;
-import java.util.List;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -55,7 +52,7 @@ public abstract class ServerTestBase {
      */
     class RequestBuilder {
         private final String expectedContentType;
-        private WebTarget target;
+        private final WebTarget target;
         private final MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
         private RequestBuilder(final String path, final String expectedContentType) {
             target = client.target("http://localhost:" + port).path(path);
