@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,7 @@ import com.opentable.server.JmxConfiguration.JmxmpServer;
 
 @Configuration
 @Import(JmxmpServer.class)
+@EnableMBeanExport
 public class JmxConfiguration {
 
     @Bean
