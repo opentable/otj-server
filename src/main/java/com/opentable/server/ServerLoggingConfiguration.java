@@ -31,8 +31,9 @@ class ServerLoggingConfiguration implements ApplicationListener<ApplicationEvent
         }
         if (event instanceof ApplicationFailedEvent) {
             LOG.info("Terminating default logging context");
-            ((LoggerContext) LoggerFactory.getILoggerFactory()).reset();
-            BasicConfigurator.configureDefaultContext();
+            LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+            loggerContext.reset();
+            new BasicConfigurator().configure(loggerContext);
         }
     }
 }
