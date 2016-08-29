@@ -116,8 +116,12 @@ public class EmbeddedJetty {
     @EventListener
     public void gracefulShutdown(ContextClosedEvent evt) {
         LOG.info("Early shutdown of Jetty connectors");
-        container.stop();
-        LOG.info("Jetty is stopped.");
+        if (container != null) {
+            container.stop();
+            LOG.info("Jetty is stopped.");
+        } else {
+            LOG.warn("Never got a Jetty?");
+        }
     }
 
     @Lazy
