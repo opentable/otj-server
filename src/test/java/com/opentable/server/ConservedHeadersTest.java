@@ -10,11 +10,12 @@ import javax.ws.rs.core.Response;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.opentable.conservedheaders.ConservedHeader;
 import com.opentable.conservedheaders.ConservedHeaders;
 
 public class ConservedHeadersTest extends ServerTestBase {
-    private final static String RID = ConservedHeaders.Enum.REQUEST_ID.getName();
-    private final static String AID = ConservedHeaders.Enum.ANONYMOUS_ID.getName();
+    private final static String RID = ConservedHeader.REQUEST_ID.getHeaderName();
+    private final static String AID = ConservedHeader.ANONYMOUS_ID.getHeaderName();
 
     @Test
     public void createRequestIdIndex() throws IOException {
