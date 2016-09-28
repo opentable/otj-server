@@ -4,6 +4,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+import com.codahale.metrics.annotation.Timed;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -22,6 +27,7 @@ import com.opentable.metrics.http.MetricsHttpConfiguration;
 @Import({
         TestServer.class,
         MetricsHttpConfiguration.class,
+        MetricsDemo.AnnotatedResource.class,
 })
 public class MetricsDemo {
     public static void main(final String[] args) {
@@ -37,5 +43,18 @@ public class MetricsDemo {
         props.put("OT_ENV_LOCATION", "sf");
         //props.put("ot.graphite.graphite-host", "carbon-qa-sf.otenv.com");
         return Collections.unmodifiableMap(props);
+    }
+
+    /**
+     * Test of annotated method tracking.
+     * @see com.opentable.metrics.MetricAnnotationConfiguration
+     */
+    @Path("/annotated")
+    public static class AnnotatedResource {
+        @Timed
+        @GET
+        public String getAnnotated() {
+            return "I am annotated.";
+        }
     }
 }
