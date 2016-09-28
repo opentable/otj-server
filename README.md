@@ -1,5 +1,7 @@
 TODO Update for Spring.
 
+TODO Mention Ryan Tenney `@Timed`, etc.  No need to add `@EnableMetrics`; for details see `MetricsConfiguration`.
+
 The `RestHttpServer` provides health checking at `/health` via
 `otj-metrics`.
 
