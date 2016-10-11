@@ -190,6 +190,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-executors</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <scope>test</scope>
