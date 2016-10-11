@@ -4,33 +4,46 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.opentable.conservedheaders.ConservedHeader;
-import com.opentable.conservedheaders.ConservedHeaders;
 
-public class ConservedHeadersTest extends ServerTestBase {
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(classes = {
+    TestServer.class
+})
+public class ConservedHeadersTest {
     private final static String RID = ConservedHeader.REQUEST_ID.getHeaderName();
     private final static String AID = ConservedHeader.ANONYMOUS_ID.getHeaderName();
 
+    @Inject
+    LoopbackRequest request;
+
     @Test
     public void createRequestIdIndex() throws IOException {
-        sanityCheck(request("/").get());
+        sanityCheck(request.of("/").request().get());
     }
 
     @Test
     public void createRequestId404() throws IOException {
-        sanityCheck(request("/404/not/found").get());
+        sanityCheck(request.of("/404/not/found").request().get());
     }
 
     @Test
     public void conserveRequestId() throws IOException {
         final String rid = UUID.randomUUID().toString();
-        final Response resp = request("/").header(RID, rid).get();
+        final Response resp = request.of("/").request().header(RID, rid).get();
         sanityCheck(resp);
         Assert.assertEquals(rid, resp.getHeaderString(RID));
     }
@@ -38,7 +51,7 @@ public class ConservedHeadersTest extends ServerTestBase {
     @Test
     public void replaceBadRequestId() throws IOException {
         final String badRid = "not a valid UUID";
-        final Response resp = request("/").header(RID, badRid).get();
+        final Response resp = request.of("/").request().header(RID, badRid).get();
         sanityCheck(resp);
         Assert.assertNotEquals(badRid, resp.getHeaderString(RID));
     }
@@ -46,7 +59,7 @@ public class ConservedHeadersTest extends ServerTestBase {
     @Test
     public void conserveAnonymousId() throws IOException {
         final String aid = "fgsfds";
-        final Response resp = request("/").header(AID, aid).get();
+        final Response resp = request.of("/").request().header(AID, aid).get();
         sanityCheck(resp);
         Assert.assertEquals(aid, resp.getHeaderString(AID));
     }
