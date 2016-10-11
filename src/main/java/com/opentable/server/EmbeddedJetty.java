@@ -11,9 +11,12 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.ServletContextListener;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Verify;
 
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
+import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +47,14 @@ public class EmbeddedJetty {
 
     @Value("${ot.httpserver.shutdown-timeout:PT5s}")
     private Duration shutdownTimeout;
+
+    //// XXX: these should be removed pending https://github.com/spring-projects/spring-boot/issues/5314
+    @Value("${ot.httpserver.max-threads:32}")
+    private int maxThreads;
+
+    @Value("${ot.httpserver.min-threads:#{null}}")
+    private Integer minThreads;
+    //// Make specifying them fail the build when we cut over?
 
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
@@ -99,7 +111,19 @@ public class EmbeddedJetty {
 
             server.setStopTimeout(shutdownTimeout.toMillis());
         });
+        factory.addServerCustomizers(this::sizeThreadPool);
         return factory;
+    }
+
+    private void sizeThreadPool(Server server) {
+        Verify.verify(minThreads == null, "'ot.httpserver.min-threads' has been removed on the " +
+                "theory that it is always preferable to eagerly initialize worker threads " +
+                "instead of doing so lazily and finding out you can't allocate thread stacks. " +
+                "Talk to Platform Architecture if you think you need this tuneable.");
+
+        final QueuedThreadPool qtp = (QueuedThreadPool) server.getThreadPool();
+        qtp.setMinThreads(maxThreads);
+        qtp.setMaxThreads(maxThreads);
     }
 
     @EventListener
@@ -129,5 +153,16 @@ public class EmbeddedJetty {
     public HttpServerInfo serverInfo() {
         Preconditions.checkState(httpActualPort != null, "http port not yet initialized");
         return new HttpServerInfo(httpActualPort);
+    }
+
+    @VisibleForTesting
+    Server getServer() {
+        Preconditions.checkState(container != null, "container not yet available");
+        return ((JettyEmbeddedServletContainer) container).getServer();
+    }
+
+    @VisibleForTesting
+    QueuedThreadPool getThreadPool() {
+        return (QueuedThreadPool) getServer().getThreadPool();
     }
 }
