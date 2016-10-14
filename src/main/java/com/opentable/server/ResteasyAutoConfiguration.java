@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import org.jboss.resteasy.core.Dispatcher;
-import org.jboss.resteasy.plugins.server.servlet.FilterDispatcher;
+import org.jboss.resteasy.plugins.server.servlet.Filter30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ListenerBootstrap;
 import org.jboss.resteasy.plugins.spring.SpringBeanProcessor;
 import org.jboss.resteasy.spi.Registry;
@@ -38,7 +38,7 @@ public class ResteasyAutoConfiguration {
 
     @Bean(name = "resteasyDispatcher")
     public FilterRegistrationBean resteasyServletRegistration() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean(new FilterDispatcher());
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean(new Filter30Dispatcher());
         registrationBean.addUrlPatterns("/*");
         registrationBean.setInitParameters(Collections.singletonMap("resteasy.servlet.mapping.prefix", "/")); // set prefix here
         return registrationBean;
