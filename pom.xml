@@ -36,6 +36,10 @@
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
+      <artifactId>otj-logging-jetty</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.opentable.components</groupId>
       <artifactId>otj-metrics</artifactId>
     </dependency>
     <dependency>

@@ -1,5 +1,6 @@
 package com.opentable.server;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.google.common.base.Verify;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.slf4j.Logger;
@@ -30,15 +32,20 @@ import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletConta
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
+
+import com.opentable.logging.jetty.JsonRequestLog;
+import com.opentable.logging.jetty.JsonRequestLogConfig;
 
 /**
  * TODO Add all the different types of injected handlers from the old server?
  * https://github.com/opentable/otj-httpserver/blob/master/src/main/java/com/opentable/httpserver/AbstractJetty9HttpServer.java
  */
 @Configuration
+@Import(JsonRequestLogConfig.class)
 public class EmbeddedJetty {
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedJetty.class);
 
@@ -75,7 +82,7 @@ public class EmbeddedJetty {
     private EmbeddedServletContainer container;
 
     @Bean
-    public EmbeddedServletContainerFactory servletContainer() {
+    public EmbeddedServletContainerFactory servletContainer(final JsonRequestLogConfig requestLogConfig) {
         if (httpBindPort.isEmpty()) {
             throw new IllegalStateException("Must specify at least one 'ot.http.bind-port'");
         }
@@ -95,6 +102,16 @@ public class EmbeddedJetty {
                 for (final Function<Handler, Handler> customizer : handlerCustomizers.get()) {
                     customizedHandler = customizer.apply(customizedHandler);
                 }
+            }
+
+            if (!requestLogConfig.isEnabled()) {
+                LOG.debug("request logging disabled; config {}", requestLogConfig);
+            } else {
+                final RequestLogHandler logHandler = new RequestLogHandler();
+                logHandler.setRequestLog(new JsonRequestLog(Clock.systemUTC(), requestLogConfig));
+                logHandler.setHandler(customizedHandler);
+                customizedHandler = logHandler;
+                LOG.debug("request logging enabled; added log handler with config {}", requestLogConfig);
             }
 
             // Required for graceful shutdown to work
