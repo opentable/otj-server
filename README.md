@@ -1,10 +1,3 @@
-TODO Update for Spring.
-
-TODO Mention Ryan Tenney `@Timed`, etc.  No need to add `@EnableMetrics`; for details see `MetricsConfiguration`.
-
-The `RestHttpServer` provides health checking at `/health` via
-`otj-metrics`.
-
 OpenTable Server Component
 ==========================
 
@@ -17,24 +10,44 @@ Component Charter
 Server Main Class
 -----------------
 
-`otj-server` provides [StandaloneServer](https://github.com/opentable/otj-server/blob/master/server/src/main/java/com/opentable/server/StandaloneServer.java)
-which provides a skeletal server startup and shutdown.
+`otj-server` provides [OTApplication](https://github.com/opentable/otj-server/blob/master/server/src/main/java/com/opentable/server/OTApplication.java)
+which does our initialization and then invokes `SpringApplication.run` to actually boot the service.
 
-The [AnnouncingStandaloneServer](https://github.com/opentable/otj-server/blob/master/server/src/main/java/com/opentable/server/AnnouncingStandaloneServer.java)
-extends this to include automatic service discovery announcements.
+The [@RestHttpServer](https://github.com/opentable/otj-server/blob/master/server/src/main/java/com/opentable/server/RestHttpServer.java)
+configuration provides basic necessities for running a web service:
 
-The [BasicDiscoveryServerModule](https://github.com/opentable/otj-server/blob/master/templates/src/main/java/com/opentable/server/templates/BasicDiscoveryServerModule.java)
-is the actual meat of the server template - it pulls together all of the modules into Guice.
+* Jetty HTTP server
+* RESTEasy JAX-RS runtime
+* OT Conserved Headers
+* `otj-metrics` integration
+* `otj-jackson` integration
+* JVM pause detector
+* JMX monitoring and management
+* Static resource serving over HTTP
+* CORS header support
+* Logging configuration
 
-The [BasicRestHttpServerTemplateModule](https://github.com/opentable/otj-server/blob/master/templates/src/main/java/com/opentable/server/templates/BasicRestHttpServerTemplateModule.java) module installs from `otj-metrics` the `HealthHttpModule` by default, which provides a healthcheck endpoint at `/health` for your application.
+Jetty Configuration
+-------------------
 
-Historical Note
----------------
-Prior to version `1.11.2`, `BasicRestHttpServerTemplateModule` would
-install the `otj-metrics` `MetricsHttpModule` at `/metrics` by default.
-It no longer does this implicitly.  If you want this functionality, you
-must install this module in your service.  See the `otj-metrics`
-documentation for more details.
+We expose a few important configuration options for Jetty:
+
+```
+ot.http.bind-port=8080,8081
+ot.httpserver.shutdown-timeout=PT1m
+ot.httpserver.max-threads=200
+```
+
+Usually the defaults are okay.  You might tune your thread pool size for heavily utilized services.
+
+JMX Configuration
+-----------------
+
+```
+ot.jmx.port=12345
+ot.jmx.address=127.0.0.1
+ot.jmx.url-format=service:jmx:jmxmp://%s:%s
+```
 
 ----
-Copyright (C) 2014 OpenTable, Inc.
+Copyright (C) 2016 OpenTable, Inc.
