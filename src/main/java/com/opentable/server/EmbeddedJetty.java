@@ -33,7 +33,6 @@ import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletConta
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 
@@ -165,11 +164,12 @@ public class EmbeddedJetty {
         }
     }
 
-    @Lazy
     @Bean
-    public HttpServerInfo serverInfo() {
-        Preconditions.checkState(httpActualPort != null, "http port not yet initialized");
-        return new HttpServerInfo(httpActualPort);
+    public HttpServerInfo httpServerInfo() {
+        return () -> {
+            Preconditions.checkState(httpActualPort != null, "http port not yet initialized");
+            return httpActualPort;
+        };
     }
 
     @VisibleForTesting
