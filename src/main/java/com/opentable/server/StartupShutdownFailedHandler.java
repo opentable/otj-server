@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.opentable.util.JvmFallbackShutdown;
 
 @Component
-class StartupShutdownFailedHandler {
+public class StartupShutdownFailedHandler {
     @VisibleForTesting
     static final Duration timeout = Duration.ofSeconds(30);
 
