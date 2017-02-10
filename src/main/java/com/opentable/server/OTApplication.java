@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.StandardEnvironment;
 
 import com.opentable.spring.PropertySourceUtil;
 
@@ -51,6 +54,54 @@ public class OTApplication {
         final ConfigurableApplicationContext ctx = builder.run(args);
         logProperties(ctx);
         return ctx;
+    }
+
+    /**
+     * Construct and run a {@link SpringApplication} with custom settings for
+     * {code otj-} OpenTable Spring Boot based applications, accepting property overrides.
+     * @param applicationClass the main class to boot.  Should be a Spring configuration class.
+     * @param args the {@code main()}-style application arguments
+     * @param properties a map of properties to override the standard environment-resolved properties
+     * @param customizer a hook to configure the application before running
+     * @return the configured application context
+     */
+    public static ConfigurableApplicationContext run(
+            Class<?> applicationClass,
+            String[] args,
+            Map<String, Object> properties,
+            Consumer<SpringApplicationBuilder> customizer) {
+        return run(applicationClass, args, builder -> {
+            builder.environment(
+                    new StandardEnvironment() {
+                        @Override
+                        protected void customizePropertySources(MutablePropertySources propertySources) {
+                            super.customizePropertySources(propertySources);
+                            propertySources.addFirst(
+                                    new MapPropertySource(
+                                            "OTApplication.run$properties",
+                                            properties
+                                    )
+                            );
+                        }
+                    }
+            );
+            customizer.accept(builder);
+        });
+    }
+
+    /**
+     * Construct and run a {@link SpringApplication} with custom settings for
+     * {code otj-} OpenTable Spring Boot based applications, accepting property overrides.
+     * @param applicationClass the main class to boot.  Should be a Spring configuration class.
+     * @param args the {@code main()}-style application arguments
+     * @param properties a map of properties to override the standard environment-resolved properties
+     * @return the configured application context
+     */
+    public static ConfigurableApplicationContext run(
+            Class<?> applicationClass,
+            String[] args,
+            Map<String, Object> properties) {
+        return run(applicationClass, args, properties, b -> {});
     }
 
     private static void logProperties(final ConfigurableApplicationContext ctx) {
