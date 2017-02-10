@@ -44,13 +44,13 @@ public class OTApplication {
      * {code otj-} OpenTable Spring Boot based applications.
      * @param applicationClass the main class to boot.  Should be a Spring configuration class.
      * @param args the {@code main()}-style application arguments
-     * @param customizer a hook to configure the application before running
+     * @param customize a hook to configure the application before running
      * @return the configured application context
      */
-    public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args, Consumer<SpringApplicationBuilder> customizer) {
+    public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args, Consumer<SpringApplicationBuilder> customize) {
         System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
         final SpringApplicationBuilder builder = new SpringApplicationBuilder(applicationClass);
-        customizer.accept(builder);
+        customize.accept(builder);
         final ConfigurableApplicationContext ctx = builder.run(args);
         logProperties(ctx);
         return ctx;
@@ -62,14 +62,14 @@ public class OTApplication {
      * @param applicationClass the main class to boot.  Should be a Spring configuration class.
      * @param args the {@code main()}-style application arguments
      * @param properties a map of properties to override the standard environment-resolved properties
-     * @param customizer a hook to configure the application before running
+     * @param customize a hook to configure the application before running
      * @return the configured application context
      */
     public static ConfigurableApplicationContext run(
             Class<?> applicationClass,
             String[] args,
             Map<String, Object> properties,
-            Consumer<SpringApplicationBuilder> customizer) {
+            Consumer<SpringApplicationBuilder> customize) {
         return run(applicationClass, args, builder -> {
             builder.environment(
                     new StandardEnvironment() {
@@ -85,7 +85,7 @@ public class OTApplication {
                         }
                     }
             );
-            customizer.accept(builder);
+            customize.accept(builder);
         });
     }
 
