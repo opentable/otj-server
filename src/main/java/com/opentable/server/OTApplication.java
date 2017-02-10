@@ -62,7 +62,7 @@ public class OTApplication {
      * @param applicationClass the main class to boot.  Should be a Spring configuration class.
      * @param args the {@code main()}-style application arguments
      * @param properties a map of properties to override the standard environment-resolved properties
-     * @param customize a hook to configure the application before running
+     * @param customize a hook to configure the application after property overrides, but before running
      * @return the configured application context
      */
     public static ConfigurableApplicationContext run(
@@ -70,23 +70,22 @@ public class OTApplication {
             String[] args,
             Map<String, Object> properties,
             Consumer<SpringApplicationBuilder> customize) {
-        return run(applicationClass, args, builder -> {
-            builder.environment(
-                    new StandardEnvironment() {
-                        @Override
-                        protected void customizePropertySources(MutablePropertySources propertySources) {
-                            super.customizePropertySources(propertySources);
-                            propertySources.addFirst(
-                                    new MapPropertySource(
-                                            "OTApplication.run$properties",
-                                            properties
-                                    )
-                            );
+        final Consumer<SpringApplicationBuilder> overrideProperties = builder ->
+                builder.environment(
+                        new StandardEnvironment() {
+                            @Override
+                            protected void customizePropertySources(MutablePropertySources propertySources) {
+                                super.customizePropertySources(propertySources);
+                                propertySources.addFirst(
+                                        new MapPropertySource(
+                                                "OTApplication.run$properties",
+                                                properties
+                                        )
+                                );
+                            }
                         }
-                    }
-            );
-            customize.accept(builder);
-        });
+                );
+        return run(applicationClass, args, overrideProperties.andThen(customize));
     }
 
     /**
