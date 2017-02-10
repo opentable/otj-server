@@ -29,7 +29,7 @@ public class OTApplication {
      * Construct and run a {@link SpringApplication} with the default settings for
      * {code otj-} OpenTable Spring Boot based applications.
      * @param applicationClass the main class to boot.  Should be a Spring configuration class.
-     * @param args the application arguments from main()
+     * @param args the {@code main()}-style application arguments
      * @return the configured application context
      */
     public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args) {
@@ -40,7 +40,8 @@ public class OTApplication {
      * Construct and run a {@link SpringApplication} with custom settings for
      * {code otj-} OpenTable Spring Boot based applications.
      * @param applicationClass the main class to boot.  Should be a Spring configuration class.
-     * @param args the application arguments from main()
+     * @param args the {@code main()}-style application arguments
+     * @param customizer a hook to configure the application before running
      * @return the configured application context
      */
     public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args, Consumer<SpringApplicationBuilder> customizer) {
