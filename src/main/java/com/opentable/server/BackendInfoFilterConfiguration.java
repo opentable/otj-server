@@ -28,9 +28,7 @@ import com.opentable.service.ServiceInfo;
 public class BackendInfoFilterConfiguration {
     @Bean
     public FilterRegistrationBean getBackendInfoFilterRegistrationBean(final BackendInfoFilter filter) {
-        final FilterRegistrationBean reg = new FilterRegistrationBean(filter);
-        reg.addUrlPatterns("/*");
-        return reg;
+        return new FilterRegistrationBean(filter);
     }
 
     /**
