@@ -22,6 +22,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
     EmbeddedJetty.class,
+    BackendInfoFilterConfiguration.class,
     ConservedHeadersConfiguration.class,
     ResteasyAutoConfiguration.class,
     OpenTableJacksonConfiguration.class,
