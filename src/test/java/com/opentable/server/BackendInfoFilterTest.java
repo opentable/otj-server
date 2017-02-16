@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 })
 public class BackendInfoFilterTest {
     @Inject
-    LoopbackRequest request;
+    private LoopbackRequest request;
 
     @Test
     public void test() {
