@@ -1,7 +1,5 @@
 package com.opentable.server;
 
-import java.util.Comparator;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -26,6 +24,8 @@ import com.opentable.spring.PropertySourceUtil;
     EnvInfo.class,
 })
 public class ServerConfigConfiguration {
+    private final String INDENT = "    ";
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfig() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -34,21 +34,9 @@ public class ServerConfigConfiguration {
     @Inject
     public void logAppConfig(final ConfigurableEnvironment env) {
         final Logger log = LoggerFactory.getLogger(ServerConfigConfiguration.class);
-        log.info("{}", env);
-        PropertySourceUtil.getProperties(env)
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        e -> e.getKey().toString(), // Key mapper.
-                        Map.Entry::getValue,        // Value mapper.
-                        (p1, p2) -> {
-                            log.warn("duplicate resolved properties; picking first: {}, {}", p1, p2);
-                            return p1;
-                        }
-                ))
-                .entrySet()
-                .stream()
-                .sorted(Comparator.comparing(Map.Entry::getKey))
-                .forEach(e -> log.info("{}: {}", e.getKey(), e.getValue()));
+        log.info("{}\n{}{}", env, INDENT,
+                PropertySourceUtil.getKeys(env)
+                          .map(k -> k + "=" + env.getProperty(k))
+                          .collect(Collectors.joining("\n" + INDENT)));
     }
 }
