@@ -36,6 +36,7 @@ public class ServerConfigConfiguration {
         final Logger log = LoggerFactory.getLogger(ServerConfigConfiguration.class);
         log.info("{}\n{}{}", env, INDENT,
                 PropertySourceUtil.getKeys(env)
+                          .sorted()
                           .map(k -> k + "=" + env.getProperty(k))
                           .collect(Collectors.joining("\n" + INDENT)));
     }
