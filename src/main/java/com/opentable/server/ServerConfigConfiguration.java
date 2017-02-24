@@ -1,5 +1,7 @@
 package com.opentable.server;
 
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.opentable.service.AppInfo;
 import com.opentable.service.EnvInfo;
 import com.opentable.spring.ConversionServiceConfiguration;
+import com.opentable.spring.PropertySourceUtil;
 
 @Configuration
 @Import({
@@ -21,6 +24,8 @@ import com.opentable.spring.ConversionServiceConfiguration;
     EnvInfo.class,
 })
 public class ServerConfigConfiguration {
+    private final String INDENT = "    ";
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfig() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -29,6 +34,9 @@ public class ServerConfigConfiguration {
     @Inject
     public void logAppConfig(final ConfigurableEnvironment env) {
         final Logger log = LoggerFactory.getLogger(ServerConfigConfiguration.class);
-        log.info(env.toString());
+        log.info("{}\n{}{}", env, INDENT,
+                PropertySourceUtil.getKeys(env)
+                          .map(k -> k + "=" + env.getProperty(k))
+                          .collect(Collectors.joining("\n" + INDENT)));
     }
 }

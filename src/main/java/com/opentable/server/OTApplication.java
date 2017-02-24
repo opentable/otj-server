@@ -1,20 +1,14 @@
 package com.opentable.server;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.StandardEnvironment;
-
-import com.opentable.spring.PropertySourceUtil;
 
 /**
  * OpenTable specific Spring Boot style application runner.
@@ -26,8 +20,6 @@ import com.opentable.spring.PropertySourceUtil;
  * This can change down the road if needed.
  */
 public class OTApplication {
-    private static final Logger LOG = LoggerFactory.getLogger(OTApplication.class);
-
     /**
      * Construct and run a {@link SpringApplication} with the default settings for
      * {code otj-} OpenTable Spring Boot based applications.
@@ -51,9 +43,7 @@ public class OTApplication {
         System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
         final SpringApplicationBuilder builder = new SpringApplicationBuilder(applicationClass);
         customize.accept(builder);
-        final ConfigurableApplicationContext ctx = builder.run(args);
-        logProperties(ctx);
-        return ctx;
+        return builder.run(args);
     }
 
     /**
@@ -101,24 +91,5 @@ public class OTApplication {
             String[] args,
             Map<String, Object> properties) {
         return run(applicationClass, args, properties, b -> {});
-    }
-
-    private static void logProperties(final ConfigurableApplicationContext ctx) {
-        LOG.info("logging resolved environment properties");
-        PropertySourceUtil.getProperties(ctx.getEnvironment())
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        e -> e.getKey().toString(), // Key mapper.
-                        Map.Entry::getValue,        // Value mapper.
-                        (p1, p2) -> {
-                            LOG.warn("duplicate resolved properties; picking first: {}, {}", p1, p2);
-                            return p1;
-                        }
-                ))
-                .entrySet()
-                .stream()
-                .sorted(Comparator.comparing(Map.Entry::getKey))
-                .forEach(e -> LOG.info("{}: {}", e.getKey(), e.getValue()));
     }
 }
