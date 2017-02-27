@@ -1,7 +1,6 @@
 package com.opentable.server;
 
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
@@ -33,7 +33,7 @@ public class JmxConfiguration {
 
     @Bean
     public MBeanServer getMBeanServer() {
-        return ManagementFactory.getPlatformMBeanServer();
+        return MBeanServerFactory.createMBeanServer();
     }
 
     @Component
