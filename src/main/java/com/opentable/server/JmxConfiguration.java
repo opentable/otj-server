@@ -30,7 +30,6 @@ import com.opentable.server.JmxConfiguration.JmxmpServer;
 @Import(JmxmpServer.class)
 @EnableMBeanExport
 public class JmxConfiguration {
-
     @Bean
     public MBeanServer getMBeanServer() {
         return ManagementFactory.getPlatformMBeanServer();
