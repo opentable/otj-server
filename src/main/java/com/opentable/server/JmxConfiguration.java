@@ -26,6 +26,17 @@ import org.springframework.stereotype.Component;
 
 import com.opentable.server.JmxConfiguration.JmxmpServer;
 
+/**
+ * JMX Configuration.
+ *
+ * <p>
+ * Note that this configuration class injects a static {@link MBeanServer}. This will fail if you are creating
+ * multiple contexts in the same process and attempting to register MBeans. When might you do this? A natural
+ * circumstance is integration testing, in which you might spin up two servers in the same process and have
+ * them talk to one another. Or, as another example, you might spin up a Discovery server and then wire up
+ * two other servers to discover each other, all in the same process. To handle this circumstance
+ * appropriately, consult the {@code TestMBeanServerConfiguration}, in the testing package of this codebase.
+ */
 @Configuration
 @Import(JmxmpServer.class)
 @EnableMBeanExport
