@@ -5,9 +5,12 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.junit.Test;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.jmx.export.MBeanExporter;
+import org.springframework.jmx.export.UnableToRegisterMBeanException;
 
 import com.opentable.service.ServiceInfo;
 
@@ -19,31 +22,57 @@ import com.opentable.service.ServiceInfo;
  */
 public class MBeanServerTest {
     /**
-     * We test this to confirm the continued necessity of the added complexity of the
+     * We test these to confirm the continued necessity of the added complexity of the
      * {@link TestMBeanServerConfiguration}.
      */
     @Test(expected = InstanceAlreadyExistsException.class)
-    public void badDuplicate() throws Exception {
-        registerDuplicate(BadTestConfiguration.class);
+    public void badDuplicateSimple() throws Exception {
+        registerDuplicate(BadTestConfiguration.class, this::registerSimple);
+    }
+    @Test(expected = UnableToRegisterMBeanException.class)
+    public void badDuplicateSpring() throws Exception {
+        registerDuplicate(BadTestConfiguration.class, this::registerSpring);
     }
 
     @Test
-    public void goodDuplicate() throws Exception {
-        registerDuplicate(GoodTestConfiguration.class);
+    public void goodDuplicateSimple() throws Exception {
+        registerDuplicate(GoodTestConfiguration.class, this::registerSimple);
     }
 
-    private void registerDuplicate(final Class<?> configuration) throws Exception {
+    @Test
+    public void goodDuplicateSpring() throws Exception {
+        registerDuplicate(GoodTestConfiguration.class, this::registerSpring);
+    }
+
+    private void registerDuplicate(final Class<?> configuration, final Registrar reg) throws Exception {
         final TestObjectMBean b = new TestObject();
         final ObjectName n = new ObjectName("com.example:type=TestMBean");
-        register(configuration, b, n);
-        register(configuration, b, n);
+        final ConfigurableApplicationContext ctx1 = run(configuration);
+        reg.register(ctx1, b, n);
+        reg.register(run(configuration), b, n);
     }
 
-    private void register(final Class<?> configuration, final Object obj, final ObjectName n)
-            throws Exception {
-        OTApplication.run(configuration, new String[]{})
-                .getBean(MBeanServer.class)
-                .registerMBean(obj, n);
+    private ConfigurableApplicationContext run(final Class<?> configuration) {
+        return OTApplication.run(configuration, new String[]{});
+    }
+
+    /**
+     * This ends up testing fetching a context-specific MBeanServer as a *bean*--like the one we provide in
+     * {@link JmxConfiguration}, and not from Spring's internal machinery.
+     */
+    private void registerSimple(
+            final ConfigurableApplicationContext ctx,
+            final Object obj,
+            final ObjectName n) throws Exception {
+        ctx.getBean(MBeanServer.class).registerMBean(obj, n);
+    }
+
+    // Uses Spring's internal machinery for registering MBeans, which is different from naive bean registry.
+    private void registerSpring(
+            final ConfigurableApplicationContext ctx,
+            final Object obj,
+            final ObjectName n) throws Exception {
+        ctx.getBean(MBeanExporter.class).registerManagedResource(obj, n);
     }
 
     /**
@@ -82,4 +111,8 @@ public class MBeanServerTest {
      */
     @Import(TestMBeanServerConfiguration.class)
     static class GoodTestConfiguration extends BadTestConfiguration {}
+
+    private interface Registrar {
+        void register(ConfigurableApplicationContext ctx, final Object obj, final ObjectName n) throws Exception;
+    }
 }
