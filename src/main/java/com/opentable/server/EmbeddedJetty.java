@@ -166,9 +166,17 @@ public class EmbeddedJetty {
 
     @Bean
     public HttpServerInfo httpServerInfo() {
-        return () -> {
-            Preconditions.checkState(httpActualPort != null, "http port not yet initialized");
-            return httpActualPort;
+        return new HttpServerInfo() {
+            @Override
+            public int getPort() {
+                Preconditions.checkState(httpActualPort != null, "http port not yet initialized");
+                return httpActualPort;
+            }
+
+            @Override
+            public int getPoolSize() {
+                return maxThreads;
+            }
         };
     }
 
