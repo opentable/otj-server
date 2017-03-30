@@ -38,7 +38,7 @@ ot.httpserver.shutdown-timeout=PT1m
 ot.httpserver.max-threads=200
 ```
 
-Usually the defaults are okay.  You might tune your thread pool size for heavily utilized services.
+Usually the defaults are okay.  You might tune your thread pool size for heavily utilized services.  See more detail on the wiki, under [Jetty HTTP Server](https://wiki.otcorp.opentable.com/display/CP/Jetty+HTTP+Server#JettyHTTPServer-ThreadPoolUsage).
 
 JMX Configuration
 -----------------
