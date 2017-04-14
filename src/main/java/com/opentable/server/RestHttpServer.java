@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Import;
 
 import com.opentable.jackson.OpenTableJacksonConfiguration;
 import com.opentable.jaxrs.JaxRsClientConfiguration;
+import com.opentable.metrics.DefaultMetricsConfiguration;
+import com.opentable.metrics.http.HealthHttpConfiguration;
 import com.opentable.pausedetector.EnablePauseDetector;
 
 /**
@@ -30,7 +32,8 @@ import com.opentable.pausedetector.EnablePauseDetector;
     ServerConfigConfiguration.class,
     StaticResourceConfiguration.class,
     JmxConfiguration.class,
-    MetricsConfiguration.class,
+    DefaultMetricsConfiguration.class,
+    HealthHttpConfiguration.class,
     StartupShutdownFailedHandler.class,
 })
 @EnablePauseDetector

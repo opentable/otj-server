@@ -19,7 +19,8 @@ import org.springframework.core.env.StandardEnvironment;
  * we prefer to write explicit classes rather than relying on instances.
  * This can change down the road if needed.
  */
-public class OTApplication {
+public final class OTApplication {
+    private OTApplication() { }
     /**
      * Construct and run a {@link SpringApplication} with the default settings for
      * {code otj-} OpenTable Spring Boot based applications.
@@ -27,7 +28,7 @@ public class OTApplication {
      * @param args the {@code main()}-style application arguments
      * @return the configured application context
      */
-    public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args) {
+    public static ConfigurableApplicationContext run(Class<?> applicationClass, String... args) {
         return run(applicationClass, args, b -> {});
     }
 

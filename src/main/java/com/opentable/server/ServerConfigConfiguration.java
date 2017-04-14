@@ -24,7 +24,7 @@ import com.opentable.spring.PropertySourceUtil;
     EnvInfo.class,
 })
 public class ServerConfigConfiguration {
-    private final String INDENT = "    ";
+    private static final String INDENT = "    ";
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfig() {
