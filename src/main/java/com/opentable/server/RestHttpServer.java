@@ -13,6 +13,7 @@ import com.opentable.jaxrs.JaxRsClientConfiguration;
 import com.opentable.metrics.DefaultMetricsConfiguration;
 import com.opentable.metrics.http.HealthHttpConfiguration;
 import com.opentable.pausedetector.EnablePauseDetector;
+import com.opentable.vault.OTVaultConfiguration;
 
 /**
  * REST HTTP Server.
@@ -35,6 +36,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     DefaultMetricsConfiguration.class,
     HealthHttpConfiguration.class,
     StartupShutdownFailedHandler.class,
+    OTVaultConfiguration.class,
 })
 @EnablePauseDetector
 public @interface RestHttpServer {
