@@ -31,7 +31,7 @@ public abstract class AsyncBaseTest {
 
     protected abstract EmbeddedJettyBase getEmbeddedJetty();
 
-    @Test(timeout=30_000)
+    @Test(timeout=60_000)
     public void testAsynchronousServerAndClient() throws Exception {
         final EmbeddedJettyBase ej = getEmbeddedJetty();
         assertEquals(N_THREADS, ej.getThreadPool().getMaxThreads());

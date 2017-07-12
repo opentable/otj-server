@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
     EmbeddedJetty.class,
-    RestHttpServerCommon.class
+    RestHttpServerCommon.class,
 })
 public @interface RestHttpServer {
 }

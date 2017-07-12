@@ -1,18 +1,20 @@
 package com.opentable.server;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
 import com.opentable.jackson.OpenTableJacksonConfiguration;
 import com.opentable.jaxrs.JaxRsClientConfiguration;
 import com.opentable.metrics.DefaultMetricsConfiguration;
 import com.opentable.metrics.http.HealthHttpConfiguration;
 import com.opentable.metrics.http.MetricsHttpConfiguration;
 import com.opentable.pausedetector.EnablePauseDetector;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.opentable.vault.OTVaultConfiguration;
 
 /**
  * Common configuration for REST HTTP Server instances
@@ -35,6 +37,7 @@ import java.lang.annotation.Target;
     HealthHttpConfiguration.class,
     MetricsHttpConfiguration.class,
     StartupShutdownFailedHandler.class,
+    OTVaultConfiguration.class,
 })
 @EnablePauseDetector
 public @interface RestHttpServerCommon {
