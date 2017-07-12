@@ -1,13 +1,12 @@
 package com.opentable.server;
 
-import java.util.Collections;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.ws.rs.ext.RuntimeDelegate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.google.common.collect.ImmutableMap;
 
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.Filter30Dispatcher;
@@ -40,7 +39,10 @@ public class ResteasyAutoConfiguration {
     public FilterRegistrationBean resteasyServletRegistration() {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean(new Filter30Dispatcher());
         registrationBean.addUrlPatterns("/*");
-        registrationBean.setInitParameters(Collections.singletonMap("resteasy.servlet.mapping.prefix", "/")); // set prefix here
+        registrationBean.setInitParameters(
+                ImmutableMap.of(
+                        "resteasy.servlet.mapping.prefix", "/", // set prefix here
+                        "resteasy.add.charset", "true")); // any text/* response without encoding info gets UTF-8
         return registrationBean;
     }
 
