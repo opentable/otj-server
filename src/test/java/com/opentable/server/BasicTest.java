@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import com.codahale.metrics.MetricRegistry;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.junit.Assert;
@@ -34,15 +36,20 @@ public class BasicTest {
     @Inject
     EmbeddedJetty ej;
 
+    @Inject
+    MetricRegistry metrics;
+
     @Test
     public void testHello() throws IOException {
-        Assert.assertEquals(TestServer.HELLO_WORLD, request.of("/").request().get().readEntity(String.class));
+        assertEquals(TestServer.HELLO_WORLD, request.of("/").request().get().readEntity(String.class));
+        assertEquals(1, metrics.meter("http-server.200-responses").getCount());
     }
 
     @Test
     public void testMissing() throws IOException {
         Response r = request.of("/not/found/omg/wtf/bbq").request().get();
-        Assert.assertEquals(404, r.getStatus());
+        assertEquals(404, r.getStatus());
+        assertEquals(1, metrics.meter("http-server.404-responses").getCount());
     }
 
     @Test

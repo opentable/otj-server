@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.inject.Inject;
@@ -38,6 +39,7 @@ import org.springframework.context.event.EventListener;
 
 import com.opentable.logging.jetty.JsonRequestLog;
 import com.opentable.logging.jetty.JsonRequestLogConfig;
+import com.opentable.util.Optionals;
 
 /**
  * TODO Add all the different types of injected handlers from the old server?
@@ -77,6 +79,9 @@ public class EmbeddedJetty {
 
     @Inject
     Optional<Collection<Function<Handler, Handler>>> handlerCustomizers;
+
+    @Inject
+    Optional<Collection<Consumer<Server>>> serverCustomizers;
 
     private EmbeddedServletContainer container;
 
@@ -128,6 +133,12 @@ public class EmbeddedJetty {
             server.setStopTimeout(shutdownTimeout.toMillis());
         });
         factory.addServerCustomizers(this::sizeThreadPool);
+        factory.addServerCustomizers(server ->
+            Optionals.stream(serverCustomizers).flatMap(Collection::stream).forEach(customizer -> {
+                LOG.debug("Customizing server {} with {}", server, customizer);
+                customizer.accept(server);
+            }));
+
         return factory;
     }
 
