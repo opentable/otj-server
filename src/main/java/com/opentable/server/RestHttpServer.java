@@ -12,6 +12,7 @@ import com.opentable.jackson.OpenTableJacksonConfiguration;
 import com.opentable.jaxrs.JaxRsClientConfiguration;
 import com.opentable.metrics.DefaultMetricsConfiguration;
 import com.opentable.metrics.http.HealthHttpConfiguration;
+import com.opentable.metrics.http.MetricsHttpConfiguration;
 import com.opentable.pausedetector.EnablePauseDetector;
 
 /**
@@ -34,6 +35,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     JmxConfiguration.class,
     DefaultMetricsConfiguration.class,
     HealthHttpConfiguration.class,
+    MetricsHttpConfiguration.class,
     StartupShutdownFailedHandler.class,
 })
 @EnablePauseDetector

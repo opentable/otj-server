@@ -5,6 +5,11 @@ otj-server
 
 * jetty Server is now a @Lazy @Bean
 
+2.6.2
+-----
+
+* enable metrics http endpoint
+
 2.6.1
 -----
 
