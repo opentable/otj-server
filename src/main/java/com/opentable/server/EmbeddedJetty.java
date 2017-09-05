@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -66,8 +65,6 @@ public class EmbeddedJetty {
     @Value("${ot.httpserver.min-threads:#{null}}")
     private Integer minThreads;
 
-    private final AtomicBoolean containerInitialized = new AtomicBoolean();
-
     //// Make specifying them fail the build when we cut over?
 
     /**
@@ -75,7 +72,7 @@ public class EmbeddedJetty {
      * With {@link #containerInitialized(EmbeddedServletContainerInitializedEvent)}, we capture this value
      * and store it here.
      */
-    private Integer httpActualPort;
+    private volatile Integer httpActualPort;
 
     @Inject
     Optional<Provider<QueuedThreadPool>> qtpProvider;
@@ -162,7 +159,6 @@ public class EmbeddedJetty {
     @EventListener
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public void containerInitialized(final EmbeddedServletContainerInitializedEvent evt) {
-        containerInitialized.set(true);
         container = evt.getEmbeddedServletContainer();
         final int port = container.getPort();
         if (port != -1) {
@@ -188,6 +184,7 @@ public class EmbeddedJetty {
         return new HttpServerInfo() {
             @Override
             public int getPort() {
+                // Safe because state of httpActualPort can only go from null => non null
                 Preconditions.checkState(httpActualPort != null, "http port not yet initialized");
                 return httpActualPort;
             }
@@ -208,10 +205,5 @@ public class EmbeddedJetty {
     @VisibleForTesting
     QueuedThreadPool getThreadPool() {
         return (QueuedThreadPool) getServer().getThreadPool();
-    }
-
-    @VisibleForTesting
-    AtomicBoolean getContainerInitialized() {
-        return containerInitialized;
     }
 }
