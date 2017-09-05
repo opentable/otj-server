@@ -4,6 +4,8 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
     "ot.httpserver.max-threads=13",
 })
 public class EventTest {
+    private static final Logger LOG = LoggerFactory.getLogger(EventTest.class);
 
     @Inject
     HttpServerInfo info;
@@ -26,6 +29,6 @@ public class EventTest {
     @Test
     public void testEvents() {
 
-        System.err.println("Waiting and chilling. " + info.getPort());
+        LOG.debug("Waiting and chilling. " + info.getPort());
     }
 }
