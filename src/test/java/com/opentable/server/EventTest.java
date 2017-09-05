@@ -1,7 +1,5 @@
 package com.opentable.server;
 
-import javax.inject.Inject;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,9 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
     "ot.httpserver.max-threads=13",
 })
 public class EventTest {
-
-    @Inject
-    EventTestListener listener;
 
     @Test
     public void testEvents() {
