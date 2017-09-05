@@ -58,14 +58,13 @@ public class EmbeddedJetty {
     @Value("${ot.httpserver.shutdown-timeout:PT5s}")
     private Duration shutdownTimeout;
 
-    //// XXX: these should be removed pending https://github.com/spring-projects/spring-boot/issues/5314
+    // XXX: these should be removed pending https://github.com/spring-projects/spring-boot/issues/5314
     @Value("${ot.httpserver.max-threads:32}")
     private int maxThreads;
 
     @Value("${ot.httpserver.min-threads:#{null}}")
+    // Specifying this fails the build.
     private Integer minThreads;
-
-    //// Make specifying them fail the build when we cut over?
 
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
