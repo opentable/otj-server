@@ -36,6 +36,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 import com.opentable.logging.jetty.JsonRequestLog;
 import com.opentable.logging.jetty.JsonRequestLogConfig;
@@ -154,6 +156,7 @@ public class EmbeddedJetty {
     }
 
     @EventListener
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public void containerInitialized(final EmbeddedServletContainerInitializedEvent evt) {
         container = evt.getEmbeddedServletContainer();
         final int port = container.getPort();
