@@ -17,7 +17,7 @@ public class EventTestListener {
 
     @EventListener
     public void containerInitialized(final EmbeddedServletContainerInitializedEvent evt) {
-        // Should blow up if other ran first
+        // Should blow up if other didn't first
         System.err.println("I like ports " + info.getPort());
     }
 }
