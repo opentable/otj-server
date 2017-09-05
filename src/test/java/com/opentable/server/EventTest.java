@@ -1,5 +1,7 @@
 package com.opentable.server;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +20,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 })
 public class EventTest {
 
+    @Inject
+    HttpServerInfo info;
+
     @Test
     public void testEvents() {
-        System.err.println("Waiting and chilling.");
+
+        System.err.println("Waiting and chilling. " + info.getPort());
     }
 }
