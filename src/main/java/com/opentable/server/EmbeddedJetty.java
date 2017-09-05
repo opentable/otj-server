@@ -36,6 +36,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 import com.opentable.logging.jetty.JsonRequestLog;
 import com.opentable.logging.jetty.JsonRequestLogConfig;
@@ -56,20 +58,20 @@ public class EmbeddedJetty {
     @Value("${ot.httpserver.shutdown-timeout:PT5s}")
     private Duration shutdownTimeout;
 
-    //// XXX: these should be removed pending https://github.com/spring-projects/spring-boot/issues/5314
+    // XXX: these should be removed pending https://github.com/spring-projects/spring-boot/issues/5314
     @Value("${ot.httpserver.max-threads:32}")
     private int maxThreads;
 
     @Value("${ot.httpserver.min-threads:#{null}}")
+    // Specifying this fails the build.
     private Integer minThreads;
-    //// Make specifying them fail the build when we cut over?
 
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
      * With {@link #containerInitialized(EmbeddedServletContainerInitializedEvent)}, we capture this value
      * and store it here.
      */
-    private Integer httpActualPort;
+    private volatile Integer httpActualPort;
 
     @Inject
     Optional<Provider<QueuedThreadPool>> qtpProvider;
@@ -154,6 +156,7 @@ public class EmbeddedJetty {
     }
 
     @EventListener
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public void containerInitialized(final EmbeddedServletContainerInitializedEvent evt) {
         container = evt.getEmbeddedServletContainer();
         final int port = container.getPort();
@@ -180,6 +183,7 @@ public class EmbeddedJetty {
         return new HttpServerInfo() {
             @Override
             public int getPort() {
+                // Safe because state of httpActualPort can only go from null => non null
                 Preconditions.checkState(httpActualPort != null, "http port not yet initialized");
                 return httpActualPort;
             }
