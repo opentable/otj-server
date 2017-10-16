@@ -86,6 +86,9 @@ public class EmbeddedJetty {
     @Inject
     Optional<Collection<Consumer<Server>>> serverCustomizers;
 
+    @Inject
+    Optional<JsonRequestLog> requestLogger;
+
     private EmbeddedServletContainer container;
 
     @Bean
@@ -115,7 +118,8 @@ public class EmbeddedJetty {
                 LOG.debug("request logging disabled; config {}", requestLogConfig);
             } else {
                 final RequestLogHandler logHandler = new RequestLogHandler();
-                logHandler.setRequestLog(new JsonRequestLog(Clock.systemUTC(), requestLogConfig));
+                logHandler.setRequestLog(requestLogger.orElseGet(
+                        () -> new JsonRequestLog(Clock.systemUTC(), requestLogConfig)));
                 logHandler.setHandler(customizedHandler);
                 customizedHandler = logHandler;
                 LOG.debug("request logging enabled; added log handler with config {}", requestLogConfig);
