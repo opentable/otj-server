@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.8.0
+-----
+
+* add ability to configure proxy protocol over http(s)
+
 2.7.2
 -----
 
@@ -10,6 +15,11 @@ otj-server
 -----
 
 * OTApplication.run now sets the main application class
+
+2.7.0
+-----
+
+* rework request logging
 
 2.6.3
 -----

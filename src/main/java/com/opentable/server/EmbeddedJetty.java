@@ -2,12 +2,15 @@ package com.opentable.server;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntSupplier;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -16,12 +19,21 @@ import javax.servlet.ServletContextListener;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
+import com.google.common.collect.ImmutableMap;
 
+import org.eclipse.jetty.server.ConnectionFactory;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.ProxyConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,22 +51,32 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.PropertyResolver;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.opentable.logging.jetty.JsonRequestLog;
 import com.opentable.logging.jetty.JsonRequestLogConfig;
+import com.opentable.server.HttpServerInfo.ConnectorInfo;
+import com.opentable.spring.SpecializedConfigFactory;
 import com.opentable.util.Optionals;
 
 /**
- * TODO Add all the different types of injected handlers from the old server?
- * https://github.com/opentable/otj-httpserver/blob/master/src/main/java/com/opentable/httpserver/AbstractJetty9HttpServer.java
+ * Configure an embedded {@code Jetty 9} HTTP(S) server, and tie it into the Spring Boot lifecycle.
+ *
+ * Spring Boot provides a very basic Jetty integration but it doesn't cover a lot of important use cases.
+ * For example even something as trivial as configuring the worker pool size, socket options,
+ * or HTTPS connector is totally unsupported.
  */
 @Configuration
 @Import(JsonRequestLogConfig.class)
 public class EmbeddedJetty {
+    public static final String DEFAULT_CONNECTOR_NAME = "default-http";
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedJetty.class);
 
-    @Value("${ot.http.bind-port:${PORT0:0}}")
-    private List<Integer> httpBindPort;
+    @Value("${ot.http.bind-port:#{null}}")
+    // Specifying this fails startup
+    private String httpBindPort;
 
     @Value("${ot.httpserver.shutdown-timeout:PT5s}")
     private Duration shutdownTimeout;
@@ -66,6 +88,9 @@ public class EmbeddedJetty {
     @Value("${ot.httpserver.min-threads:#{null}}")
     // Specifying this fails the build.
     private Integer minThreads;
+
+    @Value("${ot.httpserver.active-connectors:default-http}")
+    List<String> activeConnectors;
 
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
@@ -91,14 +116,49 @@ public class EmbeddedJetty {
 
     private EmbeddedServletContainer container;
 
+    private Map<String, ConnectorInfo> connectorInfos;
+
     @Bean
-    public EmbeddedServletContainerFactory servletContainer(final JsonRequestLogConfig requestLogConfig) {
-        if (httpBindPort.isEmpty()) {
-            throw new IllegalStateException("Must specify at least one 'ot.http.bind-port'");
+    Map<String, ServerConnectorConfig> activeConnectors(SpecializedConfigFactory<ServerConnectorConfig> configFactory) {
+        final ImmutableMap.Builder<String, ServerConnectorConfig> builder = ImmutableMap.builder();
+        activeConnectors.forEach(name -> builder.put(name, configFactory.getConfig(name)));
+
+        final ImmutableMap<String, ServerConnectorConfig> result = builder.build();
+        LOG.info("Built active connector list: {}", result);
+        return result;
+    }
+
+    @Bean
+    public EmbeddedServletContainerFactory servletContainer(
+            final JsonRequestLogConfig requestLogConfig,
+            final Map<String, ServerConnectorConfig> activeConnectors,
+            final PropertyResolver pr)
+    {
+        if (httpBindPort != null) {
+            throw new IllegalStateException("'ot.http.bind-port' is deprecated, refer to otj-server README for replacement");
         }
 
-        JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory();
-        factory.setPort(httpBindPort.get(0));
+        final PortIterator ports = new PortIterator(pr);
+        final ImmutableMap.Builder<String, ConnectorInfo> connectorInfos = ImmutableMap.builder();
+        final JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory() {
+            @Override
+            protected JettyEmbeddedServletContainer getJettyEmbeddedServletContainer(Server server) {
+                // always auto-start even if the default connector isn't configured
+                return new JettyEmbeddedServletContainer(server, true);
+            }
+        };
+        final ServerConnectorConfig defaultConnector = activeConnectors.get(DEFAULT_CONNECTOR_NAME);
+
+        if (defaultConnector != null) {
+            factory.setPort(selectPort(ports, defaultConnector));
+            Preconditions.checkArgument(!defaultConnector.isForceSecure(), DEFAULT_CONNECTOR_NAME + " may not set secure");
+            Preconditions.checkArgument(defaultConnector.getProtocol().equals("http"), DEFAULT_CONNECTOR_NAME + " may not set protocol");
+            connectorInfos.put(DEFAULT_CONNECTOR_NAME, new DefaultHttpConnectorInfo(this));
+        } else {
+            LOG.debug("Disabling default HTTP connector");
+            factory.setPort(0);
+            factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
+        }
         factory.setSessionTimeout(10, TimeUnit.MINUTES);
         if (qtpProvider.isPresent()) {
             factory.setThreadPool(qtpProvider.get().get());
@@ -131,11 +191,12 @@ public class EmbeddedJetty {
 
             server.setHandler(stats);
 
-            for (int i = 1; i < httpBindPort.size(); i++) {
-                final ServerConnector connector = new ServerConnector(server);
-                connector.setPort(httpBindPort.get(i));
-                server.addConnector(connector);
-            }
+            activeConnectors.forEach((name, config) -> {
+                if (!name.equals(DEFAULT_CONNECTOR_NAME)) {
+                    connectorInfos.put(name, createConnector(server, name, ports, config));
+                }
+            });
+            this.connectorInfos = connectorInfos.build();
 
             server.setStopTimeout(shutdownTimeout.toMillis());
         });
@@ -147,6 +208,61 @@ public class EmbeddedJetty {
             }));
 
         return factory;
+    }
+
+    @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
+    private ConnectorInfo createConnector(Server server, String name, IntSupplier port, ServerConnectorConfig config) {
+        final List<ConnectionFactory> factories = new ArrayList<>();
+
+        final SslContextFactory ssl;
+
+        switch (config.getProtocol()) { // NOPMD
+        case "proxy+http":
+            factories.add(new ProxyConnectionFactory());
+        case "http":
+            ssl = null;
+            break;
+        case "proxy+https":
+            factories.add(new ProxyConnectionFactory());
+        case "https":
+            final String path = config.getKeystore();
+            Preconditions.checkState(path != null, "no keystore specified for '%s'", name);
+            ssl = new SslContextFactory(path);
+            ssl.setKeyStorePassword(config.getKeystorePassword());
+            break;
+        default:
+            throw new UnsupportedOperationException(String.format("For connector '%s', unsupported protocol '%s'", name, config.getProtocol()));
+        }
+
+        final HttpConfiguration httpConfig = new HttpConfiguration();
+        if (ssl != null) {
+            httpConfig.addCustomizer(new SecureRequestCustomizer());
+        } else if (config.isForceSecure()) {
+            httpConfig.addCustomizer(new SuperSecureCustomizer());
+        }
+        final HttpConnectionFactory http = new HttpConnectionFactory(httpConfig);
+
+        if (ssl != null) {
+            factories.add(new SslConnectionFactory(ssl, http.getProtocol()));
+        }
+
+        factories.add(http);
+
+        final ServerConnector connector = new ServerConnector(server,
+                factories.toArray(new ConnectionFactory[factories.size()]));
+        connector.setName(name);
+        connector.setPort(selectPort(port, config));
+
+        server.addConnector(connector);
+        return new ServerConnectorInfo(name, connector, config);
+    }
+
+    private int selectPort(IntSupplier nextAssignedPort, ServerConnectorConfig connectorConfig) {
+        int configuredPort = connectorConfig.getPort();
+        if (configuredPort < 0) {
+            return nextAssignedPort.getAsInt();
+        }
+        return configuredPort;
     }
 
     private void sizeThreadPool(Server server) {
@@ -165,7 +281,7 @@ public class EmbeddedJetty {
     public void containerInitialized(final EmbeddedServletContainerInitializedEvent evt) {
         container = evt.getEmbeddedServletContainer();
         final int port = container.getPort();
-        if (port != -1) {
+        if (port > 0) {
             httpActualPort = port;
         }
     }
@@ -188,14 +304,13 @@ public class EmbeddedJetty {
         return new HttpServerInfo() {
             @Override
             public int getPort() {
-                // Safe because state of httpActualPort can only go from null => non null
-                Preconditions.checkState(httpActualPort != null, "http port not yet initialized");
-                return httpActualPort;
+                return getDefaultHttpActualPort();
             }
 
             @Override
-            public int getPoolSize() {
-                return maxThreads;
+            public Map<String, ConnectorInfo> getConnectors() {
+                Preconditions.checkState(connectorInfos != null, "connector info not available yet, please wait for Jetty to be ready");
+                return connectorInfos;
             }
         };
     }
@@ -211,5 +326,11 @@ public class EmbeddedJetty {
     @VisibleForTesting
     QueuedThreadPool getThreadPool() {
         return (QueuedThreadPool) getServer().getThreadPool();
+    }
+
+    int getDefaultHttpActualPort() {
+        // Safe because state of httpActualPort can only go from null => non null
+        Preconditions.checkState(httpActualPort != null, "default connector http port not initialized");
+        return httpActualPort;
     }
 }

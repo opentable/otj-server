@@ -4,10 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
 import java.net.ServerSocket;
-import java.util.Collections;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -31,7 +32,9 @@ public class DoublePortTest {
         Assert.assertNull(context);
         Assert.assertNull(port);
         SpringApplication app = new SpringApplication(TestServer.class);
-        app.setDefaultProperties(Collections.singletonMap("ot.http.bind-port", "0," + secondPort));
+        app.setDefaultProperties(ImmutableMap.of(
+                "ot.httpserver.active-connectors", "default-http,extra-http",
+                "ot.httpserver.connector.extra-http.port", secondPort));
         context = app.run();
         port = context.getBeanFactory().getBean(HttpServerInfo.class).getPort();
     }
