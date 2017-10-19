@@ -43,7 +43,7 @@ public final class OTApplication {
     public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args, Consumer<SpringApplicationBuilder> customize) {
         System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
         final SpringApplicationBuilder builder = new SpringApplicationBuilder(applicationClass);
-        builder.application().setMainApplicationClass(applicationClass);
+        builder.main(applicationClass);
         customize.accept(builder);
         return builder.run(args);
     }
