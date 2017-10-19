@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.7.1
+-----
+
+* OTApplication.run now sets the main application class
+
 2.6.3
 -----
 
