@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.7.2
+-----
+
+* static path is now configurable
+
 2.7.1
 -----
 
