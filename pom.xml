@@ -209,6 +209,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- spring-boot-test uses this but has it optional :/ -->
     <dependency>
       <groupId>org.mockito</groupId>
