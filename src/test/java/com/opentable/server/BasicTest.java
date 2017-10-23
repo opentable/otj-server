@@ -3,11 +3,13 @@ package com.opentable.server;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.time.Duration;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import com.codahale.metrics.Counting;
 import com.codahale.metrics.MetricRegistry;
 
 import org.apache.commons.io.IOUtils;
@@ -28,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 })
 @TestPropertySource(properties= {
     "ot.httpserver.max-threads=13",
+    "ot.httpserver.static-path=static-test",
 })
 public class BasicTest {
     @Inject
@@ -39,27 +42,27 @@ public class BasicTest {
     @Inject
     MetricRegistry metrics;
 
-    @Test
-    public void testHello() throws IOException {
+    @Test(timeout = 1_000)
+    public void testHello() throws IOException, InterruptedException {
         assertEquals(TestServer.HELLO_WORLD, request.of("/").request().get().readEntity(String.class));
-        assertEquals(1, metrics.meter("http-server.200-responses").getCount());
+        waitForCount("http-server.200-responses", 1);
     }
 
-    @Test
-    public void testMissing() throws IOException {
+    @Test(timeout = 1_000)
+    public void testMissing() throws IOException, InterruptedException {
         Response r = request.of("/not/found/omg/wtf/bbq").request().get();
         assertEquals(404, r.getStatus());
-        assertEquals(1, metrics.meter("http-server.404-responses").getCount());
+        waitForCount("http-server.404-responses", 1);
     }
 
     @Test
     public void testStatic_txt() throws IOException {
-        testStatic("static/test.txt", "text/plain");
+        testStatic("static-test/test.txt", "text/plain");
     }
 
     @Test
     public void testStatic_png() throws IOException {
-        testStatic("static/test.png", "image/png");
+        testStatic("static-test/test.png", "image/png");
     }
 
     @Test
@@ -75,5 +78,15 @@ public class BasicTest {
         assertEquals(expectedContentType, r.getHeaderString(HttpHeaders.CONTENT_TYPE));
         final byte[] actual = r.readEntity(byte[].class);
         Assert.assertArrayEquals(expected, actual);
+    }
+
+    private void waitForCount(final String metricName, final long expected) throws InterruptedException {
+        while (true) {
+            final Counting c = (Counting) metrics.getMetrics().get(metricName);
+            if (c != null && c.getCount() == expected) {
+                break;
+            }
+            Thread.sleep(Duration.ofMillis(100).toMillis());
+        }
     }
 }
