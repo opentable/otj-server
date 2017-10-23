@@ -28,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 })
 @TestPropertySource(properties= {
     "ot.httpserver.max-threads=13",
+    "ot.httpserver.static-path=static-test",
 })
 public class BasicTest {
     @Inject
@@ -54,12 +55,12 @@ public class BasicTest {
 
     @Test
     public void testStatic_txt() throws IOException {
-        testStatic("static/test.txt", "text/plain");
+        testStatic("static-test/test.txt", "text/plain");
     }
 
     @Test
     public void testStatic_png() throws IOException {
-        testStatic("static/test.png", "image/png");
+        testStatic("static-test/test.png", "image/png");
     }
 
     @Test
