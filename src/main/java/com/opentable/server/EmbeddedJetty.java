@@ -92,6 +92,9 @@ public class EmbeddedJetty {
     @Value("${ot.httpserver.active-connectors:default-http}")
     List<String> activeConnectors;
 
+    @Value("${ot.httpserver.ssl-allowed-deprecated-ciphers:}")
+    List<String> allowedDeprecatedCiphers;
+
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
      * With {@link #containerInitialized(EmbeddedServletContainerInitializedEvent)}, we capture this value
@@ -225,10 +228,7 @@ public class EmbeddedJetty {
         case "proxy+https":
             factories.add(new ProxyConnectionFactory());
         case "https":
-            final String path = config.getKeystore();
-            Preconditions.checkState(path != null, "no keystore specified for '%s'", name);
-            ssl = new SslContextFactory(path);
-            ssl.setKeyStorePassword(config.getKeystorePassword());
+            ssl = new SuperSadSslContextFactory(name, config);
             break;
         default:
             throw new UnsupportedOperationException(String.format("For connector '%s', unsupported protocol '%s'", name, config.getProtocol()));
@@ -332,5 +332,30 @@ public class EmbeddedJetty {
         // Safe because state of httpActualPort can only go from null => non null
         Preconditions.checkState(httpActualPort != null, "default connector http port not initialized");
         return httpActualPort;
+    }
+
+    class SuperSadSslContextFactory extends SslContextFactory {
+        SuperSadSslContextFactory(String name, ServerConnectorConfig config) {
+            super(config.getKeystore());
+            Preconditions.checkState(config.getKeystore() != null, "no keystore specified for '%s'", name);
+            setKeyStorePassword(config.getKeystorePassword());
+        }
+
+        @Override
+        protected void removeExcludedCipherSuites(List<String> selected_ciphers) {
+            super.removeExcludedCipherSuites(selected_ciphers);
+
+            if (allowedDeprecatedCiphers.isEmpty()) {
+                return;
+            }
+
+            LOG.warn("***************************************************************************************");
+            LOG.warn("TEMPORARILY ALLOWING VULNERABLE, DEPRECATED SSL CIPHERS FOR BUSTED CLIENTS!!!");
+            allowedDeprecatedCiphers.forEach(cipher ->
+                    LOG.warn("    * {}", cipher)
+            );
+            LOG.warn("***************************************************************************************");
+            selected_ciphers.addAll(allowedDeprecatedCiphers);
+        }
     }
 }

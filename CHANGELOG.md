@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.8.1
+-----
+
+* import enabling deprecated SSL ciphers from otj-httpserver
+
 2.8.0
 -----
 
