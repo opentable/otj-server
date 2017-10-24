@@ -73,6 +73,10 @@ the rest are created by the `otj-server` code and wired to Jetty ourselves.
 
 Usually the defaults are okay.  You might tune your thread pool size for heavily utilized services.  See more detail on the wiki, under [Jetty HTTP Server](https://wiki.otcorp.opentable.com/display/CP/Jetty+HTTP+Server#JettyHTTPServer-ThreadPoolUsage).
 
+```
+ot.httpserver.max-threads=32
+```
+
 JMX Configuration
 -----------------
 
