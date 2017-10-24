@@ -45,13 +45,13 @@ public class BasicTest {
     @Inject
     MetricRegistry metrics;
 
-    @Test(timeout = 1_000)
+    @Test(timeout = 10_000)
     public void testHello() throws IOException, InterruptedException {
         assertEquals(TestServer.HELLO_WORLD, request.of("/").request().get().readEntity(String.class));
         waitForCount("http-server.200-responses", 1);
     }
 
-    @Test(timeout = 1_000)
+    @Test(timeout = 10_000)
     public void testMissing() throws IOException, InterruptedException {
         Response r = request.of("/not/found/omg/wtf/bbq").request().get();
         assertEquals(404, r.getStatus());
