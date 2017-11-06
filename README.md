@@ -62,12 +62,18 @@ but are terminated securely elsewhere.  You might use this if F5 terminates SSL 
 
 ```
 # first, declare all your connectors
-ot.httpserver.connector.default-http.port=-1    # default-http is on PORT0
-ot.httpserver.connector.fixed-http.port=8080    # fixed-http gets fixed 8080
-ot.httpserver.connector.my-https.protocol=https # this connector is https
+## default-http is usually on $PORT0
+ot.httpserver.connector.default-http.port=-1
+## you could declare a fixed-http connector, this is useful to e.g. connect direct to ELB
+## but it'll cause deployment problems - usually you'd only do this in development
+ot.httpserver.connector.fixed-http.port=8080
+## and maybe you want to secure some things with TLS
+## port defaults to -1 so this will get $PORT1
+ot.httpserver.connector.my-https.protocol=https              # this connector is https
 ot.httpserver.connector.my-https.keystore=/some/keystore.jks # and has these keys loaded
 
 # activate connectors.  connectors declared but not referenced here are inactive
+# particularly note that default-http needs to be here if you want it active
 ot.httpserver.active-connectors=default-http,fixed-http,my-https
 ```
 
