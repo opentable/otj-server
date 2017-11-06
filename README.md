@@ -61,15 +61,23 @@ but are terminated securely elsewhere.  You might use this if F5 terminates SSL 
 `keystore` declares a path to a Java keystore to use for SSL.
 
 ```
-ot.httpserver.connector.fixed-http.port=8080
-ot.httpserver.connector.my-https.protocol=https
-ot.httpserver.connector.my-https.keystore=/some/keystore.jks
+# first, declare all your connectors
+ot.httpserver.connector.default-http.port=-1    # default-http is on PORT0
+ot.httpserver.connector.fixed-http.port=8080    # fixed-http gets fixed 8080
+ot.httpserver.connector.my-https.protocol=https # this connector is https
+ot.httpserver.connector.my-https.keystore=/some/keystore.jks # and has these keys loaded
 
+# activate connectors.  connectors declared but not referenced here are inactive
 ot.httpserver.active-connectors=default-http,fixed-http,my-https
 ```
 
 The `default-http` connector is hard-wired to Spring Boot's default connector and is less customizable;
 the rest are created by the `otj-server` code and wired to Jetty ourselves.
+
+Previous versions of `otj-server` had a configurable `ot.http.bind-port`; this usually would be replaced with e.g.
+```
+ot.httpserver.connector.default-http.port=8080
+```
 
 Usually the defaults are okay.  You might tune your thread pool size for heavily utilized services.  See more detail on the wiki, under [Jetty HTTP Server](https://wiki.otcorp.opentable.com/display/CP/Jetty+HTTP+Server#JettyHTTPServer-ThreadPoolUsage).
 
