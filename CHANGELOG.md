@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.9.0
+-----
+
+* restores exposing threadpool size
+
 2.8.1
 -----
 
