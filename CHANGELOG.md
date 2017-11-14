@@ -4,7 +4,7 @@ otj-server
 2.9.0
 -----
 
-* restores exposing threadpool size
+* reverts interface-brekaing change in 2.8.0: restores exposing threadpool size
 
 2.8.1
 -----
