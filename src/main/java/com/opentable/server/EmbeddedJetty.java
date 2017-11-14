@@ -115,6 +115,9 @@ public class EmbeddedJetty {
     Optional<Collection<Consumer<Server>>> serverCustomizers;
 
     @Inject
+    Optional<Collection<Consumer<HttpConfiguration>>> httpConfigCustomizers;
+
+    @Inject
     Optional<JsonRequestLog> requestLogger;
 
     private EmbeddedServletContainer container;
@@ -157,6 +160,14 @@ public class EmbeddedJetty {
             Preconditions.checkArgument(!defaultConnector.isForceSecure(), DEFAULT_CONNECTOR_NAME + " may not set secure");
             Preconditions.checkArgument(defaultConnector.getProtocol().equals("http"), DEFAULT_CONNECTOR_NAME + " may not set protocol");
             connectorInfos.put(DEFAULT_CONNECTOR_NAME, new DefaultHttpConnectorInfo(this));
+            httpConfigCustomizers.ifPresent(customizers ->
+                factory.addServerCustomizers(server ->
+                    customizers.forEach(customizer ->
+                        (server.getConnectors()[0]).getConnectionFactories().stream()
+                                .filter(HttpConnectionFactory.class::isInstance)
+                                .map(HttpConnectionFactory.class::cast)
+                                .map(HttpConnectionFactory::getHttpConfiguration)
+                                .forEach(customizer))));
         } else {
             LOG.debug("Disabling default HTTP connector");
             factory.setPort(0);
@@ -240,6 +251,7 @@ public class EmbeddedJetty {
         } else if (config.isForceSecure()) {
             httpConfig.addCustomizer(new SuperSecureCustomizer());
         }
+        httpConfigCustomizers.ifPresent(c -> c.forEach(h -> h.accept(httpConfig)));
         final HttpConnectionFactory http = new HttpConnectionFactory(httpConfig);
 
         if (ssl != null) {

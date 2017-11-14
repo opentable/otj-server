@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.9.1
+-----
+
+* allow customizing HttpConfiguration
+
 2.9.0
 -----
 
