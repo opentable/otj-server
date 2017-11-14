@@ -312,6 +312,11 @@ public class EmbeddedJetty {
                 Preconditions.checkState(connectorInfos != null, "connector info not available yet, please wait for Jetty to be ready");
                 return connectorInfos;
             }
+
+            @Override
+            public int getPoolSize() {
+                return maxThreads;
+            }
         };
     }
 

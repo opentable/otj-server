@@ -12,6 +12,9 @@ public interface HttpServerInfo {
     /** @return the main (almost always 'http') port */
     int getPort();
 
+    /** @return the size of the thread pool */
+    int getPoolSize();
+
     /** @return information on the currently active server connectors */
     Map<String, ConnectorInfo> getConnectors();
 
