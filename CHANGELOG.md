@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.9.2
+-----
+
+* fixes backend info filter for chunked responses
+
 2.9.1
 -----
 
