@@ -48,14 +48,13 @@ public class BackendInfoFilterConfiguration {
         @Override
         public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
                 throws IOException, ServletException {
-            try {
-                chain.doFilter(request, response);
-            } finally {
-                if (response instanceof HttpServletResponse) {
-                    final HttpServletResponse httpResponse = (HttpServletResponse) response;
-                    headers.forEach(httpResponse::addHeader);
-                }
+            // If transfer encoding ends up being chunked, setting these after execution of the filter chain results
+            // in these added headers being ignored.  We therefore add them before chain execution.  See OTPL-1698.
+            if (response instanceof HttpServletResponse) {
+                final HttpServletResponse httpResponse = (HttpServletResponse) response;
+                headers.forEach(httpResponse::addHeader);
             }
+            chain.doFilter(request, response);
         }
 
         @Override
