@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.9.3
+-----
+
+* uses latest parent
+
 2.9.2
 -----
 
