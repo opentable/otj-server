@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.opentable</groupId>
     <artifactId>otj-parent-spring</artifactId>
-    <version>128</version>
+    <version>129</version>
   </parent>
 
   <groupId>com.opentable.components</groupId>
@@ -19,6 +19,11 @@
     <url>http://github.com/opentable/${project.artifactId}</url>
     <tag>HEAD</tag>
   </scm>
+
+  <properties>
+    <!-- TODO Remove after upgrading to parent 130. -->
+    <dep.otj-jaxrs.version>2.6.0</dep.otj-jaxrs.version>
+  </properties>
 
   <dependencies>
     <dependency>
