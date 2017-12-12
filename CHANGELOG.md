@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.9.4
+-----
+
+* adds tests for jaxrs client referrer logic (otj-jaxrs 2.6.0)
+
 2.9.3
 -----
 
