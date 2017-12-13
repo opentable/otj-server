@@ -20,10 +20,10 @@
     <tag>HEAD</tag>
   </scm>
 
-    <properties>
-      <!-- TODO Remove after upgrading to parent 131. -->
-      <dep.otj-jaxrs.version>2.7.0</dep.otj-jaxrs.version>
-    </properties>
+  <properties>
+    <!-- TODO Remove after upgrading to parent 131. -->
+    <dep.otj-jaxrs.version>2.7.0</dep.otj-jaxrs.version>
+  </properties>
 
   <dependencies>
     <dependency>
