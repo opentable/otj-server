@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.event.EventListener;
 
 
@@ -19,7 +19,7 @@ public class EventTestListener {
     }
 
     @EventListener
-    public void containerInitialized(final EmbeddedServletContainerInitializedEvent evt) {
+    public void containerInitialized(final WebServerInitializedEvent evt) {
         // Should blow up if other didn't first
         LOG.debug("I like ports " + info.getPort());
     }

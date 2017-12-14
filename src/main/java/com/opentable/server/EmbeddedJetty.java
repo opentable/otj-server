@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
@@ -38,11 +37,11 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.EmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
-import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
+import org.springframework.boot.web.embedded.jetty.JettyWebServer;
+import org.springframework.boot.web.server.WebServer;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -97,7 +96,7 @@ public class EmbeddedJetty {
 
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
-     * With {@link #containerInitialized(EmbeddedServletContainerInitializedEvent)}, we capture this value
+     * With {@link #containerInitialized(WebServerInitializedEvent)}, we capture this value
      * and store it here.
      */
     private volatile Integer httpActualPort;
@@ -120,7 +119,7 @@ public class EmbeddedJetty {
     @Inject
     Optional<JsonRequestLog> requestLogger;
 
-    private EmbeddedServletContainer container;
+    private WebServer container;
 
     private Map<String, ConnectorInfo> connectorInfos;
 
@@ -135,7 +134,7 @@ public class EmbeddedJetty {
     }
 
     @Bean
-    public EmbeddedServletContainerFactory servletContainer(
+    public ServletWebServerFactory servletContainer(
             final JsonRequestLogConfig requestLogConfig,
             final Map<String, ServerConnectorConfig> activeConnectors,
             final PropertyResolver pr)
@@ -146,11 +145,12 @@ public class EmbeddedJetty {
 
         final PortIterator ports = new PortIterator(pr);
         final ImmutableMap.Builder<String, ConnectorInfo> connectorInfos = ImmutableMap.builder();
-        final JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory() {
+        final JettyServletWebServerFactory factory = new JettyServletWebServerFactory() {
+
             @Override
-            protected JettyEmbeddedServletContainer getJettyEmbeddedServletContainer(Server server) {
+            protected JettyWebServer getJettyWebServer(Server server) {
                 // always auto-start even if the default connector isn't configured
-                return new JettyEmbeddedServletContainer(server, true);
+                return new JettyWebServer(server, true);
             }
         };
         final ServerConnectorConfig defaultConnector = activeConnectors.get(DEFAULT_CONNECTOR_NAME);
@@ -173,7 +173,7 @@ public class EmbeddedJetty {
             factory.setPort(0);
             factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
         }
-        factory.setSessionTimeout(10, TimeUnit.MINUTES);
+        factory.setSessionTimeout(Duration.ofMinutes(10));
         if (qtpProvider.isPresent()) {
             factory.setThreadPool(qtpProvider.get().get());
         }
@@ -290,8 +290,8 @@ public class EmbeddedJetty {
 
     @EventListener
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public void containerInitialized(final EmbeddedServletContainerInitializedEvent evt) {
-        container = evt.getEmbeddedServletContainer();
+    public void containerInitialized(final WebServerInitializedEvent evt) {
+        container = evt.getWebServer();
         final int port = container.getPort();
         if (port > 0) {
             httpActualPort = port;
@@ -337,7 +337,7 @@ public class EmbeddedJetty {
     @Lazy
     Server getServer() {
         Preconditions.checkState(container != null, "container not yet available");
-        return ((JettyEmbeddedServletContainer) container).getServer();
+        return ((JettyWebServer) container).getServer();
     }
 
     @VisibleForTesting
