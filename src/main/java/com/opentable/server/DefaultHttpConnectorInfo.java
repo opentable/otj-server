@@ -3,9 +3,9 @@ package com.opentable.server;
 import com.opentable.server.HttpServerInfo.ConnectorInfo;
 
 class DefaultHttpConnectorInfo implements ConnectorInfo {
-    private final EmbeddedJetty embeddedJetty;
+    private final EmbeddedJettyBase embeddedJetty;
 
-    DefaultHttpConnectorInfo(EmbeddedJetty embeddedJetty) {
+    DefaultHttpConnectorInfo(EmbeddedJettyBase embeddedJetty) {
         this.embeddedJetty = embeddedJetty;
     }
 
