@@ -66,7 +66,7 @@ public class EmbeddedReactiveJetty extends EmbeddedJettyBase{
 
         @Override
         public void setSessionTimeout(Duration duration) {
-            // Currently spring 5 does not expose this property at this level. Possibily an oversight
+            // Currently spring 5 does not expose this property at this level. Possibly an oversight
             // Also it is questionable that anyone is actually using this feature
             // consider removing
             throw new UnsupportedOperationException("operation not supported by JettyReactiveWebServerFactory");
