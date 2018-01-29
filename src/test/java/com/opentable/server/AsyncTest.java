@@ -18,8 +18,9 @@ public class AsyncTest extends AsyncBaseTest{
     @Inject
     EmbeddedJetty ej;
 
-    @Test(timeout=20_000)
-    public void testAsynchronousEndpointUsingreactiveJetty() throws Exception {
-        super.testAsynchronousEndpoint(ej);
+    @Override
+    protected EmbeddedJettyBase getEmbeddedJetty() {
+        return ej;
     }
+
 }

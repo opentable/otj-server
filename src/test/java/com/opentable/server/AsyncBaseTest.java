@@ -3,6 +3,7 @@ package com.opentable.server;
 import com.opentable.concurrent.OTExecutors;
 import com.opentable.concurrent.TerminatingExecutorService;
 import com.opentable.concurrent.ThreadPoolBuilder;
+import org.junit.Test;
 import org.springframework.test.context.TestPropertySource;
 import javax.inject.Inject;
 import java.time.Duration;
@@ -22,6 +23,13 @@ public abstract class AsyncBaseTest {
 
     @Inject
     LoopbackRequest request;
+
+    protected abstract EmbeddedJettyBase getEmbeddedJetty();
+
+    @Test(timeout=20_000)
+    public void testAsynchronousEndpointUsingreactiveJetty() throws Exception {
+        testAsynchronousEndpoint(getEmbeddedJetty());
+    }
 
     public void testAsynchronousEndpoint(EmbeddedJettyBase ej) throws Exception {
         assertEquals(N_THREADS, ej.getThreadPool().getMaxThreads());

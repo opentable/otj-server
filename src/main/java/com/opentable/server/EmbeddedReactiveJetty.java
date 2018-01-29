@@ -1,7 +1,6 @@
 package com.opentable.server;
 
 import com.opentable.logging.jetty.JsonRequestLogConfig;
-import org.apache.commons.lang3.NotImplementedException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.springframework.boot.web.embedded.jetty.JettyReactiveWebServerFactory;
@@ -70,7 +69,7 @@ public class EmbeddedReactiveJetty extends EmbeddedJettyBase{
             // Currently spring 5 does not expose this property at this level. Possibily an oversight
             // Also it is questionable that anyone is actually using this feature
             // consider removing
-            throw new NotImplementedException("operation not supported by JettyReactiveWebServerFactory");
+            throw new UnsupportedOperationException("operation not supported by JettyReactiveWebServerFactory");
         }
 
         @Override
@@ -82,7 +81,7 @@ public class EmbeddedReactiveJetty extends EmbeddedJettyBase{
         public void addInitializers(ServletContextInitializer... initializers) {
             // currently not supported by Spring 5. Consider removing since we only
             // add two listeners health and metrics which have spring equivalents
-            throw new NotImplementedException("operation not supported by JettyReactiveWebServerFactory");
+            throw new UnsupportedOperationException("operation not supported by JettyReactiveWebServerFactory");
         }
 
         @Override
