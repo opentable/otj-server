@@ -45,7 +45,6 @@ import org.springframework.core.env.PropertyResolver;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.servlet.ServletContextListener;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -99,9 +98,6 @@ public abstract class EmbeddedJettyBase {
 
     @Inject
     Optional<Provider<QueuedThreadPool>> qtpProvider;
-
-    @Inject
-    Optional<Collection<ServletContextListener>> listeners;
 
     @Inject
     Optional<Collection<Function<Handler, Handler>>> handlerCustomizers;
@@ -161,12 +157,8 @@ public abstract class EmbeddedJettyBase {
             factory.setPort(0);
             factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
         }
-        factory.setSessionTimeout(Duration.ofMinutes(10));
         if (qtpProvider.isPresent()) {
             factory.setThreadPool(qtpProvider.get().get());
-        }
-        if (listeners.isPresent()) {
-            factory.addInitializers(servletContext -> listeners.get().forEach(servletContext::addListener));
         }
         factory.addServerCustomizers(server -> {
             Handler customizedHandler = server.getHandler();

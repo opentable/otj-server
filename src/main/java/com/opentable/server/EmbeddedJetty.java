@@ -1,7 +1,10 @@
 package com.opentable.server;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.springframework.boot.web.embedded.jetty.JettyServerCustomizer;
@@ -16,6 +19,9 @@ import org.springframework.core.env.PropertyResolver;
 
 import com.opentable.logging.jetty.JsonRequestLogConfig;
 
+import javax.inject.Inject;
+import javax.servlet.ServletContextListener;
+
 /**
  * Configure an embedded {@code Jetty 9} HTTP(S) server, and tie it into the Spring Boot lifecycle.
  *
@@ -26,6 +32,9 @@ import com.opentable.logging.jetty.JsonRequestLogConfig;
 @Configuration
 @Import(JsonRequestLogConfig.class)
 public class EmbeddedJetty extends EmbeddedJettyBase{
+
+    @Inject
+    Optional<Collection<ServletContextListener>> listeners;
 
     @Bean
     public ServletWebServerFactory servletContainer(
@@ -43,6 +52,12 @@ public class EmbeddedJetty extends EmbeddedJettyBase{
         };
         JettyWebServerFactoryAdapter factoryAdapter = new JettyWebServerFactoryAdapter(factory);
         this.configureFactoryContainer(requestLogConfig, activeConnectors, pr, factoryAdapter);
+
+        factory.setSessionTimeout(Duration.ofMinutes(10));
+        if (listeners.isPresent()) {
+            factory.addInitializers(servletContext -> listeners.get().forEach(servletContext::addListener));
+        }
+
         return factoryAdapter.getFactory();
     }
 

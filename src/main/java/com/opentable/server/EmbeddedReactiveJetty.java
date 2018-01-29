@@ -1,10 +1,9 @@
 package com.opentable.server;
 
 import com.opentable.logging.jetty.JsonRequestLogConfig;
+import org.apache.commons.lang3.NotImplementedException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.embedded.jetty.JettyReactiveWebServerFactory;
 import org.springframework.boot.web.embedded.jetty.JettyServerCustomizer;
 import org.springframework.boot.web.embedded.jetty.JettyWebServer;
@@ -16,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.env.PropertyResolver;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.JettyHttpHandlerAdapter;
+
 import java.time.Duration;
 import java.util.Map;
 
@@ -29,7 +29,6 @@ import java.util.Map;
 @Configuration
 @Import(JsonRequestLogConfig.class)
 public class EmbeddedReactiveJetty extends EmbeddedJettyBase{
-    private static final Logger LOG = LoggerFactory.getLogger(EmbeddedReactiveJetty.class);
 
     @Bean
     public JettyReactiveWebServerFactory webServerFactory(final JsonRequestLogConfig requestLogConfig,
@@ -68,8 +67,10 @@ public class EmbeddedReactiveJetty extends EmbeddedJettyBase{
 
         @Override
         public void setSessionTimeout(Duration duration) {
-            // FIXME figure out how to set the session timeout for reactive. currently not support by spring5
-            LOG.debug("not implemented");
+            // Currently spring 5 does not expose this property at this level. Possibily an oversight
+            // Also it is questionable that anyone is actually using this feature
+            // consider removing
+            throw new NotImplementedException("operation not supported by JettyReactiveWebServerFactory");
         }
 
         @Override
@@ -79,8 +80,9 @@ public class EmbeddedReactiveJetty extends EmbeddedJettyBase{
 
         @Override
         public void addInitializers(ServletContextInitializer... initializers) {
-            // FIXME figure out how to access the servletcontext when doing reactive. currently not supported by spring5
-            LOG.debug("not implemented");
+            // currently not supported by Spring 5. Consider removing since we only
+            // add two listeners health and metrics which have spring equivalents
+            throw new NotImplementedException("operation not supported by JettyReactiveWebServerFactory");
         }
 
         @Override
