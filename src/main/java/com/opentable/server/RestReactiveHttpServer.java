@@ -1,22 +1,22 @@
 package com.opentable.server;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
 /**
- * REST HTTP Server.
+ * REST Reactive HTTP Server.
  */
 @Configuration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-    EmbeddedJetty.class,
+    EmbeddedReactiveJetty.class,
     RestHttpServerCommon.class
 })
-public @interface RestHttpServer{
+public @interface RestReactiveHttpServer {
 }
