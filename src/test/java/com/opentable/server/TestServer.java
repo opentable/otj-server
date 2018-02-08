@@ -71,14 +71,14 @@ public class TestServer {
         @GET
         @Path("/async_join")
         // 'synchronized' will really induce indigestion if we aren't truly async
-        public synchronized void asyncJoin(@QueryParam("n") int nJoiners, @Suspended AsyncResponse response) {
+        public synchronized void asyncJoin(@QueryParam("n") int nJoiners, @QueryParam("i") int index, @Suspended AsyncResponse response) {
             waiters.add(response);
             int size = waiters.size();
             if (size == nJoiners) {
                 LOG.info("Release the hounds!");
                 waiters.forEach(r -> r.resume(ASYNC_JOIN_RESULT));
             } else {
-                LOG.info("Parking #{} of {}", size, nJoiners);
+                LOG.info("Parking #{} ({}) of {}", index, size, nJoiners);
             }
         }
     }

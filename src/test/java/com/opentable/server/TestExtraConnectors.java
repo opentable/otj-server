@@ -1,6 +1,6 @@
 package com.opentable.server;
 
-import static com.opentable.server.EmbeddedJetty.DEFAULT_CONNECTOR_NAME;
+import static com.opentable.server.EmbeddedJettyBase.DEFAULT_CONNECTOR_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URL;
@@ -11,7 +11,6 @@ import java.util.function.Consumer;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 
@@ -26,6 +25,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
+import com.opentable.jaxrs.JaxRsClientFactory;
 import com.opentable.server.HttpServerInfo.ConnectorInfo;
 import com.opentable.service.ServiceInfo;
 
@@ -42,7 +42,7 @@ public class TestExtraConnectors {
     public void createClient() throws Exception {
         final KeyStore trustStore = KeyStore.getInstance("JKS");
         trustStore.load(keystore.openStream(), PASSWORD.toCharArray());
-        client = ClientBuilder.newBuilder()
+        client = JaxRsClientFactory.testBuilder()
                 .trustStore(trustStore)
                 .build();
     }

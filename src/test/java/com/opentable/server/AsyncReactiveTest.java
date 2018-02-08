@@ -1,14 +1,13 @@
 package com.opentable.server;
 
-import org.junit.Test;
+import javax.inject.Inject;
+
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.inject.Inject;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -17,7 +16,7 @@ import javax.inject.Inject;
     EmbeddedReactiveJetty.class
 })
 @TestPropertySource(properties = {
-    "ot.httpserver.max-threads=" + AsyncReactiveTest.N_THREADS,
+    "ot.httpserver.max-threads=" + AsyncBaseTest.N_THREADS,
 })
 public class AsyncReactiveTest extends AsyncBaseTest {
 

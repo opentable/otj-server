@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotSame;
 import java.net.ServerSocket;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -17,6 +16,8 @@ import org.junit.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import com.opentable.jaxrs.JaxRsClientFactory;
+
 public class DoublePortTest {
     private ConfigurableApplicationContext context;
     private Integer port;
@@ -25,7 +26,7 @@ public class DoublePortTest {
 
     @Before
     public void before() throws Exception {
-        client = ClientBuilder.newClient();
+        client = JaxRsClientFactory.testBuilder().build();
         try (ServerSocket ss = new ServerSocket(0)) {
             secondPort = ss.getLocalPort();
         }

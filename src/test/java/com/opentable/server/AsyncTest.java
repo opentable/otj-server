@@ -1,7 +1,7 @@
 package com.opentable.server;
 
 import javax.inject.Inject;
-import org.junit.Test;
+
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ContextConfiguration(classes = {
     TestServer.class
 })
-public class AsyncTest extends AsyncBaseTest{
+public class AsyncTest extends AsyncBaseTest {
 
     @Inject
     EmbeddedJetty ej;
@@ -22,5 +22,4 @@ public class AsyncTest extends AsyncBaseTest{
     protected EmbeddedJettyBase getEmbeddedJetty() {
         return ej;
     }
-
 }

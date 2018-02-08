@@ -1,6 +1,8 @@
 package com.opentable.server;
 
-import com.opentable.logging.jetty.JsonRequestLogConfig;
+import java.time.Duration;
+import java.util.Map;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.springframework.boot.web.embedded.jetty.JettyReactiveWebServerFactory;
@@ -15,8 +17,7 @@ import org.springframework.core.env.PropertyResolver;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.JettyHttpHandlerAdapter;
 
-import java.time.Duration;
-import java.util.Map;
+import com.opentable.logging.jetty.JsonRequestLogConfig;
 
 /**
  * Configure an embedded {@code Jetty 9} HTTP(S) server for use with reactive spring, and tie it into the Spring Boot lifecycle.
@@ -27,7 +28,7 @@ import java.util.Map;
  */
 @Configuration
 @Import(JsonRequestLogConfig.class)
-public class EmbeddedReactiveJetty extends EmbeddedJettyBase{
+public class EmbeddedReactiveJetty extends EmbeddedJettyBase {
 
     @Bean
     public JettyReactiveWebServerFactory webServerFactory(final JsonRequestLogConfig requestLogConfig,

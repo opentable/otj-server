@@ -18,5 +18,5 @@ import org.springframework.context.annotation.Import;
     EmbeddedJetty.class,
     RestHttpServerCommon.class
 })
-public @interface RestHttpServer{
+public @interface RestHttpServer {
 }

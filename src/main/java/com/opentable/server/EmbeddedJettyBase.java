@@ -1,15 +1,26 @@
 package com.opentable.server;
 
+import java.io.IOException;
+import java.time.Clock;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntSupplier;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableMap;
-import com.opentable.logging.jetty.JsonRequestLog;
-import com.opentable.logging.jetty.JsonRequestLogConfig;
-import com.opentable.server.HttpServerInfo.ConnectorInfo;
-import com.opentable.spring.SpecializedConfigFactory;
-import com.opentable.util.Optionals;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -43,18 +54,13 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.PropertyResolver;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.time.Clock;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntSupplier;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+import com.opentable.logging.jetty.JsonRequestLog;
+import com.opentable.logging.jetty.JsonRequestLogConfig;
+import com.opentable.server.HttpServerInfo.ConnectorInfo;
+import com.opentable.spring.SpecializedConfigFactory;
+import com.opentable.util.Optionals;
 
 /**
  * base class providing common configuration for creating Embedded Jetty instances
@@ -110,8 +116,6 @@ public abstract class EmbeddedJettyBase {
 
     @Inject
     Optional<JsonRequestLog> requestLogger;
-
-    private WebServer container;
 
     private Map<String, ConnectorInfo> connectorInfos;
 
@@ -268,11 +272,19 @@ public abstract class EmbeddedJettyBase {
 
     @EventListener
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public void containerInitialized(final WebServerInitializedEvent evt) {
-        container = evt.getWebServer();
+    public void containerInitialized(final WebServerInitializedEvent evt) throws IOException {
+        WebServer container = evt.getWebServer();
+        serverHolder().set(container);
         final int port = container.getPort();
         if (port > 0) {
             httpActualPort = port;
+        }
+
+        LOG.info("WebServer initialized; pool={}", getThreadPool());
+        if (LOG.isTraceEnabled()) {
+            final StringBuilder dump = new StringBuilder();
+            getServer().dump(dump, "  ");
+            LOG.trace("Server configuration: {}", dump);
         }
     }
 
@@ -280,7 +292,8 @@ public abstract class EmbeddedJettyBase {
     // https://github.com/spring-projects/spring-boot/issues/4657
     @EventListener
     public void gracefulShutdown(ContextClosedEvent evt) {
-        LOG.info("Early shutdown of Jetty connectors");
+        WebServer container = serverHolder().get();
+        LOG.info("Early shutdown of Jetty connectors on {}", container);
         if (container != null) {
             container.stop();
             LOG.info("Jetty is stopped.");
@@ -310,10 +323,16 @@ public abstract class EmbeddedJettyBase {
         };
     }
 
+    @Bean
+    AtomicReference<WebServer> serverHolder() {
+        return new AtomicReference<>();
+    }
+
     @VisibleForTesting
     @Bean
     @Lazy
     Server getServer() {
+        final WebServer container = serverHolder().get();
         Preconditions.checkState(container != null, "container not yet available");
         return ((JettyWebServer) container).getServer();
     }
