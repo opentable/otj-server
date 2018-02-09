@@ -77,6 +77,7 @@ public class TestServer {
             if (size == nJoiners) {
                 LOG.info("Release the hounds!");
                 waiters.forEach(r -> r.resume(ASYNC_JOIN_RESULT));
+                LOG.info("Hounds dispatched.");
             } else {
                 LOG.info("Parking #{} ({}) of {}", index, size, nJoiners);
             }

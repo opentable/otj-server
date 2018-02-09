@@ -31,7 +31,7 @@ public abstract class AsyncBaseTest {
 
     protected abstract EmbeddedJettyBase getEmbeddedJetty();
 
-    @Test(timeout=20_000)
+    @Test(timeout=30_000)
     public void testAsynchronousServerAndClient() throws Exception {
         final EmbeddedJettyBase ej = getEmbeddedJetty();
         assertEquals(N_THREADS, ej.getThreadPool().getMaxThreads());
@@ -42,13 +42,16 @@ public abstract class AsyncBaseTest {
             .collect(Collectors.toList())
             .stream()
             .map(f -> getSafe(f))
-            .forEach(s -> assertEquals(TestServer.ASYNC_JOIN_RESULT, s));
+            .forEach(s -> {
+                LOG.info("result received");
+                assertEquals(TestServer.ASYNC_JOIN_RESULT, s);
+            });
     }
 
     private Future<String> makeRequest(int i) {
         LOG.info("Submitting {}", i);
         try {
-            Thread.sleep(100);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             throw new AssertionError(e);
         }
@@ -57,7 +60,7 @@ public abstract class AsyncBaseTest {
 
     private <T> T getSafe(Future<T> f) {
         try {
-            return f.get(10, TimeUnit.SECONDS);
+            return f.get(30, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new AssertionError(e);
