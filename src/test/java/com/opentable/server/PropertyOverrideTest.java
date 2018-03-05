@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.context.ConfigurableApplicationContext;
 
 // See application.properties in test resources for properties subject to override in this test.
@@ -24,7 +25,7 @@ public class PropertyOverrideTest {
     public void before() {
         Assert.assertNull(ctx);
         ctx = OTApplication.run(Object.class, new String[]{}, ImmutableMap.of("test.a", "3"),
-                builder -> builder.web(false));
+                builder -> builder.web(WebApplicationType.NONE));
         ctx.getAutowireCapableBeanFactory().autowireBean(this);
     }
 
