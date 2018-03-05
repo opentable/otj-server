@@ -15,6 +15,7 @@ import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.embedded.jetty.JettyWebServer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -53,7 +54,8 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
         JettyWebServerFactoryAdapter factoryAdapter = new JettyWebServerFactoryAdapter(factory);
         this.configureFactoryContainer(requestLogConfig, activeConnectors, pr, factoryAdapter);
 
-        factory.setSessionTimeout(Duration.ofMinutes(10));
+        JettyWebServerFactoryAdapter.setSessionTimeout(factory, Duration.ofMinutes(10));
+
         if (listeners.isPresent()) {
             factory.addInitializers(servletContext -> listeners.get().forEach(servletContext::addListener));
         }
@@ -80,7 +82,16 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
 
         @Override
         public void setSessionTimeout(Duration duration) {
-            factory.setSessionTimeout(duration);
+           setSessionTimeout(factory, duration);
+        }
+
+        static boolean setSessionTimeout(JettyServletWebServerFactory factory, Duration duration) {
+            Session session = factory.getSession();
+            if (session != null) {
+                session.setTimeout(duration);
+                return true;
+            }
+            return false;
         }
 
         @Override

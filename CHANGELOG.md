@@ -1,5 +1,11 @@
 otj-server
 ==========
+
+2.10.4
+------
+* Fixes another issue introduced in Spring Boot 2.0RC2. Session Timeouts were moved around, breaking
+otj-server. This release IS NOT compatible with Spring Boot 1.5x! 
+
 2.10.3
 ------
 * Fixes an issue introduced in Spring Boot 2.0RC2, which would cause a classloader exception.
