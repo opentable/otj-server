@@ -53,7 +53,9 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
         JettyWebServerFactoryAdapter factoryAdapter = new JettyWebServerFactoryAdapter(factory);
         this.configureFactoryContainer(requestLogConfig, activeConnectors, pr, factoryAdapter);
 
-        factory.setSessionTimeout(Duration.ofMinutes(10));
+        if (factory.getSession() != null) {
+            factory.getSession().setTimeout(Duration.ofMinutes(10));
+        }
         if (listeners.isPresent()) {
             factory.addInitializers(servletContext -> listeners.get().forEach(servletContext::addListener));
         }
@@ -80,7 +82,9 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
 
         @Override
         public void setSessionTimeout(Duration duration) {
-            factory.setSessionTimeout(duration);
+            if (factory.getSession() != null) {
+                factory.getSession().setTimeout(duration);
+            }
         }
 
         @Override
