@@ -2,6 +2,7 @@ package com.opentable.server;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = {
     "ot.httpserver.max-threads=" + AsyncBaseTest.N_THREADS,
 })
+@Ignore
 public class AsyncReactiveTest extends AsyncBaseTest {
 
     @Inject

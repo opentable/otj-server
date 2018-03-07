@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.opentable</groupId>
     <artifactId>otj-parent-spring</artifactId>
-    <version>139-SNAPSHOT</version>
+    <version>139</version>
   </parent>
 
   <groupId>com.opentable.components</groupId>
@@ -19,72 +19,7 @@
     <url>http://github.com/opentable/${project.artifactId}</url>
     <tag>HEAD</tag>
   </scm>
-  <dependencyManagement>
-    <dependencies>
 
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-spring</artifactId>
-        <version>1.2.4-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-pausedetector</artifactId>
-        <version>2.0.1-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-logging</artifactId>
-        <version>2.7.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-logging-jetty</artifactId>
-        <version>2.7.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-metrics</artifactId>
-        <version>2.6.9-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-scopes</artifactId>
-        <version>2.0.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-jaxrs-clientfactory-resteasy</artifactId>
-        <version>2.8.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-jaxrs-client</artifactId>
-        <version>2.8.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-logging-kafka</artifactId>
-        <version>2.7.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-jaxrs-shared</artifactId>
-        <version>2.8.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-conservedheaders</artifactId>
-        <version>2.1.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>com.opentable.components</groupId>
-        <artifactId>otj-jackson</artifactId>
-        <version>2.1.2-SNAPSHOT</version>
-      </dependency>
-    </dependencies>
-
-  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>com.opentable.components</groupId>

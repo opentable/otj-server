@@ -1,5 +1,10 @@
 otj-server
 ==========
+
+2.10.4
+------
+* Spring Boot 2 final and 5.0.4
+
 2.10.3
 ------
 * Fixes an issue introduced in Spring Boot 2.0RC2, which would cause a classloader exception.
