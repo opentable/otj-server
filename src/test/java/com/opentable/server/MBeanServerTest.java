@@ -65,11 +65,11 @@ public class MBeanServerTest {
         ctx.getBean(MBeanServer.class).registerMBean(obj, n);
     }
 
-    // Uses Spring's internal machinery for registering MBeans, which is different from naive bean registry.
+    /** Uses Spring's internal machinery for registering MBeans, which is different from naive bean registry. */
     private void registerSpring(
             final ConfigurableApplicationContext ctx,
             final Object obj,
-            final ObjectName n) throws Exception {
+            final ObjectName n) {
         ctx.getBean(MBeanExporter.class).registerManagedResource(obj, n);
     }
 

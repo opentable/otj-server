@@ -32,7 +32,7 @@ public abstract class AsyncBaseTest {
     protected abstract EmbeddedJettyBase getEmbeddedJetty();
 
     @Test(timeout=30_000)
-    public void testAsynchronousServerAndClient() throws Exception {
+    public void testAsynchronousServerAndClient() {
         final EmbeddedJettyBase ej = getEmbeddedJetty();
         assertEquals(N_THREADS, ej.getThreadPool().getMaxThreads());
 
@@ -41,7 +41,7 @@ public abstract class AsyncBaseTest {
             // Collect makes sure we send off all the requests before waiting for any
             .collect(Collectors.toList())
             .stream()
-            .map(f -> getSafe(f))
+            .map(this::getSafe)
             .forEach(s -> {
                 LOG.info("result received");
                 assertEquals(TestServer.ASYNC_JOIN_RESULT, s);
