@@ -1,10 +1,10 @@
 otj-server
 ==========
 
-2.11.0
+2.10.5
 ------
-- Adds `@EnableTestMBeanServer`.  Use this instead of `TestMBeanServerConfiguration`.  See the Javadoc
-  for more detail.
+- Fixes bug in `TestMBeanServerConfiguration`.  More detail has also
+  been added to the Javadoc.
 
 2.10.4
 ------
