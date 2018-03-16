@@ -21,11 +21,12 @@ import com.opentable.service.ServiceInfo;
  * Test duplicate registration of MBeans in a context's {@link MBeanServer}. Having multiple contexts in the
  * same process is a very reasonable thing to do when performing, e.g., integration testing.
  *
- * @see EnableTestMBeanServer
+ * @see TestMBeanServerConfiguration
  */
 public class MBeanServerTest {
     /**
-     * We test these to confirm the continued necessity of the added complexity of the {@link EnableTestMBeanServer}.
+     * We test these to confirm the continued necessity of the added complexity of the
+     * {@link TestMBeanServerConfiguration}.
      */
     @Test(expected = UnableToRegisterMBeanException.class)
     public void badDuplicateSimple() throws Exception {
@@ -44,6 +45,20 @@ public class MBeanServerTest {
     @Test
     public void goodDuplicateSpring() throws Exception {
         registerDuplicate(GoodTestConfiguration.class, this::registerSpring);
+    }
+
+    /**
+     * We test these to confirm the continued necessity of including the {@link TestMBeanServerConfiguration} later.
+     *
+     * @see TestMBeanServerConfiguration
+     */
+    @Test(expected = UnableToRegisterMBeanException.class)
+    public void shouldWorkButDoesNotSimple() throws Exception {
+        registerDuplicate(ShouldBeGoodButIsNotConfiguration.class, this::registerSimple);
+    }
+    @Test(expected = UnableToRegisterMBeanException.class)
+    public void shouldWorkButDoesNotSpring() throws Exception {
+        registerDuplicate(ShouldBeGoodButIsNotConfiguration.class, this::registerSpring);
     }
 
     private void registerDuplicate(final Class<?> configuration, final Registrar reg) throws Exception {
@@ -107,6 +122,7 @@ public class MBeanServerTest {
      * {@link JmxConfiguration} will inject an {@link MBeanServer} that's static.
      *
      * @see GoodTestConfiguration
+     * @see ShouldBeGoodButIsNotConfiguration
      */
     @Configuration
     @RestHttpServer
@@ -128,10 +144,32 @@ public class MBeanServerTest {
      * complaining about duplicate registration, you'll need to override the provision of the
      * {@link MBeanServer} and {@link MBeanExporter}.
      *
-     * @see EnableTestMBeanServer
+     * <p>
+     * Note that the {@link TestMBeanServerConfiguration} comes <am>after</am> the service configuration.
+     *
+     * @see TestMBeanServerConfiguration
      */
-    @EnableTestMBeanServer
-    static class GoodTestConfiguration extends BadTestConfiguration {}
+    @Configuration
+    @Import({
+            BadTestConfiguration.class,
+            TestMBeanServerConfiguration.class,
+    })
+    static class GoodTestConfiguration {
+    }
+
+    /**
+     * Alas, you'd think this would work too, but it doesn't. This has to do with a combination of Spring's
+     * bean declaration order-sensitivity and how the {@link MBeanExporter} is initialized.
+     *
+     * @see TestMBeanServerConfiguration
+     */
+    @Configuration
+    @Import({
+            TestMBeanServerConfiguration.class,
+            BadTestConfiguration.class,
+    })
+    static class ShouldBeGoodButIsNotConfiguration {
+    }
 
     private interface Registrar {
         void register(ConfigurableApplicationContext ctx, final Object obj, final ObjectName n) throws Exception;

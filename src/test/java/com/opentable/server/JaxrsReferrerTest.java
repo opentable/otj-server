@@ -47,7 +47,7 @@ public class JaxrsReferrerTest {
 
     @Configuration
     @RestHttpServer
-    @EnableTestMBeanServer
+    @Import(TestMBeanServerConfiguration.class)
     static class ClientConfiguration {
         static final String SERVICE_NAME = "service-baz";
         @Bean
@@ -63,8 +63,10 @@ public class JaxrsReferrerTest {
 
     @Configuration
     @RestHttpServer
-    @EnableTestMBeanServer
-    @Import(TestResource.class)
+    @Import({
+            TestResource.class,
+            TestMBeanServerConfiguration.class,
+    })
     static class ServerConfiguration {
         static final String SERVICE_NAME = "service-foo-bar";
         @Bean
