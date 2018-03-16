@@ -1,8 +1,9 @@
 package com.opentable.server;
 
-import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+
+import com.codahale.metrics.health.HealthCheck;
 
 import org.junit.Test;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -11,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jmx.export.MBeanExporter;
 import org.springframework.jmx.export.UnableToRegisterMBeanException;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.opentable.service.ServiceInfo;
 
@@ -25,7 +28,7 @@ public class MBeanServerTest {
      * We test these to confirm the continued necessity of the added complexity of the
      * {@link TestMBeanServerConfiguration}.
      */
-    @Test(expected = InstanceAlreadyExistsException.class)
+    @Test(expected = UnableToRegisterMBeanException.class)
     public void badDuplicateSimple() throws Exception {
         registerDuplicate(BadTestConfiguration.class, this::registerSimple);
     }
@@ -44,16 +47,26 @@ public class MBeanServerTest {
         registerDuplicate(GoodTestConfiguration.class, this::registerSpring);
     }
 
+    /**
+     * We test these to confirm the continued necessity of including the {@link TestMBeanServerConfiguration} later.
+     *
+     * @see TestMBeanServerConfiguration
+     */
+    @Test(expected = UnableToRegisterMBeanException.class)
+    public void shouldWorkButDoesNotSimple() throws Exception {
+        registerDuplicate(ShouldBeGoodButIsNotConfiguration.class, this::registerSimple);
+    }
+    @Test(expected = UnableToRegisterMBeanException.class)
+    public void shouldWorkButDoesNotSpring() throws Exception {
+        registerDuplicate(ShouldBeGoodButIsNotConfiguration.class, this::registerSpring);
+    }
+
     private void registerDuplicate(final Class<?> configuration, final Registrar reg) throws Exception {
         final TestObjectMBean b = new TestObject();
         final ObjectName n = new ObjectName("com.example:type=TestMBean");
-        final ConfigurableApplicationContext ctx1 = run(configuration);
+        final ConfigurableApplicationContext ctx1 = OTApplication.run(configuration);
         reg.register(ctx1, b, n);
-        reg.register(run(configuration), b, n);
-    }
-
-    private ConfigurableApplicationContext run(final Class<?> configuration) {
-        return OTApplication.run(configuration, new String[]{});
+        reg.register(OTApplication.run(configuration), b, n);
     }
 
     /**
@@ -67,11 +80,11 @@ public class MBeanServerTest {
         ctx.getBean(MBeanServer.class).registerMBean(obj, n);
     }
 
-    // Uses Spring's internal machinery for registering MBeans, which is different from naive bean registry.
+    /** Uses Spring's internal machinery for registering MBeans, which is different from naive bean registry. */
     private void registerSpring(
             final ConfigurableApplicationContext ctx,
             final Object obj,
-            final ObjectName n) throws Exception {
+            final ObjectName n) {
         ctx.getBean(MBeanExporter.class).registerManagedResource(obj, n);
     }
 
@@ -82,13 +95,38 @@ public class MBeanServerTest {
     static class TestObject implements TestObjectMBean {}
 
     /**
+     * Example MBean requiring the {@link org.springframework.jmx.export.annotation.AnnotationMBeanExporter}.
+     */
+    @ManagedResource
+    public static class ManagedHealthCheck extends HealthCheck {
+        private volatile boolean healthy = true;
+
+        @Override
+        protected Result check() {
+            return healthy ? Result.healthy() : Result.unhealthy("someone set up us the bomb");
+        }
+
+        @ManagedAttribute
+        public void setHealthy(final boolean healthy) {
+            this.healthy = healthy;
+        }
+
+        @ManagedAttribute
+        public boolean isHealthy() {
+            return healthy;
+        }
+    }
+
+    /**
      * Server configuration looks fine, right?  Well, not if you want to register any MBeans.  By default,
      * {@link JmxConfiguration} will inject an {@link MBeanServer} that's static.
      *
      * @see GoodTestConfiguration
+     * @see ShouldBeGoodButIsNotConfiguration
      */
     @Configuration
     @RestHttpServer
+    @Import(ManagedHealthCheck.class)
     static class BadTestConfiguration {
         @Bean
         ServiceInfo getServiceInfo() {
@@ -99,18 +137,39 @@ public class MBeanServerTest {
                 }
             };
         }
-
     }
 
     /**
      * In order to run multiple contexts in the same process and register MBeans without the server
      * complaining about duplicate registration, you'll need to override the provision of the
-     * {@link MBeanServer}.
+     * {@link MBeanServer} and {@link MBeanExporter}.
+     *
+     * <p>
+     * Note that the {@link TestMBeanServerConfiguration} comes <am>after</am> the service configuration.
      *
      * @see TestMBeanServerConfiguration
      */
-    @Import(TestMBeanServerConfiguration.class)
-    static class GoodTestConfiguration extends BadTestConfiguration {}
+    @Configuration
+    @Import({
+            BadTestConfiguration.class,
+            TestMBeanServerConfiguration.class,
+    })
+    static class GoodTestConfiguration {
+    }
+
+    /**
+     * Alas, you'd think this would work too, but it doesn't. This has to do with a combination of Spring's
+     * bean declaration order-sensitivity and how the {@link MBeanExporter} is initialized.
+     *
+     * @see TestMBeanServerConfiguration
+     */
+    @Configuration
+    @Import({
+            TestMBeanServerConfiguration.class,
+            BadTestConfiguration.class,
+    })
+    static class ShouldBeGoodButIsNotConfiguration {
+    }
 
     private interface Registrar {
         void register(ConfigurableApplicationContext ctx, final Object obj, final ObjectName n) throws Exception;

@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.10.5
+------
+- Fixes bug in `TestMBeanServerConfiguration`.  More detail has also
+  been added to the Javadoc.
+
 2.10.4
 ------
 * Spring Boot 2 final and 5.0.4
