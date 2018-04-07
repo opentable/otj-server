@@ -4,12 +4,14 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContextListener;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.boot.web.embedded.jetty.JettyServerCustomizer;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.embedded.jetty.JettyWebServer;
@@ -36,6 +38,10 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
     @Inject
     Optional<Collection<ServletContextListener>> listeners;
 
+    @Inject
+    Optional<Collection<Consumer<WebAppContext>>> webAppContextCustomizers;
+
+
     @Bean
     public ServletWebServerFactory servletContainer(
             final JsonRequestLogConfig requestLogConfig,
@@ -43,6 +49,13 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
             final PropertyResolver pr) {
 
         final JettyServletWebServerFactory factory = new JettyServletWebServerFactory() {
+
+            @Override
+            protected org.eclipse.jetty.webapp.Configuration[] getWebAppContextConfigurations(WebAppContext webAppContext,
+                                                                                              ServletContextInitializer... initializers) {
+                webAppContextCustomizers.ifPresent(consumers -> consumers.forEach(c -> c.accept(webAppContext)));
+                return super.getWebAppContextConfigurations(webAppContext,initializers);
+            }
 
             @Override
             protected JettyWebServer getJettyWebServer(Server server) {
