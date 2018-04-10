@@ -1,9 +1,13 @@
 otj-server
 ==========
 
+2.10.6
+------
+* Added customization hook for web app context.
+
 2.10.5
 ------
-- Fixes bug in `TestMBeanServerConfiguration`.  More detail has also
+* Fixes bug in `TestMBeanServerConfiguration`.  More detail has also
   been added to the Javadoc.
 
 2.10.4
