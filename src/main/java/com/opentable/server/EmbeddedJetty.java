@@ -54,7 +54,7 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
             protected org.eclipse.jetty.webapp.Configuration[] getWebAppContextConfigurations(WebAppContext webAppContext,
                                                                                               ServletContextInitializer... initializers) {
                 webAppContextCustomizers.ifPresent(consumers -> consumers.forEach(c -> c.accept(webAppContext)));
-                return super.getWebAppContextConfigurations(webAppContext,initializers);
+                return super.getWebAppContextConfigurations(webAppContext, initializers);
             }
 
             @Override

@@ -46,6 +46,13 @@ public class BasicTest {
     MetricRegistry metrics;
 
     @Test(timeout = 10_000)
+    public void test5xx() throws IOException, InterruptedException {
+        String responseText = request.of("/5xx").request().get().readEntity(String.class);
+        assertEquals(TestServer.TestErrorHandler.TEXT, responseText);
+        waitForCount("http-server.500-responses", 1);
+    }
+
+    @Test(timeout = 10_000)
     public void testHello() throws IOException, InterruptedException {
         assertEquals(TestServer.HELLO_WORLD, request.of("/").request().get().readEntity(String.class));
         waitForCount("http-server.200-responses", 1);
