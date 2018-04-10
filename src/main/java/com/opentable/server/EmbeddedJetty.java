@@ -30,6 +30,10 @@ import com.opentable.logging.jetty.JsonRequestLogConfig;
  * Spring Boot provides a very basic Jetty integration but it doesn't cover a lot of important use cases.
  * For example even something as trivial as configuring the worker pool size, socket options,
  * or HTTPS connector is totally unsupported.
+ * <p>
+ * Customizers for web app context, namely {@code webAppContextCustomizers}, will be run from here {@link JettyServletWebServerFactory#getWebAppContextConfigurations
+ * JettyServletWebServerFactory.getWebAppContextConfigurations}, more specifically subclass of {@link JettyServletWebServerFactory
+ * JettyServletWebServerFactory}.
  */
 @Configuration
 @Import(JsonRequestLogConfig.class)
