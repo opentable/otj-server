@@ -1,5 +1,10 @@
 otj-server
 ==========
+
+2.11.0
+------
+* hook SpringApplication.exit to register JvmFallbackShutdown; ICD-945
+
 2.10.8
 -----
 * Logs the GIT commit (and other info) on startup.
