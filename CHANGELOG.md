@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+2.10.7
+------
+* Added support for dependency-based servlet filter order resolution
+  (OTPL-2351).
+
 2.10.6
 ------
 * Added customization hook for web app context.
