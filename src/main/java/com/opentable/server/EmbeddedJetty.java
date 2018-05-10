@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.PropertyResolver;
 
+import com.opentable.components.filterorder.FilterOrderResolver;
 import com.opentable.logging.jetty.JsonRequestLogConfig;
 
 /**
@@ -50,7 +51,12 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
     public ServletWebServerFactory servletContainer(
             final JsonRequestLogConfig requestLogConfig,
             final Map<String, ServerConnectorConfig> activeConnectors,
-            final PropertyResolver pr) {
+            final PropertyResolver pr,
+            // The filter order resolver is injected here since this method is the one in which we kick off the
+            // initialization of the Jetty servlet container, which includes wiring up the filter registration
+            // beans.  We therefore want to make sure that we have resolved the order of these filters.  It is
+            // ok and expected that this variable is not used in this method.
+            final FilterOrderResolver filterOrderResolver) {
 
         final JettyServletWebServerFactory factory = new JettyServletWebServerFactory() {
 

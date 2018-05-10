@@ -59,6 +59,11 @@
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
+      <artifactId>otj-filterorder</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.opentable.components</groupId>
       <artifactId>otj-logging-kafka</artifactId>
       <scope>runtime</scope>
     </dependency>
