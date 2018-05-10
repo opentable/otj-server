@@ -47,15 +47,19 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
     Optional<Collection<Consumer<WebAppContext>>> webAppContextCustomizers;
 
 
+    /**
+     * @param filterOrderResolver The filter order resolver is injected here since this method is the one in which we
+     *                            kick off the initialization of the Jetty servlet container, which includes wiring up
+     *                            the filter registration beans. We therefore want to make sure that we have resolved
+     *                            the order of these filters. It is ok and expected that this variable is not used in
+     *                            this method.
+     * @return
+     */
     @Bean
     public ServletWebServerFactory servletContainer(
             final JsonRequestLogConfig requestLogConfig,
             final Map<String, ServerConnectorConfig> activeConnectors,
             final PropertyResolver pr,
-            // The filter order resolver is injected here since this method is the one in which we kick off the
-            // initialization of the Jetty servlet container, which includes wiring up the filter registration
-            // beans.  We therefore want to make sure that we have resolved the order of these filters.  It is
-            // ok and expected that this variable is not used in this method.
             final FilterOrderResolver filterOrderResolver) {
 
         final JettyServletWebServerFactory factory = new JettyServletWebServerFactory() {
