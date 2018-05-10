@@ -19,10 +19,10 @@ import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.PropertyResolver;
 
-import com.opentable.components.filterorder.FilterOrderResolver;
 import com.opentable.logging.jetty.JsonRequestLogConfig;
 
 /**
@@ -48,19 +48,17 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
 
 
     /**
-     * @param filterOrderResolver The filter order resolver is injected here since this method is the one in which we
-     *                            kick off the initialization of the Jetty servlet container, which includes wiring up
-     *                            the filter registration beans. We therefore want to make sure that we have resolved
-     *                            the order of these filters. It is ok and expected that this variable is not used in
-     *                            this method.
-     * @return
+     *  We depend on the initialization of the the filter order resolver  here since this method is the one in which we
+     *  kick off the initialization of the Jetty servlet container, which includes wiring up
+     *  the filter registration beans. We therefore want to make sure that we have resolved
+     *  the order of these filters.
      */
     @Bean
+    @DependsOn("com.opentable.components.filterorder.FilterOrderResolver")
     public ServletWebServerFactory servletContainer(
             final JsonRequestLogConfig requestLogConfig,
             final Map<String, ServerConnectorConfig> activeConnectors,
-            final PropertyResolver pr,
-            final FilterOrderResolver filterOrderResolver) {
+            final PropertyResolver pr) {
 
         final JettyServletWebServerFactory factory = new JettyServletWebServerFactory() {
 
