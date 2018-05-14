@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.Optional;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -27,14 +26,14 @@ public class CheckManifest {
 
     private void readManifest(final URL url) throws IOException {
         try (InputStream is = url.openStream()) {
-            if (is !=  null) {
-                final Manifest mf = new Manifest();
-                mf.read(is);
-                final Attributes atts = mf.getMainAttributes();
-                Optional.ofNullable(atts.getValue(Attributes.Name.IMPLEMENTATION_TITLE)).ifPresent(t -> LOG.debug("Implementation Title: {}", t));
-                Optional.ofNullable(atts.getValue(Attributes.Name.IMPLEMENTATION_VERSION)).ifPresent(t -> LOG.debug("Implementation Version: {}", t));
-                Optional.ofNullable(atts.getValue(COMMIT)).ifPresent(t -> LOG.debug("Git commit: {}", t));
-            }
+            final Manifest mf = new Manifest();
+            mf.read(is);
+            final Attributes atts = mf.getMainAttributes();
+            LOG.debug("Starting up: {} version {} - built from commit {}",
+                    atts.getValue(Attributes.Name.IMPLEMENTATION_TITLE),
+                    atts.getValue(Attributes.Name.IMPLEMENTATION_VERSION),
+                    atts.getValue(COMMIT)
+            );
         }
     }
 

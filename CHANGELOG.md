@@ -1,5 +1,8 @@
 otj-server
 ==========
+2.10.8
+-----
+* Logs the GIT commit (and other info) on startup.
 
 2.10.7
 ------
