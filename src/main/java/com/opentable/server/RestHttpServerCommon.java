@@ -37,6 +37,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     MetricsHttpConfiguration.class,
     StartupShutdownFailedHandler.class,
     FilterOrderConfiguration.class,
+    CheckManifest.class,
 })
 @EnablePauseDetector
 public @interface RestHttpServerCommon {
