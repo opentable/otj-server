@@ -1,7 +1,10 @@
 package com.opentable.server;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import com.google.common.base.Preconditions;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -93,5 +96,19 @@ public final class OTApplication {
             String[] args,
             Map<String, Object> properties) {
         return run(applicationClass, args, properties, b -> {});
+    }
+
+    /**
+     * Return the base URI for a given application context.  Mostly useful in tests.
+     */
+    public static URI baseUri(ConfigurableApplicationContext ctx) {
+        return baseUri(ctx, "default");
+    }
+    /**
+     * Return the base URI for a given application context.  Mostly useful in tests.
+     */
+    public static URI baseUri(ConfigurableApplicationContext ctx, String connector) {
+        Preconditions.checkState("default".equals(connector), "TODO: implement non-default connectors");
+        return URI.create("http://127.0.0.1:" + ctx.getBean(HttpServerInfo.class).getPort());
     }
 }
