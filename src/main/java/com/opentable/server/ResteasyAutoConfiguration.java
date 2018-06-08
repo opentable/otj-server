@@ -1,7 +1,9 @@
 package com.opentable.server;
 
 import java.util.Collections;
+import java.util.Optional;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.ws.rs.ext.RuntimeDelegate;
@@ -45,8 +47,9 @@ public class ResteasyAutoConfiguration {
     }
 
     @Bean(destroyMethod = "cleanup")
-    public static RestEasySpringInitializer restEasySpringInitializer() {
-        return new RestEasySpringInitializer();
+    @Inject
+    public static RestEasySpringInitializer restEasySpringInitializer(Optional<ServletInitParameters> servletInitParams) {
+        return new RestEasySpringInitializer(servletInitParams);
     }
 
     @Bean
@@ -71,6 +74,12 @@ public class ResteasyAutoConfiguration {
 
         private ConfigurableListableBeanFactory beanFactory;
 
+        private final Optional<ServletInitParameters> servletInitParams;
+
+        public RestEasySpringInitializer(Optional<ServletInitParameters> servletInitParams) {
+            this.servletInitParams = servletInitParams;
+        }
+
         public void cleanup() {
             if (deployment != null) {
                 deployment.stop();
@@ -80,6 +89,8 @@ public class ResteasyAutoConfiguration {
 
         @Override
         public void onStartup(ServletContext servletContext) throws ServletException {
+            servletInitParams.ifPresent(params -> params.getInitParams().forEach((key, value) -> servletContext.setInitParameter(key, value)));
+
             ListenerBootstrap config = new ListenerBootstrap(servletContext);
             deployment = config.createDeployment();
             deployment.start();

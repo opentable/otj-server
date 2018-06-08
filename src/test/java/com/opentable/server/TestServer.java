@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
@@ -85,6 +86,13 @@ public class TestServer {
         @GET
         public String get() {
             return TestServer.HELLO_WORLD;
+        }
+
+        @GET
+        @Path("/nuclear-launch-codes")
+        @RolesAllowed("POTUS")
+        public String getLaunchCode() {
+            return "CPE1704TKS";
         }
 
         @GET
