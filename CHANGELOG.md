@@ -3,6 +3,7 @@ otj-server
 2.10.8
 -----
 * Logs the GIT commit (and other info) on startup.
+* Allow servlet init params to be customized. This allows you to enable RESTEasy's role based auth support.
 
 2.10.7
 ------
