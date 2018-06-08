@@ -65,13 +65,6 @@ public class BasicTest {
         waitForCount("http-server.404-responses", 1);
     }
 
-    @Test(timeout = 10_000)
-    public void testAccessDenied() throws InterruptedException {
-        Response r = request.of("/nuclear-launch-codes").request().get();
-        assertEquals(403, r.getStatus());
-        waitForCount("http-server.403-responses", 1);
-    }
-
     @Test
     public void testStatic_txt() throws IOException {
         testStatic("static-test/test.txt", "text/plain");

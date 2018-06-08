@@ -18,8 +18,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
@@ -51,11 +49,6 @@ public class TestServer {
     Consumer<WebAppContext> webAppContextCustomizer() {
         return webAppContext ->
                 webAppContext.setErrorHandler(new TestErrorHandler());
-    }
-
-    @Bean
-    ServletInitParameters servletInitParams() {
-        return () -> ImmutableMap.of("resteasy.role.based.security", "true");
     }
 
     @Bean
