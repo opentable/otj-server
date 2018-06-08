@@ -1,6 +1,7 @@
 package com.opentable.server;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -17,6 +18,7 @@ import org.jboss.resteasy.spi.Registry;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -45,8 +47,8 @@ public class ResteasyAutoConfiguration {
     }
 
     @Bean(destroyMethod = "cleanup")
-    public static RestEasySpringInitializer restEasySpringInitializer() {
-        return new RestEasySpringInitializer();
+    public static RestEasySpringInitializer restEasySpringInitializer(@Autowired Optional<ServletInitParameters> servletInitParams) {
+        return new RestEasySpringInitializer(servletInitParams);
     }
 
     @Bean
@@ -71,6 +73,12 @@ public class ResteasyAutoConfiguration {
 
         private ConfigurableListableBeanFactory beanFactory;
 
+        private final Optional<ServletInitParameters> servletInitParams;
+
+        public RestEasySpringInitializer(Optional<ServletInitParameters> servletInitParams) {
+            this.servletInitParams = servletInitParams;
+        }
+
         public void cleanup() {
             if (deployment != null) {
                 deployment.stop();
@@ -80,6 +88,10 @@ public class ResteasyAutoConfiguration {
 
         @Override
         public void onStartup(ServletContext servletContext) throws ServletException {
+            if(servletInitParams.isPresent()) {
+                servletInitParams.get().getInitParams().forEach((key, value) -> servletContext.setInitParameter(key, value));
+            }
+
             ListenerBootstrap config = new ListenerBootstrap(servletContext);
             deployment = config.createDeployment();
             deployment.start();

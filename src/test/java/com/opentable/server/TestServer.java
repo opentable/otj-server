@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,8 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -48,6 +51,11 @@ public class TestServer {
     Consumer<WebAppContext> webAppContextCustomizer() {
         return webAppContext ->
                 webAppContext.setErrorHandler(new TestErrorHandler());
+    }
+
+    @Bean
+    ServletInitParameters servletInitParams() {
+        return () -> ImmutableMap.of("resteasy.role.based.security", "true");
     }
 
     @Bean
@@ -85,6 +93,13 @@ public class TestServer {
         @GET
         public String get() {
             return TestServer.HELLO_WORLD;
+        }
+
+        @GET
+        @Path("/nuclear-launch-codes")
+        @RolesAllowed("POTUS")
+        public String getLaunchCode() {
+            return "CPE1704TKS";
         }
 
         @GET
