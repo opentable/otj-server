@@ -29,18 +29,19 @@ public class BackendInfoFilterTest {
 
     @Test
     public void test() {
-        final Response r = request.of("/").request().get();
-        final AtomicBoolean sawBackendHeader = new AtomicBoolean();
-        r.getHeaders().forEach((name, objs) -> {
-            if (name.toLowerCase().startsWith(BackendInfoFilterConfiguration.HEADER_PREFIX.toLowerCase())) {
-                Assert.assertTrue(!objs.isEmpty());
-                final Object first = objs.get(0);
-                Assert.assertTrue(first instanceof String);
-                final String firstString = (String) first;
-                Assert.assertFalse(firstString.isEmpty());
-                sawBackendHeader.set(true);
-            }
-        });
-        Assert.assertTrue(sawBackendHeader.get());
+        try(final Response r = request.of("/").request().get()){
+            final AtomicBoolean sawBackendHeader = new AtomicBoolean();
+            r.getHeaders().forEach((name, objs) -> {
+                if (name.toLowerCase().startsWith(BackendInfoFilterConfiguration.HEADER_PREFIX.toLowerCase())) {
+                    Assert.assertTrue(!objs.isEmpty());
+                    final Object first = objs.get(0);
+                    Assert.assertTrue(first instanceof String);
+                    final String firstString = (String) first;
+                    Assert.assertFalse(firstString.isEmpty());
+                    sawBackendHeader.set(true);
+                }
+            });
+            Assert.assertTrue(sawBackendHeader.get());
+        }
     }
 }

@@ -35,7 +35,7 @@ public class JmxExportTest {
         try {
             mbs.getMBeanInfo(name);
             fail();
-        } catch (InstanceNotFoundException expected) {
+        } catch (@SuppressWarnings("unused") InstanceNotFoundException expected) {
             // ignore
         }
     }

@@ -12,6 +12,8 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 // TODO Don't serve directory indexes.
 
 @Configuration
@@ -37,24 +39,26 @@ public class StaticResourceConfiguration {
     }
 
     @Bean
-    public ServletRegistrationBean staticResourceServlet() {
-        final Resource rsrc = Resource.newClassPathResource(staticPath());
-        LOG.debug("Found static resources at {}", rsrc);
+    @SuppressFBWarnings("NP_LOAD_OF_KNOWN_NULL_VALUE")
+    public ServletRegistrationBean<DefaultServlet> staticResourceServlet() {
+        try(Resource rsrc = Resource.newClassPathResource(staticPath())){
+            LOG.debug("Found static resources at {}", rsrc);
 
-        if (rsrc == null) {
-            LOG.info("Didn't find '/static' on classpath, not serving static files");
-            ServletRegistrationBean servletRegistrationBean =  new ServletRegistrationBean(new DefaultServlet());
-            servletRegistrationBean.setName("static-inactive");
-            servletRegistrationBean.setEnabled(false);
-            return servletRegistrationBean;
+            if (rsrc == null) {
+                LOG.info("Didn't find '/static' on classpath, not serving static files");
+                ServletRegistrationBean<DefaultServlet> servletRegistrationBean =  new ServletRegistrationBean<>(new DefaultServlet());
+                servletRegistrationBean.setName("static-inactive");
+                servletRegistrationBean.setEnabled(false);
+                return servletRegistrationBean;
+            }
+
+            DefaultServlet servlet = new DefaultServlet();
+            ServletRegistrationBean<DefaultServlet> bean = new ServletRegistrationBean<>(servlet, staticPath() + "*");
+            bean.addInitParameter("gzip", "true");
+            bean.addInitParameter("etags", "true");
+            bean.addInitParameter("resourceBase", StringUtils.substringBeforeLast(rsrc.toString(), staticPathName));
+            LOG.debug("Configuring static resources: {}", bean.getInitParameters());
+            return bean;
         }
-
-        DefaultServlet servlet = new DefaultServlet();
-        ServletRegistrationBean bean = new ServletRegistrationBean(servlet, staticPath() + "*");
-        bean.addInitParameter("gzip", "true");
-        bean.addInitParameter("etags", "true");
-        bean.addInitParameter("resourceBase", StringUtils.substringBeforeLast(rsrc.toString(), staticPathName));
-        LOG.debug("Configuring static resources: {}", bean.getInitParameters());
-        return bean;
     }
 }

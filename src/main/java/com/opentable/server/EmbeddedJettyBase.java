@@ -134,7 +134,7 @@ public abstract class EmbeddedJettyBase {
             final JsonRequestLogConfig requestLogConfig,
             final Map<String, ServerConnectorConfig> activeConnectors,
             final PropertyResolver pr,
-            final WebServerFactoryAdapter factory) {
+            final WebServerFactoryAdapter<?> factory) {
         if (httpBindPort != null) {
             throw new IllegalStateException("'ot.http.bind-port' is deprecated, refer to otj-server README for replacement");
         }
@@ -206,6 +206,7 @@ public abstract class EmbeddedJettyBase {
                 }));
     }
 
+    @SuppressWarnings("resource")
     @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
     private ConnectorInfo createConnector(Server server, String name, IntSupplier port, ServerConnectorConfig config) {
         final List<ConnectionFactory> factories = new ArrayList<>();
@@ -215,11 +216,13 @@ public abstract class EmbeddedJettyBase {
         switch (config.getProtocol()) { // NOPMD
             case "proxy+http":
                 factories.add(new ProxyConnectionFactory());
+                //$FALL-THROUGH$
             case "http":
                 ssl = null;
                 break;
             case "proxy+https":
                 factories.add(new ProxyConnectionFactory());
+                //$FALL-THROUGH$
             case "https":
                 ssl = new SuperSadSslContextFactory(name, config);
                 break;
@@ -293,6 +296,7 @@ public abstract class EmbeddedJettyBase {
     @EventListener
     public void gracefulShutdown(ContextClosedEvent evt) {
         WebServer container = serverHolder().get();
+        LOG.debug("Received application context closed event {}. Shutting down...", evt);
         LOG.info("Early shutdown of Jetty connectors on {}", container);
         if (container != null) {
             container.stop();

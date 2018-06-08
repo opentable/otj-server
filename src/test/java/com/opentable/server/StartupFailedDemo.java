@@ -9,7 +9,7 @@ public class StartupFailedDemo {
     public static void main(String[] args) throws InterruptedException {
         try {
             SpringApplication.run(App.class, args);
-        } catch (BeanCreationException e) {
+        } catch (@SuppressWarnings("unused") BeanCreationException e) {
             // No problem... wait for the T-1000.
             Thread.sleep(StartupShutdownFailedHandler.timeout.toMillis() * 2);
         }

@@ -64,9 +64,10 @@ public class MBeanServerTest {
     private void registerDuplicate(final Class<?> configuration, final Registrar reg) throws Exception {
         final TestObjectMBean b = new TestObject();
         final ObjectName n = new ObjectName("com.example:type=TestMBean");
-        final ConfigurableApplicationContext ctx1 = OTApplication.run(configuration);
-        reg.register(ctx1, b, n);
-        reg.register(OTApplication.run(configuration), b, n);
+        try(final ConfigurableApplicationContext ctx1 = OTApplication.run(configuration)){
+            reg.register(ctx1, b, n);
+            reg.register(OTApplication.run(configuration), b, n);
+        }
     }
 
     /**

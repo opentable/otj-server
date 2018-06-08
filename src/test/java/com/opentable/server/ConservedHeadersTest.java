@@ -1,6 +1,5 @@
 package com.opentable.server;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,37 +30,40 @@ public class ConservedHeadersTest {
     LoopbackRequest request;
 
     @Test
-    public void createRequestIdIndex() throws IOException {
+    public void createRequestIdIndex() {
         sanityCheck(request.of("/").request().get());
     }
 
     @Test
-    public void createRequestId404() throws IOException {
+    public void createRequestId404() {
         sanityCheck(request.of("/404/not/found").request().get());
     }
 
     @Test
-    public void conserveRequestId() throws IOException {
+    public void conserveRequestId() {
         final String rid = UUID.randomUUID().toString();
-        final Response resp = request.of("/").request().header(RID, rid).get();
-        sanityCheck(resp);
-        Assert.assertEquals(rid, resp.getHeaderString(RID));
+        try(final Response resp = request.of("/").request().header(RID, rid).get()){
+            sanityCheck(resp);
+            Assert.assertEquals(rid, resp.getHeaderString(RID));
+        }
     }
 
     @Test
-    public void replaceBadRequestId() throws IOException {
+    public void replaceBadRequestId() {
         final String badRid = "not a valid UUID";
-        final Response resp = request.of("/").request().header(RID, badRid).get();
-        sanityCheck(resp);
-        Assert.assertNotEquals(badRid, resp.getHeaderString(RID));
+        try(final Response resp = request.of("/").request().header(RID, badRid).get()){
+            sanityCheck(resp);
+            Assert.assertNotEquals(badRid, resp.getHeaderString(RID));
+        }
     }
 
     @Test
-    public void conserveAnonymousId() throws IOException {
+    public void conserveAnonymousId() {
         final String aid = "fgsfds";
-        final Response resp = request.of("/").request().header(AID, aid).get();
-        sanityCheck(resp);
-        Assert.assertEquals(aid, resp.getHeaderString(AID));
+        try(final Response resp = request.of("/").request().header(AID, aid).get()){
+            sanityCheck(resp);
+            Assert.assertEquals(aid, resp.getHeaderString(AID));
+        }
     }
 
     private void sanityCheck(final Response resp) {

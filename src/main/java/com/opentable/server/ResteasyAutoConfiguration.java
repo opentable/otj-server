@@ -37,8 +37,8 @@ public class ResteasyAutoConfiguration {
     static final Class<?> RUNTIME_DELEGATE = RuntimeDelegate.class;
 
     @Bean(name = "resteasyDispatcher")
-    public FilterRegistrationBean resteasyServletRegistration() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean(new Filter30Dispatcher());
+    public FilterRegistrationBean<Filter30Dispatcher> resteasyServletRegistration() {
+        FilterRegistrationBean<Filter30Dispatcher> registrationBean = new FilterRegistrationBean<>(new Filter30Dispatcher());
         registrationBean.addUrlPatterns("/*");
         registrationBean.setInitParameters(Collections.singletonMap("resteasy.servlet.mapping.prefix", "/")); // set prefix here
         return registrationBean;

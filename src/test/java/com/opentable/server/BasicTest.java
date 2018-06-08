@@ -46,23 +46,24 @@ public class BasicTest {
     MetricRegistry metrics;
 
     @Test(timeout = 10_000)
-    public void test5xx() throws IOException, InterruptedException {
+    public void test5xx() throws InterruptedException {
         String responseText = request.of("/5xx").request().get().readEntity(String.class);
         assertEquals(TestServer.TestErrorHandler.TEXT, responseText);
         waitForCount("http-server.500-responses", 1);
     }
 
     @Test(timeout = 10_000)
-    public void testHello() throws IOException, InterruptedException {
+    public void testHello() throws InterruptedException {
         assertEquals(TestServer.HELLO_WORLD, request.of("/").request().get().readEntity(String.class));
         waitForCount("http-server.200-responses", 1);
     }
 
     @Test(timeout = 10_000)
-    public void testMissing() throws IOException, InterruptedException {
-        Response r = request.of("/not/found/omg/wtf/bbq").request().get();
-        assertEquals(404, r.getStatus());
-        waitForCount("http-server.404-responses", 1);
+    public void testMissing() throws InterruptedException {
+        try(Response r = request.of("/not/found/omg/wtf/bbq").request().get()){
+            assertEquals(404, r.getStatus());
+            waitForCount("http-server.404-responses", 1);
+        }
     }
 
     @Test
@@ -84,10 +85,11 @@ public class BasicTest {
 
     private void testStatic(final String path, final String expectedContentType) throws IOException {
         final byte[] expected = IOUtils.toByteArray(ClassLoader.getSystemResourceAsStream(path));
-        final Response r = request.of(path).request(expectedContentType).get();
-        assertEquals(expectedContentType, r.getHeaderString(HttpHeaders.CONTENT_TYPE));
-        final byte[] actual = r.readEntity(byte[].class);
-        Assert.assertArrayEquals(expected, actual);
+        try(final Response r = request.of(path).request(expectedContentType).get()){
+            assertEquals(expectedContentType, r.getHeaderString(HttpHeaders.CONTENT_TYPE));
+            final byte[] actual = r.readEntity(byte[].class);
+            Assert.assertArrayEquals(expected, actual);
+        }
     }
 
     private void waitForCount(final String metricName, final long expected) throws InterruptedException {
