@@ -5,6 +5,10 @@ public interface ServerConnectorConfig {
         return "http";
     }
 
+    default String getBindAddress() {
+        return null;
+    }
+
     default int getPort() {
         return -1;
     }

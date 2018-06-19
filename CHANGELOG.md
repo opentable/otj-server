@@ -4,6 +4,7 @@ otj-server
 2.11.0
 ------
 * hook SpringApplication.exit to register JvmFallbackShutdown; ICD-945
+* support binding connectors to specific network addresses
 
 2.10.8
 -----

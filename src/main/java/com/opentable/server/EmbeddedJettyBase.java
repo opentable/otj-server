@@ -248,6 +248,7 @@ public abstract class EmbeddedJettyBase {
         final ServerConnector connector = new ServerConnector(server,
                 factories.toArray(new ConnectionFactory[factories.size()]));
         connector.setName(name);
+        connector.setHost(config.getBindAddress());
         connector.setPort(selectPort(port, config));
 
         server.addConnector(connector);
