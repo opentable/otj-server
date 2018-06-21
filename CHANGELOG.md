@@ -5,6 +5,8 @@ otj-server
 ------
 * hook SpringApplication.exit to register JvmFallbackShutdown; ICD-945
 * support binding connectors to specific network addresses
+* use our own server connector rather than Spring Boot's
+* OTApplication gets a couple of baseUri helpers
 
 2.10.8
 -----
