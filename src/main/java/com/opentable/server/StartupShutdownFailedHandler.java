@@ -25,13 +25,13 @@ public class StartupShutdownFailedHandler {
 
     @EventListener
     public void onFailure(ApplicationFailedEvent event) {
-        LOG.info("ApplicationFailedEvent {} fallback shutdown {}", event, timeout);
+        LOG.debug("ApplicationFailedEvent {} fallback shutdown {}", event, timeout);
         JvmFallbackShutdown.fallbackTerminate(timeout);
     }
 
     @EventListener
     public void onClose(ContextClosedEvent event) {
-        LOG.info("ContextClosedEvent {} fallback shutdown {}", event, timeout);
+        LOG.debug("ContextClosedEvent {} fallback shutdown {}", event, timeout);
         JvmFallbackShutdown.fallbackTerminate(timeout);
     }
 

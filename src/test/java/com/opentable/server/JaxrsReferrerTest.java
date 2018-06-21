@@ -37,10 +37,14 @@ public class JaxrsReferrerTest {
                         .newClient("test-client", StandardFeatureGroup.PLATFORM_INTERNAL);
                 final Client externalClient = clientFactory
                         .newClient("test-client", StandardFeatureGroup.PUBLIC);
-                final Response internalResp = internalClient.target(serverTarget).path("private").request().get();
-                Assertions.assertThat(internalResp.getStatus()).isEqualTo(200);
-                final Response externalResp = externalClient.target(serverTarget).path("public").request().get();
-                Assertions.assertThat(externalResp.getStatus()).isEqualTo(200);
+                try(final Response internalResp = internalClient.target(serverTarget).path("private").request().get()){
+                    Assertions.assertThat(internalResp.getStatus()).isEqualTo(200);
+                }
+
+                try(final Response externalResp = externalClient.target(serverTarget).path("public").request().get()){
+                    Assertions.assertThat(externalResp.getStatus()).isEqualTo(200);
+                }
+
             }
         }
     }

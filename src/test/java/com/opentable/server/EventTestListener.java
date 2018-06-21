@@ -22,5 +22,6 @@ public class EventTestListener {
     public void containerInitialized(final WebServerInitializedEvent evt) {
         // Should blow up if other didn't first
         LOG.debug("I like ports " + info.getPort());
+        LOG.debug("EventTestListener received container initialized event: {}", evt);
     }
 }

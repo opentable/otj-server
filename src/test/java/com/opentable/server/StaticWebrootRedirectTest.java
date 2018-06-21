@@ -40,13 +40,14 @@ public class StaticWebrootRedirectTest {
     }
 
     private void test(final String path) {
-        final Response r = request
+        try(final Response r = request
                 .of("")
                 .property(JaxRsClientProperties.FOLLOW_REDIRECTS, false)
                 .request()
-                .get();
-        Assertions.assertThat(r.getStatus()).isEqualTo(307);
-        Assertions.assertThat(r.getLocation().getPath()).isEqualTo(String.format("/%s/index.html", path));
+                .get()){
+            Assertions.assertThat(r.getStatus()).isEqualTo(307);
+            Assertions.assertThat(r.getLocation().getPath()).isEqualTo(String.format("/%s/index.html", path));
+        }
     }
 
     private ConfigurableApplicationContext runServer() {

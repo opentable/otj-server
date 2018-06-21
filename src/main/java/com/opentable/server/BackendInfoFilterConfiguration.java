@@ -31,8 +31,8 @@ public class BackendInfoFilterConfiguration {
     public static final String HEADER_PREFIX = "X-OT-Backend-";
 
     @Bean
-    public FilterRegistrationBean getBackendInfoFilterRegistrationBean(final BackendInfoFilter filter) {
-        return new FilterRegistrationBean(filter);
+    public FilterRegistrationBean<BackendInfoFilter> getBackendInfoFilterRegistrationBean(final BackendInfoFilter filter) {
+        return new FilterRegistrationBean<>(filter);
     }
 
     public static class BackendInfoFilter implements Filter {
