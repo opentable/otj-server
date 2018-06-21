@@ -143,23 +143,11 @@ public abstract class EmbeddedJettyBase {
         final ImmutableMap.Builder<String, ConnectorInfo> connectorInfos = ImmutableMap.builder();
         final ServerConnectorConfig defaultConnector = activeConnectors.get(DEFAULT_CONNECTOR_NAME);
 
-        if (defaultConnector != null) {
-            factory.setPort(selectPort(ports, defaultConnector));
-            Preconditions.checkArgument(!defaultConnector.isForceSecure(), DEFAULT_CONNECTOR_NAME + " may not set secure");
-            Preconditions.checkArgument(defaultConnector.getProtocol().equals("http"), DEFAULT_CONNECTOR_NAME + " may not set protocol");
-            connectorInfos.put(DEFAULT_CONNECTOR_NAME, new DefaultHttpConnectorInfo(this));
-            httpConfigCustomizers.ifPresent(customizers ->
-                    factory.addServerCustomizers(server ->
-                            customizers.forEach(customizer ->
-                                    (server.getConnectors()[0]).getConnectionFactories().stream()
-                                            .filter(HttpConnectionFactory.class::isInstance)
-                                            .map(HttpConnectionFactory.class::cast)
-                                            .map(HttpConnectionFactory::getHttpConfiguration)
-                                            .forEach(customizer))));
-        } else {
+        // Remove Spring Boot's gimped default connector, we'll make a better one
+        factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
+        if (defaultConnector == null) {
             LOG.debug("Disabling default HTTP connector");
             factory.setPort(0);
-            factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
         }
         if (qtpProvider.isPresent()) {
             factory.setThreadPool(qtpProvider.get().get());
@@ -184,15 +172,12 @@ public abstract class EmbeddedJettyBase {
             }
 
             // Required for graceful shutdown to work
-            StatisticsHandler stats = new StatisticsHandler();
+            final StatisticsHandler stats = new StatisticsHandler();
             stats.setHandler(customizedHandler);
-
             server.setHandler(stats);
 
             activeConnectors.forEach((name, config) -> {
-                if (!name.equals(DEFAULT_CONNECTOR_NAME)) {
-                    connectorInfos.put(name, createConnector(server, name, ports, config));
-                }
+                connectorInfos.put(name, createConnector(server, name, ports, config));
             });
             this.connectorInfos = connectorInfos.build();
 
@@ -234,6 +219,7 @@ public abstract class EmbeddedJettyBase {
         if (ssl != null) {
             httpConfig.addCustomizer(new SecureRequestCustomizer());
         } else if (config.isForceSecure()) {
+            // Used when SSL is terminated externally, e.g. by nginx or elb
             httpConfig.addCustomizer(new SuperSecureCustomizer());
         }
         httpConfigCustomizers.ifPresent(c -> c.forEach(h -> h.accept(httpConfig)));
