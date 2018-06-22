@@ -1,10 +1,13 @@
 package com.opentable.server;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.security.cert.CRL;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,12 +18,21 @@ import java.util.function.IntSupplier;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.security.auth.Subject;
+import javax.servlet.ServletRequest;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableMap;
 
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.DefaultIdentityService;
+import org.eclipse.jetty.security.IdentityService;
+import org.eclipse.jetty.security.LoginService;
+import org.eclipse.jetty.security.authentication.ClientCertAuthenticator;
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -31,6 +43,7 @@ import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
+import org.eclipse.jetty.server.UserIdentity;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -56,6 +69,7 @@ import org.springframework.core.env.PropertyResolver;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import com.opentable.jaxrs.TlsProvider;
 import com.opentable.logging.jetty.JsonRequestLog;
 import com.opentable.logging.jetty.JsonRequestLogConfig;
 import com.opentable.server.HttpServerInfo.ConnectorInfo;
@@ -117,6 +131,9 @@ public abstract class EmbeddedJettyBase {
     @Inject
     Optional<JsonRequestLog> requestLogger;
 
+    @Inject
+    Optional<TlsProvider> tlsProvider;
+
     private Map<String, ConnectorInfo> connectorInfos;
 
     @Bean
@@ -143,23 +160,11 @@ public abstract class EmbeddedJettyBase {
         final ImmutableMap.Builder<String, ConnectorInfo> connectorInfos = ImmutableMap.builder();
         final ServerConnectorConfig defaultConnector = activeConnectors.get(DEFAULT_CONNECTOR_NAME);
 
-        if (defaultConnector != null) {
-            factory.setPort(selectPort(ports, defaultConnector));
-            Preconditions.checkArgument(!defaultConnector.isForceSecure(), DEFAULT_CONNECTOR_NAME + " may not set secure");
-            Preconditions.checkArgument(defaultConnector.getProtocol().equals("http"), DEFAULT_CONNECTOR_NAME + " may not set protocol");
-            connectorInfos.put(DEFAULT_CONNECTOR_NAME, new DefaultHttpConnectorInfo(this));
-            httpConfigCustomizers.ifPresent(customizers ->
-                    factory.addServerCustomizers(server ->
-                            customizers.forEach(customizer ->
-                                    (server.getConnectors()[0]).getConnectionFactories().stream()
-                                            .filter(HttpConnectionFactory.class::isInstance)
-                                            .map(HttpConnectionFactory.class::cast)
-                                            .map(HttpConnectionFactory::getHttpConfiguration)
-                                            .forEach(customizer))));
-        } else {
+        // Remove Spring Boot's gimped default connector, we'll make a better one
+        factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
+        if (defaultConnector == null) {
             LOG.debug("Disabling default HTTP connector");
             factory.setPort(0);
-            factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
         }
         if (qtpProvider.isPresent()) {
             factory.setThreadPool(qtpProvider.get().get());
@@ -184,15 +189,22 @@ public abstract class EmbeddedJettyBase {
             }
 
             // Required for graceful shutdown to work
-            StatisticsHandler stats = new StatisticsHandler();
+            final StatisticsHandler stats = new StatisticsHandler();
             stats.setHandler(customizedHandler);
 
-            server.setHandler(stats);
+            if (tlsProvider.isPresent()) {
+                final ConstraintSecurityHandler security = new ConstraintSecurityHandler();
+                security.setLoginService(new CredentialsManagementLoginService());
+                security.setAuthenticator(new ClientCertAuthenticator());
+                security.setHandler(stats);
+
+                server.setHandler(security);
+            } else {
+                server.setHandler(stats);
+            }
 
             activeConnectors.forEach((name, config) -> {
-                if (!name.equals(DEFAULT_CONNECTOR_NAME)) {
-                    connectorInfos.put(name, createConnector(server, name, ports, config));
-                }
+                connectorInfos.put(name, createConnector(server, name, ports, config));
             });
             this.connectorInfos = connectorInfos.build();
 
@@ -231,9 +243,10 @@ public abstract class EmbeddedJettyBase {
         }
 
         final HttpConfiguration httpConfig = new HttpConfiguration();
-        if (ssl != null) {
+        if (ssl != null || tlsProvider.isPresent()) {
             httpConfig.addCustomizer(new SecureRequestCustomizer());
         } else if (config.isForceSecure()) {
+            // Used when SSL is terminated externally, e.g. by nginx or elb
             httpConfig.addCustomizer(new SuperSecureCustomizer());
         }
         httpConfigCustomizers.ifPresent(c -> c.forEach(h -> h.accept(httpConfig)));
@@ -354,10 +367,39 @@ public abstract class EmbeddedJettyBase {
     }
 
     class SuperSadSslContextFactory extends SslContextFactory {
+        private volatile CRL crl;
+
         SuperSadSslContextFactory(String name, ServerConnectorConfig config) {
             super(config.getKeystore());
-            Preconditions.checkState(config.getKeystore() != null, "no keystore specified for '%s'", name);
-            setKeyStorePassword(config.getKeystorePassword());
+            if (config.getKeystore() != null) {
+                // Keystore manually set in config
+                setKeyStorePassword(config.getKeystorePassword());
+            } else {
+                final TlsProvider tls = tlsProvider
+                    .orElseThrow(() -> new IllegalStateException("no keystore specified for '" + name + "'"));
+                // Enable rotating TLS support
+                tls.init((trustStore, keyStore) -> {
+                    // Important note regarding TLS session resumption (not-yet-determined impact to us):
+                    // https://github.com/eclipse/jetty.project/issues/918
+                    // Possible workaround outlined at:
+                    // https://github.com/eclipse/jetty.project/issues/519
+                    try {
+                        crl = tls.crl();
+                        reload(f -> {
+                            f.setWantClientAuth(true);
+                            f.setValidateCerts(true);
+                            f.setValidatePeerCerts(true);
+                            f.setKeyStorePassword("");
+                            f.setTrustStorePassword("");
+                            f.setTrustStore(trustStore);
+                            f.setKeyStore(keyStore);
+                        });
+                    } catch (Exception e) {
+                        Throwables.throwIfUnchecked(e);
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
         }
 
         @Override
@@ -376,6 +418,11 @@ public abstract class EmbeddedJettyBase {
             LOG.warn("***************************************************************************************");
             selected_ciphers.addAll(allowedDeprecatedCiphers);
         }
+
+        @Override
+        protected Collection<? extends CRL> loadCRL(String crlPath) throws Exception {
+            return Collections.singleton(crl);
+        }
     }
 
     interface WebServerFactoryAdapter<T> {
@@ -391,5 +438,74 @@ public abstract class EmbeddedJettyBase {
         void addInitializers(ServletContextInitializer... initializers);
 
         T getFactory();
+    }
+
+    static class CredentialsManagementLoginService implements LoginService {
+        private IdentityService identity = new DefaultIdentityService();
+        @Override
+        public String getName() {
+            return "otj-credentials";
+        }
+
+        @Override
+        public UserIdentity login(String username, Object credentials, ServletRequest request) {
+            return new CredentialsManagementUserIdentity(username, request);
+        }
+
+        @Override
+        public boolean validate(UserIdentity user) {
+            return true;
+        }
+
+        @Override
+        public IdentityService getIdentityService() {
+            return identity;
+        }
+
+        @Override
+        public void setIdentityService(IdentityService identity) {
+            this.identity = identity;
+        }
+
+        @Override
+        public void logout(UserIdentity user) {
+
+        }
+    }
+
+    static class CredentialsManagementUserIdentity implements UserIdentity {
+        private final String username;
+
+        CredentialsManagementUserIdentity(String username, ServletRequest request) {
+            this.username = username;
+        }
+
+        @Override
+        public Subject getSubject() {
+            return new Subject(true, Collections.singleton(getUserPrincipal()), Collections.emptySet(), Collections.emptySet());
+        }
+
+        @Override
+        public Principal getUserPrincipal() {
+            return new CredentialsManagementUserPrincipal(username);
+        }
+
+        @Override
+        public boolean isUserInRole(String role, Scope scope) {
+            throw new UnsupportedOperationException("TODO: Roles not yet implemented");
+        }
+    }
+
+    static class CredentialsManagementUserPrincipal implements Principal {
+        private final String username;
+
+        CredentialsManagementUserPrincipal(String username) {
+            this.username = StringUtils.removeStart(username, "CN=");
+        }
+
+        @Override
+        public String getName() {
+            return username;
+        }
     }
 }

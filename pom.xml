@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.opentable</groupId>
     <artifactId>otj-parent-spring</artifactId>
-    <version>151</version>
+    <version>152</version>
   </parent>
 
   <groupId>com.opentable.components</groupId>
@@ -19,6 +19,10 @@
     <url>http://github.com/opentable/${project.artifactId}</url>
     <tag>HEAD</tag>
   </scm>
+
+  <properties>
+    <dep.otj-jaxrs.version>2.9.0</dep.otj-jaxrs.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -110,6 +114,10 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-security</artifactId>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
