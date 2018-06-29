@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+2.11.1
+------
+* Mark servlet filter order bean as Optional 
+
 2.11.0
 ------
 * hook SpringApplication.exit to register JvmFallbackShutdown; ICD-945
