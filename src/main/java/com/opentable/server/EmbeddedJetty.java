@@ -60,7 +60,7 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
             final JsonRequestLogConfig requestLogConfig,
             final Map<String, ServerConnectorConfig> activeConnectors,
             final PropertyResolver pr,
-            final FilterOrderResolver filterOrderResolver) {
+            final Optional<FilterOrderResolver> filterOrderResolver) {
 
         final JettyServletWebServerFactory factory = new JettyServletWebServerFactory() {
 
