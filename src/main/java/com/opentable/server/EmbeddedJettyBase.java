@@ -15,12 +15,14 @@ import java.util.function.IntSupplier;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.management.MBeanServer;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableMap;
 
+import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -117,6 +119,9 @@ public abstract class EmbeddedJettyBase {
     @Inject
     Optional<JsonRequestLog> requestLogger;
 
+    @Inject
+    Optional<MBeanServer> mbs;
+
     private Map<String, ConnectorInfo> connectorInfos;
 
     @Bean
@@ -153,6 +158,7 @@ public abstract class EmbeddedJettyBase {
             factory.setThreadPool(qtpProvider.get().get());
         }
         factory.addServerCustomizers(server -> {
+            mbs.ifPresent(m -> server.addBean(new MBeanContainer(m)));
             Handler customizedHandler = server.getHandler();
             if (handlerCustomizers.isPresent()) {
                 for (final Function<Handler, Handler> customizer : handlerCustomizers.get()) {

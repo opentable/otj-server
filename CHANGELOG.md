@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+2.11.2
+------
+* fix jetty jmx export
+
 2.11.1
 ------
 * Mark servlet filter order bean as Optional 
