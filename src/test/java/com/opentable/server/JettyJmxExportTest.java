@@ -2,18 +2,16 @@ package com.opentable.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.management.ManagementFactory;
-
 import javax.inject.Inject;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+
+import com.google.common.collect.Iterables;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -22,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ContextConfiguration(classes = {
     TestServer.class
 })
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class JettyJmxExportTest {
     @Inject
     LoopbackRequest request;
@@ -30,9 +27,17 @@ public class JettyJmxExportTest {
     @Inject
     EmbeddedJetty ej;
 
+    @Inject
+    MBeanServer mbs;
+
     @Test(timeout = 10_000)
-    public void testMBeans() throws Exception {
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        assertThat(mbs.getAttribute(new ObjectName("org.eclipse.jetty.server:type=server,id=0"), "state")).isEqualTo("STARTED");
+    public void testJettyExport() throws Exception {
+        final ObjectName name = Iterables.getOnlyElement(mbs.queryNames(new ObjectName("org.eclipse.jetty.server:type=server,id=*"), null));
+        assertThat(mbs.getAttribute(name, "state")).isEqualTo("STARTED");
+    }
+
+    @Test(timeout = 10_000)
+    public void testJettyDumper() throws Exception {
+        assertThat(mbs.invoke(new ObjectName("com.opentable.server:name=com.opentable.server.JettyDumper,type=JettyDumper"), "dumpJetty", new Object[0], new String[0]).toString()).contains("default-pool");
     }
 }

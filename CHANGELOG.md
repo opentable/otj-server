@@ -1,9 +1,10 @@
 otj-server
 ==========
 
-2.11.2
+2.12.0
 ------
 * fix jetty jmx export
+* JettyDumper lets you dump jetty state
 
 2.11.1
 ------
