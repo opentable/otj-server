@@ -38,6 +38,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     StartupShutdownFailedHandler.class,
     FilterOrderConfiguration.class,
     CheckManifest.class,
+    JettyDumper.class,
 })
 @EnablePauseDetector
 public @interface RestHttpServerCommon {

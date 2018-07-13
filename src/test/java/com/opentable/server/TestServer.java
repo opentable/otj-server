@@ -36,6 +36,7 @@ import com.opentable.service.ServiceInfo;
 @Import({
     TestServer.TestResource.class,
     LoopbackRequest.class,
+    TestMBeanServerConfiguration.class,
 })
 public class TestServer {
     public static final String HELLO_WORLD = "Hello, world!";
