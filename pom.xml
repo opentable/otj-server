@@ -30,7 +30,7 @@
     <!-- Remove once parent updated -->
     <dep.resteasy.version>4.0.0.Beta5</dep.resteasy.version>
     <dep.otj-jaxrs.version>2.9.1</dep.otj-jaxrs.version>
-    <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
+    <basepom.oss.skip-scala-doc>false</basepom.oss.skip-scala-doc>
 
   </properties>
 
