@@ -19,12 +19,20 @@
   <parent>
     <groupId>com.opentable</groupId>
     <artifactId>otj-parent-spring</artifactId>
-    <version>152</version>
+    <version>164</version>
   </parent>
 
   <groupId>com.opentable.components</groupId>
   <artifactId>otj-server</artifactId>
   <version>2.12.1-SNAPSHOT</version>
+
+  <properties>
+    <!-- Remove once parent updated -->
+    <dep.resteasy.version>4.0.0.Beta5</dep.resteasy.version>
+    <dep.otj-jaxrs.version>2.9.1</dep.otj-jaxrs.version>
+
+  </properties>
+
 
   <scm>
     <connection>scm:git:git://github.com/opentable/${project.artifactId}.git</connection>

@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+2.12.1
+------
+* Uses RestEasy beta 5, and consumes otj-jaxrs built on that
+
 2.12.0
 ------
 * fix jetty jmx export
