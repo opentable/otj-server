@@ -1,9 +1,16 @@
 otj-server
 ==========
+2.12.3
+------
+* Uses RestEasy beta 5, and consumes otj-jaxrs built on that
+
+2.12.2
+------
+BAD BUILD
 
 2.12.1
 ------
-* Uses RestEasy beta 5, and consumes otj-jaxrs built on that
+BAD BUILD
 
 2.12.0
 ------
