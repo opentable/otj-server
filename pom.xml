@@ -30,7 +30,9 @@
     <!-- Remove once parent updated -->
     <dep.jetty.version>9.4.12.v20180830</dep.jetty.version>
     <dep.resteasy.version>4.0.0.Beta5</dep.resteasy.version>
-    <dep.otj-jaxrs.version>2.9.1</dep.otj-jaxrs.version>
+    <dep.otj-jaxrs.version>2.9.2-SNAPSHOT</dep.otj-jaxrs.version>
+    <dep.otj-logging.version>2.7.5-SNAPSHOT</dep.otj-logging.version>
+
     <!-- end remove -->
     <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
     <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
