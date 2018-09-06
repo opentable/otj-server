@@ -1,5 +1,11 @@
 otj-server
 ==========
+
+2.12.4
+------
+* Uses Jetty 9.4.12.0830 and consumes otj-jaxrs, otj-logging
+built on that.
+
 2.12.3
 ------
 * Uses RestEasy beta 5, and consumes otj-jaxrs built on that
