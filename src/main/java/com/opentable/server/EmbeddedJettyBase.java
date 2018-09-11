@@ -110,12 +110,12 @@ public abstract class EmbeddedJettyBase {
     @Value("${ot.httpserver.ssl-allowed-deprecated-ciphers:}")
     List<String> allowedDeprecatedCiphers;
 
-    // the following two values (shouldSleepBeforeShutdown, sleepDurationMillisBeforeShutdown) help an application control whether they want a pause before jetty shutdown to ensure that the discovery unannounce has propagated to all clients requesting the application
+    // the following two values (shouldSleepBeforeShutdown, sleepDurationBeforeShutdown) help an application control whether they want a pause before jetty shutdown to ensure that the discovery unannounce has propagated to all clients requesting the application
     @Value("${ot.httpserver.sleep-before-shutdown:false}")
     boolean shouldSleepBeforeShutdown;
 
-    @Value("${ot.httpserver.sleep-duration-millis-before-shutdown:5000}")
-    long sleepDurationMillisBeforeShutdown;
+    @Value("${ot.httpserver.sleep-duration-before-shutdown:PT5s}")
+    Duration sleepDurationBeforeShutdown;
 
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
@@ -313,12 +313,14 @@ public abstract class EmbeddedJettyBase {
         LOG.info("Early shutdown of Jetty connectors on {}", container);
         if (container != null) {
             if(shouldSleepBeforeShutdown) {
-                LOG.info("Application config requesting sleep for "+sleepDurationMillisBeforeShutdown+" ms before jetty shutdown");
+                long sleepDurationMillisBeforeShutdown = sleepDurationBeforeShutdown.toMillis();
+                LOG.info("Application config requesting sleep for {} ms before Jetty shutdown", sleepDurationMillisBeforeShutdown);
                 try {
-                    LOG.info("Sleeping for "+sleepDurationMillisBeforeShutdown+" ms before jetty shutdown");
+                    LOG.info("Sleeping for {} ms before jetty shutdown", sleepDurationMillisBeforeShutdown);
                     Thread.sleep(sleepDurationMillisBeforeShutdown);
                 } catch (InterruptedException e) {
-                    LOG.error("Failed to sleep before shutdown "+e.getMessage() );
+                    LOG.error("Failed to sleep before shutdown {}", e);
+                    Thread.currentThread().interrupt();
                 }
             }
             container.stop();
