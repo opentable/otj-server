@@ -114,7 +114,7 @@ public abstract class EmbeddedJettyBase {
     @Value("${ot.httpserver.sleep-before-shutdown:false}")
     boolean shouldSleepBeforeShutdown;
 
-    @Value("${ot.httpserver.sleep-duration-millis-before-shutdown:0}")
+    @Value("${ot.httpserver.sleep-duration-millis-before-shutdown:5000}")
     long sleepDurationMillisBeforeShutdown;
 
     /**
