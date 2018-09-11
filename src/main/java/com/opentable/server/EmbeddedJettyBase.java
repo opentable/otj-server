@@ -29,7 +29,6 @@ import java.util.function.IntSupplier;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.management.MBeanServer;
-import javax.validation.Valid;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
