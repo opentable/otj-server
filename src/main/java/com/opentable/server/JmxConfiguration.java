@@ -107,15 +107,20 @@ public class JmxConfiguration {
                     }
                     return;
                 }
+
+                final String simpleURL = String.format(
+                        urlFormat,
+                       System.getenv("TASK_HOST"),
+                        jmxPort);
+                LOG.info("Starting jmx with jmxmp support. You'll need to connnect to this service using the jmxmp jar and protocol, using \n\t{} " +
+                        "\n\tSee https://wiki.otcorp.opentable.com/x/YsoIAQ for more information.", simpleURL);
+                LOG.debug("Alternatively, switch ot.jmx.enabled=false in application-deployed.properties and set jvm.properties options (Recommended). Then you can just connect via {}:{}",
+                        System.getenv("TASK_HOST"), jmxPort);
+                logCommandLineOptions();
                 final String url = String.format(
                         urlFormat,
                         MoreObjects.firstNonNull(jmxAddress, WILDCARD_BIND),
                         jmxPort);
-                LOG.info("Starting jmx with jmxmp support. You'll need to connnect to this service using the jmxmp jar and protocol, using {}. " +
-                        "See https://wiki.otcorp.opentable.com/x/YsoIAQ for more information.", url);
-                LOG.debug("Alternatively, switch ot.jmx.enabled=false in application-deployed.properties and set jvm.properties options (Recommended). Then you can just connect via {}:{}",
-                        System.getenv("TASK_HOST"), jmxPort);
-                logCommandLineOptions();
                 server = doLegacy(url);
                 server.start();
             } else {
