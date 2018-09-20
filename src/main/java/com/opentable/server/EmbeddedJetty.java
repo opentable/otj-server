@@ -66,7 +66,10 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
      *                            the filter registration beans. We therefore want to make sure that we have resolved
      *                            the order of these filters. It is ok and expected that this variable is not used in
      *                            this method.
-     * @return
+     * @param requestLogConfig Controls whether requests are logged via JsonRequestLog
+     * @param activeConnectors Which connectors are configured. The default is just a standard http connector
+     * @param pr Used to resolve the PORT settings.
+     * @return ServletWebserverFactory for a factory of WebServers
      */
     @Bean
     public ServletWebServerFactory servletContainer(
