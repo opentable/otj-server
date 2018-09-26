@@ -112,13 +112,17 @@ public final class OTApplication {
     }
 
     /**
-     * Return the base URI for a given application context.  Mostly useful in tests.
+     * @param ctx Spring application context
+     * @return URI Return the base URI for a given application context.  Mostly useful in tests.
      */
     public static URI getBaseUri(ConfigurableApplicationContext ctx) {
         return getBaseUri(ctx, "default");
     }
+
     /**
-     * Return the base URI for a given application context.  Mostly useful in tests.
+     * @param ctx Spring application context
+     * @param connector connector name. Currently only default is accepted.
+     * @return URI Return the base URI for a given application context.  Mostly useful in tests.
      */
     public static URI getBaseUri(ConfigurableApplicationContext ctx, String connector) {
         Preconditions.checkState("default".equals(connector), "TODO: implement non-default connectors");

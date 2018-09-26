@@ -37,6 +37,7 @@ import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
+
 import com.opentable.server.JmxConfiguration.JmxmpServer;
 
 /**
@@ -54,6 +55,8 @@ import com.opentable.server.JmxConfiguration.JmxmpServer;
 @Import(JmxmpServer.class)
 @EnableMBeanExport
 public class JmxConfiguration {
+    private static final String LEGACY_JMX = "service:jmx:jmxmp://%s:%s";
+
     @Bean
     public MBeanServer getMBeanServer() {
         return ManagementFactory.getPlatformMBeanServer();
@@ -61,6 +64,7 @@ public class JmxConfiguration {
 
     @Component
     static class JmxmpServer {
+        private static final String JAVA_RMI_SERVER_HOSTNAME = "java.rmi.server.hostname";
         private static final Logger LOG = LoggerFactory.getLogger(JmxmpServer.class);
         static final String WILDCARD_BIND = "0.0.0.0"; // NOPMD
 
@@ -73,6 +77,9 @@ public class JmxConfiguration {
         @Value("${ot.jmx.url-format:service:jmx:jmxmp://%s:%s}")
         private String urlFormat;
 
+        @Value("${ot.jmx.enabled:#{true}}")
+        private boolean jmxEnabled;
+
         private final MBeanServer mbs;
         private JMXConnectorServer server;
 
@@ -83,16 +90,75 @@ public class JmxConfiguration {
 
         @PostConstruct
         public void start() throws IOException {
+            // Always need this - effectively it's a noop since old code references PORT1 directly.
             if (jmxPort == null) {
-                LOG.info("No JMX port set, not exporting");
+                LOG.info("No JMX port set, not exporting. JMX configuration disabled");
                 return;
             }
 
-            final String url = String.format(
-                    urlFormat,
-                    MoreObjects.firstNonNull(jmxAddress, WILDCARD_BIND),
-                    jmxPort);
+            if (LEGACY_JMX.equals(urlFormat)) {
+                // Honestly we'd prefer it's always false and not here at all. But for compatibility (consider newer coommon config, older pom and hence otj-server)...
+                // This lets us eventually turn it off once we decide all otj-server's we care about have this switch
+                if (!jmxEnabled) {
+                    LOG.info("Programmatic JMX Configuration is disabled. You must have command line options set, or JMX won't be accessible.");
+                    if (System.getProperty(JAVA_RMI_SERVER_HOSTNAME) == null) {
+                        LOG.debug("Looks like it's not set up -- ");
+                        logCommandLineOptions();
+                    }
+                    return;
+                }
 
+                final String simpleURL = String.format(
+                        urlFormat,
+                       System.getenv("TASK_HOST"),
+                        jmxPort);
+                LOG.info("Starting jmx with jmxmp support. You'll need to connnect to this service using the jmxmp jar and protocol, using \n\t{} " +
+                        "\n\tSee https://wiki.otcorp.opentable.com/x/YsoIAQ for more information.", simpleURL);
+                LOG.debug("Alternatively, switch ot.jmx.enabled=false in application-deployed.properties and set jvm.properties options (Recommended). Then you can just connect via {}:{}",
+                        System.getenv("TASK_HOST"), jmxPort);
+                logCommandLineOptions();
+                final String url = String.format(
+                        urlFormat,
+                        MoreObjects.firstNonNull(jmxAddress, WILDCARD_BIND),
+                        jmxPort);
+                server = doLegacy(url);
+                server.start();
+            } else {
+                throw new UnsupportedOperationException("We only support jmxmp currently");
+            }
+
+
+            /*
+             * Keeping for future generations. The following works and implements things as desired without use of jmxmp.
+             * Why don't we use it? Because it uses com.sun internal implementation, and I was unable to port it.
+             *
+             * https://opentable.atlassian.net/browse/OTPL-2702 was the motivation for this failed but informative
+             * venture.
+             *             Properties properties = new Properties();
+             *             properties.put("com.sun.management.jmxremote", "true");
+             *             properties.put("com.sun.management.jmxremote.port", String.valueOf(jmxPort));
+             *             properties.put("com.sun.management.jmxremote.rmi.port", String.valueOf(jmxPort));
+             *             properties.put("com.sun.management.jmxremote.ssl", "false");
+             *             properties.put("com.sun.management.jmxremote.authenticate", "false");
+             *             properties.put("com.sun.management.hostname.local.only", "false");
+             *             properties.put(JAVA_RMI_SERVER_HOSTNAME, jmxHost);
+             *             ConnectorBootstrap.initialize(String.valueOf(jmxPort), properties);
+             */
+
+        }
+
+        private void logCommandLineOptions() {
+            LOG.debug("In jvm.propertes, add" +
+            "\n\t-Dcom.sun.management.jmxremote=true" +
+            "\n\t-Dcom.sun.management.jmxremote.port=$PORT1" +
+            "\n\t-Dcom.sun.management.jmxremote.rmi.port=$PORT1" +
+            "\n\t-Dcom.sun.management.jmxremote.ssl=false" +
+            "\n\t-Dcom.sun.management.jmxremote.authenticate=false" +
+            "\n\t-Dcom.sun.management.jmxremote.local.only=false" +
+            "\n\t-Djava.rmi.server.hostname=$TASK_HOST");
+        }
+
+        private JMXConnectorServer doLegacy(String url) throws IOException {
             LOG.info("Starting JMX Connector Server '{}'", url);
 
             Map<String, String> jmxEnv = new HashMap<>();
@@ -100,8 +166,7 @@ public class JmxConfiguration {
                     Boolean.toString(jmxAddress == null));
 
             JMXServiceURL jmxUrl = new JMXServiceURL(url);
-            server = JMXConnectorServerFactory.newJMXConnectorServer(jmxUrl, jmxEnv, mbs);
-            server.start();
+            return JMXConnectorServerFactory.newJMXConnectorServer(jmxUrl, jmxEnv, mbs);
         }
 
         @PreDestroy
@@ -111,5 +176,6 @@ public class JmxConfiguration {
                 server = null;
             }
         }
+
     }
 }
