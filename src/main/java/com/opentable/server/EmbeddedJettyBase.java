@@ -315,18 +315,22 @@ public abstract class EmbeddedJettyBase {
             if(shouldSleepBeforeShutdown) {
                 long sleepDurationMillisBeforeShutdown = sleepDurationBeforeShutdown.toMillis();
                 LOG.info("Application config requesting sleep for {} ms before Jetty shutdown", sleepDurationMillisBeforeShutdown);
-                try {
-                    LOG.info("Sleeping for {} ms before jetty shutdown", sleepDurationMillisBeforeShutdown);
-                    Thread.sleep(sleepDurationMillisBeforeShutdown);
-                } catch (InterruptedException e) {
-                    LOG.error("Failed to sleep before shutdown {}", e);
-                    Thread.currentThread().interrupt();
-                }
+                sleepBeforeJettyShutdown(sleepDurationMillisBeforeShutdown);
             }
             container.stop();
             LOG.info("Jetty is stopped.");
         } else {
             LOG.warn("Never got a Jetty?");
+        }
+    }
+
+    private void sleepBeforeJettyShutdown(long sleepDurationMillisBeforeShutdown) {
+        try {
+            LOG.info("Sleeping for {} ms before jetty shutdown", sleepDurationMillisBeforeShutdown);
+            Thread.sleep(sleepDurationMillisBeforeShutdown);
+        } catch (InterruptedException e) {
+            LOG.error("Failed to sleep before shutdown {}", e);
+            Thread.currentThread().interrupt();
         }
     }
 
