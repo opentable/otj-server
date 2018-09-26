@@ -110,6 +110,13 @@ public abstract class EmbeddedJettyBase {
     @Value("${ot.httpserver.ssl-allowed-deprecated-ciphers:}")
     List<String> allowedDeprecatedCiphers;
 
+    // the following two values (shouldSleepBeforeShutdown, sleepDurationBeforeShutdown) help an application control whether they want a pause before jetty shutdown to ensure that the discovery unannounce has propagated to all clients requesting the application
+    @Value("${ot.httpserver.sleep-before-shutdown:false}")
+    boolean shouldSleepBeforeShutdown;
+
+    @Value("${ot.httpserver.sleep-duration-before-shutdown:PT5s}")
+    Duration sleepDurationBeforeShutdown;
+
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
      * With {@link #containerInitialized(WebServerInitializedEvent)}, we capture this value
@@ -305,10 +312,25 @@ public abstract class EmbeddedJettyBase {
         LOG.debug("Received application context closed event {}. Shutting down...", evt);
         LOG.info("Early shutdown of Jetty connectors on {}", container);
         if (container != null) {
+            if(shouldSleepBeforeShutdown) {
+                long sleepDurationMillisBeforeShutdown = sleepDurationBeforeShutdown.toMillis();
+                LOG.info("Application config requesting sleep for {} ms before Jetty shutdown", sleepDurationMillisBeforeShutdown);
+                sleepBeforeJettyShutdown(sleepDurationMillisBeforeShutdown);
+            }
             container.stop();
             LOG.info("Jetty is stopped.");
         } else {
             LOG.warn("Never got a Jetty?");
+        }
+    }
+
+    private void sleepBeforeJettyShutdown(long sleepDurationMillisBeforeShutdown) {
+        try {
+            LOG.info("Sleeping for {} ms before jetty shutdown", sleepDurationMillisBeforeShutdown);
+            Thread.sleep(sleepDurationMillisBeforeShutdown);
+        } catch (InterruptedException e) {
+            LOG.error("Failed to sleep before shutdown {}", e);
+            Thread.currentThread().interrupt();
         }
     }
 
