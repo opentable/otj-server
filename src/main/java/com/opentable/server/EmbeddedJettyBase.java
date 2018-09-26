@@ -111,7 +111,7 @@ public abstract class EmbeddedJettyBase {
     List<String> allowedDeprecatedCiphers;
 
     // the following two values (shouldSleepBeforeShutdown, sleepDurationBeforeShutdown) help an application control whether they want a pause before jetty shutdown to ensure that the discovery unannounce has propagated to all clients requesting the application
-    @Value("${ot.httpserver.sleep-before-shutdown:false}")
+    @Value("${ot.httpserver.sleep-before-shutdown:#{false}}")
     boolean shouldSleepBeforeShutdown;
 
     @Value("${ot.httpserver.sleep-duration-before-shutdown:PT5s}")
@@ -331,6 +331,8 @@ public abstract class EmbeddedJettyBase {
         } catch (InterruptedException e) {
             LOG.error("Failed to sleep before shutdown {}", e);
             Thread.currentThread().interrupt();
+        } finally {
+            LOG.info("Sleep complete, preparing to shut down jetty.");
         }
     }
 
@@ -388,8 +390,8 @@ public abstract class EmbeddedJettyBase {
         }
 
         @Override
-        protected void removeExcludedCipherSuites(List<String> selected_ciphers) {
-            super.removeExcludedCipherSuites(selected_ciphers);
+        protected void removeExcludedCipherSuites(List<String> selectedCiphers) {
+            super.removeExcludedCipherSuites(selectedCiphers);
 
             if (allowedDeprecatedCiphers.isEmpty()) {
                 return;
@@ -401,7 +403,7 @@ public abstract class EmbeddedJettyBase {
                     LOG.warn("    * {}", cipher)
             );
             LOG.warn("***************************************************************************************");
-            selected_ciphers.addAll(allowedDeprecatedCiphers);
+            selectedCiphers.addAll(allowedDeprecatedCiphers);
         }
     }
 

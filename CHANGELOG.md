@@ -1,6 +1,17 @@
 otj-server
 ==========
 
+2.12.5
+------
+* Jmx autoconfiguration can now be disabled with ot.jmx.enabled=false. The reason you might want
+that will be explained in your server logs - a set of command line switches might be even easier. We
+will add to the wiki article at https://wiki.otcorp.opentable.com/x/YsoIAQ with more details.
+* Add an arbitrary amount of time to wait AFTER unnannouncing but BEFORE jetty. The relevant configuration
+
+ot.httpserver.sleep-before-shutdown = true | false (default = false) - whether to sleep at all
+ot.httpserver.sleep-duration-before-shutdown = IsoDuration (default = 5 seconds). How long to sleep
+    
+
 2.12.4
 ------
 * Uses Jetty 9.4.12.0830 and consumes otj-jaxrs, otj-logging
