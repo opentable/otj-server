@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+2.15.6
+------
+* application.properties => otj-server.properties, preventing dep clash
+* filterorder 0.0.3
 2.12.5
 ------
 * Jmx autoconfiguration can now be disabled with ot.jmx.enabled=false. The reason you might want

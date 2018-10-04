@@ -22,9 +22,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.TestPropertySource;
 
-// See application.properties in test resources for properties subject to override in this test.
-
+// See otj-server.properties in test resources for properties subject to override in this test.
 public class PropertyOverrideTest {
     ConfigurableApplicationContext ctx;
 
@@ -37,7 +39,7 @@ public class PropertyOverrideTest {
     @Before
     public void before() {
         Assert.assertNull(ctx);
-        ctx = OTApplication.run(Object.class, new String[]{}, ImmutableMap.of("test.a", "3"),
+        ctx = OTApplication.run(Config.class, new String[]{}, ImmutableMap.of("test.a", "3"),
                 builder -> builder.web(WebApplicationType.NONE));
         ctx.getAutowireCapableBeanFactory().autowireBean(this);
     }
@@ -53,5 +55,13 @@ public class PropertyOverrideTest {
     public void test() {
         Assert.assertEquals("3", testA);
         Assert.assertEquals("2", testB);
+    }
+
+    @Configuration
+    @PropertySource({
+            "classpath:otj-server.properties"
+    })
+    public static class Config {
+
     }
 }
