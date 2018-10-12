@@ -67,9 +67,12 @@ public class ResteasyAutoConfiguration {
     static final Class<?> RUNTIME_DELEGATE = RuntimeDelegate.class;
 
     @Bean(name = "resteasyDispatcher")
-    public FilterRegistrationBean<Filter30Dispatcher> resteasyServletRegistration(@Value("${ot.jaxrs.prefix:/}") String prefix) {
-        if (StringUtils.isEmpty(prefix)) {
+    public FilterRegistrationBean<Filter30Dispatcher> resteasyServletRegistration(
+            @Value("${ot.jaxrs.prefix:/}") String prefix) {
+        if (StringUtils.isBlank(prefix)) {
             prefix = "/";
+        } else {
+            prefix = prefix.trim();
         }
         FilterRegistrationBean<Filter30Dispatcher> registrationBean = new FilterRegistrationBean<>(new Filter30Dispatcher());
         registrationBean.addUrlPatterns("/*");
