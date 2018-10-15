@@ -52,13 +52,15 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 @EnableConfigurationProperties
 @Configuration
 @Conditional(ResteasyAutoConfiguration.InstallJAXRS.class)
+// Install JaxRS Server if configured to do so. Filters will still be configured for WebMVC or whatever.
 public class ResteasyAutoConfiguration {
     public static class InstallJAXRS implements Condition {
 
         @Override
         public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            return Boolean.parseBoolean(context.getEnvironment().
-                    getProperty("ot.jaxrs.server.enabled", "true"));
+            final String serverType = context.getEnvironment().
+                    getProperty("ot.server.type", "all");
+            return "all".equals(serverType) || "jaxrs".equals(serverType);
         }
     }
 
