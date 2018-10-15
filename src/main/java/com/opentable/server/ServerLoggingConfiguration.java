@@ -13,6 +13,7 @@
  */
 package com.opentable.server;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
@@ -28,6 +29,7 @@ import com.opentable.logging.CommonLogHolder;
 
 /* Registered via META-INF/spring.factories to capture early application lifecycle events */
 class ServerLoggingConfiguration implements ApplicationListener<ApplicationEvent> {
+    public static final String COMPONENT_NAME_KEY = "info.component"; // Taken from Dmitry's stack
     private static final Logger LOG = LoggerFactory.getLogger(ServerLoggingConfiguration.class);
 
     static {
@@ -38,7 +40,10 @@ class ServerLoggingConfiguration implements ApplicationListener<ApplicationEvent
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ApplicationEnvironmentPreparedEvent) {
             ApplicationEnvironmentPreparedEvent castEvent = (ApplicationEnvironmentPreparedEvent) event;
-            String serviceName = castEvent.getSpringApplication().getMainApplicationClass().getPackage().getImplementationTitle();
+            String serviceName = castEvent.getEnvironment().getProperty(COMPONENT_NAME_KEY);
+            if (StringUtils.isBlank(serviceName)) {
+                serviceName = castEvent.getSpringApplication().getMainApplicationClass().getPackage().getImplementationTitle();
+            }
             LOG.info("Setting service name to {}", serviceName);
             CommonLogHolder.setServiceType(serviceName);
         }
