@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.opentable.jackson.OpenTableJacksonConfiguration;
-import com.opentable.jaxrs.JaxRsClientConfiguration;
 import com.opentable.metrics.DefaultMetricsConfiguration;
 import com.opentable.metrics.http.HealthHttpConfiguration;
 import com.opentable.metrics.http.MetricsHttpConfiguration;
@@ -41,7 +40,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     ConservedHeadersConfiguration.class,
     ResteasyAutoConfiguration.class,
     OpenTableJacksonConfiguration.class,
-    JaxRsClientConfiguration.class,
+    JaxRSClientShimConfiguration.class,
     ServerConfigConfiguration.class,
     StaticResourceConfiguration.class,
     JmxConfiguration.class,
