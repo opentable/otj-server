@@ -5,6 +5,16 @@ otj-server
 ------
 * application.properties => otj-server.properties, preventing dep clash
 * filterorder 0.0.3
+* Allow configuration of component-id (for logging):
+    * ot.component.id
+    * info.component (if above is missing)
+    * manifest (original method, if both are missing)
+* Can disable JaxRS Client Setup using ot.client.type=none. Other valid
+values (not yet implemented are all, jaxrs, resttemplate)
+* Can disable JaxRS Server Setup using ot.server.type=none. Other valid
+values (not yet implemented are all, jaxrs, mvc)
+    
+ 
 2.12.5
 ------
 * Jmx autoconfiguration can now be disabled with ot.jmx.enabled=false. The reason you might want
