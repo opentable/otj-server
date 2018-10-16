@@ -22,12 +22,10 @@ import java.util.function.Consumer;
 import javax.inject.Inject;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.boot.web.embedded.jetty.JettyServerCustomizer;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
-import org.springframework.boot.web.embedded.jetty.JettyWebServer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
@@ -78,21 +76,7 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
             final PropertyResolver pr,
             final Optional<FilterOrderResolver> filterOrderResolver) {
 
-        final JettyServletWebServerFactory factory = new JettyServletWebServerFactory() {
-
-            @Override
-            protected org.eclipse.jetty.webapp.Configuration[] getWebAppContextConfigurations(WebAppContext webAppContext,
-                                                                                              ServletContextInitializer... initializers) {
-                webAppContextCustomizers.ifPresent(consumers -> consumers.forEach(c -> c.accept(webAppContext)));
-                return super.getWebAppContextConfigurations(webAppContext, initializers);
-            }
-
-            @Override
-            protected JettyWebServer getJettyWebServer(Server server) {
-                // always auto-start even if the default connector isn't configured
-                return new JettyWebServer(server, true);
-            }
-        };
+        final JettyServletWebServerFactory factory = new OTJettyServletWebServerFactory(webAppContextCustomizers);
         JettyWebServerFactoryAdapter factoryAdapter = new JettyWebServerFactoryAdapter(factory);
         this.configureFactoryContainer(requestLogConfig, activeConnectors, pr, factoryAdapter);
 
