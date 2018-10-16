@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -169,7 +170,7 @@ public abstract class EmbeddedJettyBase {
         final ServerConnectorConfig defaultConnector = activeConnectors.get(DEFAULT_CONNECTOR_NAME);
 
         // Remove Spring Boot's gimped default connector, we'll make a better one
-        factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
+        //factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
         if (defaultConnector == null) {
             LOG.debug("Disabling default HTTP connector");
             factory.setPort(0);
@@ -202,8 +203,16 @@ public abstract class EmbeddedJettyBase {
             stats.setHandler(customizedHandler);
             server.setHandler(stats);
 
+            ServerConnector bootConnector = Arrays.stream(server.getConnectors())
+                .filter(i -> i instanceof ServerConnector)
+                .map(i -> (ServerConnector) i)
+                .findFirst()
+                .orElse(null);
+
+            server.setConnectors(new Connector[0]);
+
             activeConnectors.forEach((name, config) -> {
-                connectorInfos.put(name, createConnector(server, name, ports, config));
+                connectorInfos.put(name, createConnector(server, name, ports, config, bootConnector));
             });
             this.connectorInfos = connectorInfos.build();
 
@@ -219,7 +228,7 @@ public abstract class EmbeddedJettyBase {
 
     @SuppressWarnings("resource")
     @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
-    private ConnectorInfo createConnector(Server server, String name, IntSupplier port, ServerConnectorConfig config) {
+    private ConnectorInfo createConnector(Server server, String name, IntSupplier port, ServerConnectorConfig config, ServerConnector bootConnector) {
         final List<ConnectionFactory> factories = new ArrayList<>();
 
         final SslContextFactory ssl;
@@ -260,8 +269,13 @@ public abstract class EmbeddedJettyBase {
         final ServerConnector connector = new ServerConnector(server,
                 factories.toArray(new ConnectionFactory[factories.size()]));
         connector.setName(name);
-        connector.setHost(config.getBindAddress());
-        connector.setPort(selectPort(port, config));
+        if ("boot".equals(name) && bootConnector != null) {
+            connector.setHost(bootConnector.getHost());
+            connector.setPort(bootConnector.getPort());
+        } else {
+            connector.setHost(config.getBindAddress());
+            connector.setPort(selectPort(port, config));
+        }
 
         server.addConnector(connector);
         return new ServerConnectorInfo(name, connector, config);
