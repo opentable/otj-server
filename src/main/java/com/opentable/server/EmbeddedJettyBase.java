@@ -88,6 +88,7 @@ import com.opentable.util.Optionals;
 @Import(JsonRequestLogConfig.class)
 public abstract class EmbeddedJettyBase {
     public static final String DEFAULT_CONNECTOR_NAME = "default-http";
+    public static final String BOOT_CONNECTOR_NAME = "boot";
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedJettyBase.class);
 
     @Value("${ot.http.bind-port:#{null}}")
@@ -169,8 +170,6 @@ public abstract class EmbeddedJettyBase {
         final ImmutableMap.Builder<String, ConnectorInfo> connectorInfos = ImmutableMap.builder();
         final ServerConnectorConfig defaultConnector = activeConnectors.get(DEFAULT_CONNECTOR_NAME);
 
-        // Remove Spring Boot's gimped default connector, we'll make a better one
-        //factory.addServerCustomizers(server -> server.setConnectors(new Connector[0]));
         if (defaultConnector == null) {
             LOG.debug("Disabling default HTTP connector");
             factory.setPort(0);
@@ -203,12 +202,14 @@ public abstract class EmbeddedJettyBase {
             stats.setHandler(customizedHandler);
             server.setHandler(stats);
 
+            // Get Spring Boot's default connector, so we can get properties from it
             ServerConnector bootConnector = Arrays.stream(server.getConnectors())
                 .filter(i -> i instanceof ServerConnector)
                 .map(i -> (ServerConnector) i)
                 .findFirst()
                 .orElse(null);
 
+            // Remove Spring Boot's gimped default connector, we'll make a better one
             server.setConnectors(new Connector[0]);
 
             activeConnectors.forEach((name, config) -> {
@@ -269,9 +270,10 @@ public abstract class EmbeddedJettyBase {
         final ServerConnector connector = new ServerConnector(server,
                 factories.toArray(new ConnectionFactory[factories.size()]));
         connector.setName(name);
-        if ("boot".equals(name) && bootConnector != null) {
+        if (BOOT_CONNECTOR_NAME.equals(name) && bootConnector != null) {
             connector.setHost(bootConnector.getHost());
             connector.setPort(bootConnector.getPort());
+            LOG.debug("Host/Port inferred from spring-");
         } else {
             connector.setHost(config.getBindAddress());
             connector.setPort(selectPort(port, config));
