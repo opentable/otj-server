@@ -23,9 +23,7 @@ import org.springframework.context.annotation.Import;
 
 /**
  * REST HTTP Server.
- * @deprecated Use JaxRSServer instead
  */
-@Deprecated
 @Configuration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -33,5 +31,5 @@ import org.springframework.context.annotation.Import;
     EmbeddedJetty.class,
     JAXRSHttpServerCommonConfiguration.class
 })
-public @interface RestHttpServer {
+public @interface JAXRSServer {
 }

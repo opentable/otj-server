@@ -21,17 +21,33 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.opentable.jackson.OpenTableJacksonConfiguration;
+import com.opentable.metrics.DefaultMetricsConfiguration;
+import com.opentable.metrics.http.HealthHttpConfiguration;
+import com.opentable.metrics.http.MetricsHttpConfiguration;
+import com.opentable.pausedetector.EnablePauseDetector;
+
 /**
- * REST HTTP Server.
- * @deprecated Use JaxRSServer instead
+ * Common configuration for REST HTTP Server instances
+ *
+ * @see ServerLoggingConfiguration for its special setup.
  */
-@Deprecated
 @Configuration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-    EmbeddedJetty.class,
-    JAXRSHttpServerCommonConfiguration.class
+    BackendInfoFilterConfiguration.class,
+    OpenTableJacksonConfiguration.class,
+    ServerConfigConfiguration.class,
+    StaticResourceConfiguration.class,
+    JmxConfiguration.class,
+    DefaultMetricsConfiguration.class,
+    HealthHttpConfiguration.class,
+    MetricsHttpConfiguration.class,
+    StartupShutdownFailedHandler.class,
+    CheckManifest.class,
+    JettyDumper.class,
 })
-public @interface RestHttpServer {
+@EnablePauseDetector
+@interface CoreHttpServerCommon {
 }

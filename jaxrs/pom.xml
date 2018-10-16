@@ -28,11 +28,11 @@
   <dependencies>
     <dependency>
       <groupId>com.opentable.components</groupId>
-      <artifactId>otj-core</artifactId>
+      <artifactId>otj-server-core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
-      <artifactId>otj-spring</artifactId>
+      <artifactId>otj-core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
@@ -41,14 +41,6 @@
     <dependency>
       <groupId>com.opentable.components</groupId>
       <artifactId>otj-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-logging-jetty</artifactId>
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
@@ -96,10 +88,6 @@
       <artifactId>spring-beans</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
     </dependency>
@@ -110,19 +98,11 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-jmx</artifactId>
     </dependency>
 
     <dependency>
@@ -166,10 +146,6 @@
     </dependency>
 
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
@@ -190,10 +166,6 @@
       <groupId>javax.annotation</groupId>
       <artifactId>javax.annotation-api</artifactId>
       <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>findbugs-annotations</artifactId>
     </dependency>
 
     <dependency>

@@ -21,17 +21,23 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.opentable.pausedetector.EnablePauseDetector;
+
 /**
- * REST HTTP Server.
- * @deprecated Use JaxRSServer instead
+ * Common configuration for REST HTTP Server instances
+ *
+ * @see ServerLoggingConfiguration for its special setup.
  */
-@Deprecated
 @Configuration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-    EmbeddedJetty.class,
-    JAXRSHttpServerCommonConfiguration.class
+        CoreHttpServerCommon.class,
+        ConservedHeadersConfiguration.class,
+        ResteasyAutoConfiguration.class,
+        JaxRSClientShimConfiguration.class,
+        FilterOrderConfiguration.class,
 })
-public @interface RestHttpServer {
+@EnablePauseDetector
+@interface JAXRSHttpServerCommonConfiguration {
 }

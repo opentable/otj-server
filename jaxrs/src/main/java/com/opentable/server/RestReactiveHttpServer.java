@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
     EmbeddedReactiveJetty.class,
-    RestHttpServerCommon.class
+    JAXRSHttpServerCommonConfiguration.class
 })
 public @interface RestReactiveHttpServer {
 }

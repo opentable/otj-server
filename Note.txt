@@ -1,0 +1,22 @@
+
+The idea of this is to split up to allow different supported stuff
+
+Core - The core code (duh)
+jaxrs - jaxrs specific
+mvc - mvc specific
+reactive (future) - reactive stuff
+shared-test - core shared test framework (so you can repeat tests)
+server - can use maven relocation to move otj-server to ojt-server-jaxrs
+
+
+other undone things
+
+- Add otj-rest-template - I say no, but if you do, cyclic dependencies abound
+- Add conserved headers, etc to mvc
+
+Compatibility
+
+- Peoples deps will change, but the annotation and compile should mostly work
+
+
+
