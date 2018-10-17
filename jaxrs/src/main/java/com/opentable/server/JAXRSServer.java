@@ -28,8 +28,12 @@ import org.springframework.context.annotation.Import;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
+    // Core Jetty Servlet
     EmbeddedJetty.class,
+    // Specific Jaxrs wiring
     JAXRSHttpServerCommonConfiguration.class
 })
+// Core servlet + logging, metrics, etc
+@CoreHttpServerCommon
 public @interface JAXRSServer {
 }

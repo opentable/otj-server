@@ -16,8 +16,10 @@ import org.springframework.context.annotation.Import;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
+    // Pull mvc specific stuff
     MVCHttpServerCommonConfiguration.class,
-    CoreHttpServerCommon.class
 })
+// All the non specific mvc servlet stuff
+@CoreHttpServerCommon
 public @interface MVCServer {
 }
