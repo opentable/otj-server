@@ -24,6 +24,7 @@
 
   <artifactId>otj-server-core</artifactId>
   <version>3.0.0-SNAPSHOT</version>
+  <description>Wiring for basic Jetty core servlet regardless of MVC or JaxRS choices. Also wires logging, metrics, etc</description>
 
   <dependencies>
     <dependency>
@@ -115,6 +116,7 @@
     </dependency>
 
     <!--
+    Oddly dropped - let's keep an eye ...
     <dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-annotation</artifactId>

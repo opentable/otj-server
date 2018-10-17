@@ -33,5 +33,6 @@ import org.springframework.context.annotation.Import;
     EmbeddedJetty.class,
     JAXRSHttpServerCommonConfiguration.class
 })
+@CoreHttpServerCommon
 public @interface RestHttpServer {
 }

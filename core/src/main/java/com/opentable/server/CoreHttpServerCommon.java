@@ -21,14 +21,13 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.opentable.jackson.OpenTableJacksonConfiguration;
-import com.opentable.metrics.DefaultMetricsConfiguration;
 import com.opentable.metrics.http.HealthHttpConfiguration;
 import com.opentable.metrics.http.MetricsHttpConfiguration;
-import com.opentable.pausedetector.EnablePauseDetector;
 
 /**
  * Common configuration for REST HTTP Server instances
+ * Public so "non web users" can access.
+ * If you need a http client, see the README
  *
  * @see ServerLoggingConfiguration for its special setup.
  */
@@ -36,18 +35,18 @@ import com.opentable.pausedetector.EnablePauseDetector;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
+    // Filter for transfer core info to MDC
     BackendInfoFilterConfiguration.class,
-    OpenTableJacksonConfiguration.class,
+    // Pull configuration info for server connector
     ServerConfigConfiguration.class,
+    // Support static resources
     StaticResourceConfiguration.class,
-    JmxConfiguration.class,
-    DefaultMetricsConfiguration.class,
+    // Default health check
     HealthHttpConfiguration.class,
+    // Metrics for http
     MetricsHttpConfiguration.class,
-    StartupShutdownFailedHandler.class,
-    CheckManifest.class,
-    JettyDumper.class,
 })
-@EnablePauseDetector
+// All the non web stuff
+@NonWebSetup
 @interface CoreHttpServerCommon {
 }

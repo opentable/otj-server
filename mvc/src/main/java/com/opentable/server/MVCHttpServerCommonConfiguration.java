@@ -16,20 +16,24 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 
-import com.opentable.pausedetector.EnablePauseDetector;
+import com.opentable.jackson.OpenTableJacksonConfiguration;
 
 @Configuration
 @Import({
-        //TODO: Probably more customized configuration of these
+        // Core dispatcher for MVC servlets
         DispatcherServletAutoConfiguration.class,
+        // Converts JSON/XML usding jackson
         HttpMessageConvertersAutoConfiguration.class,
+        // Core MVC
         WebMvcAutoConfiguration.class,
-        ErrorMvcAutoConfiguration.class
+        // Error handler default (I'm ambivalent about this - will go with consensus
+        ErrorMvcAutoConfiguration.class,
+        // Redundant but prevents wiring warnings in IDE
+        OpenTableJacksonConfiguration.class
 })
-@EnablePauseDetector
 class MVCHttpServerCommonConfiguration {
 
-    // Enforce consistent ObjectMapper setup
+
     @Inject
     MVCHttpServerCommonConfiguration(ObjectMapper objectMapper, HttpMessageConverters httpMessageConverters) {
         setupConverter(httpMessageConverters.getConverters(), objectMapper);

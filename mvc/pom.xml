@@ -24,30 +24,7 @@
   
   <artifactId>otj-server-mvc</artifactId>
   <version>3.0.0-SNAPSHOT</version>
-<!--
-[WARNING] Unused declared dependencies found:
-[WARNING]    io.dropwizard.metrics:metrics-core:jar:3.1.2:compile
-[WARNING]    com.opentable.components:otj-logging-jetty:jar:2.7.5:compile
-[WARNING]    com.opentable.components:otj-core:jar:1.6.0:compile
-[WARNING]    io.dropwizard.metrics:metrics-healthchecks:jar:3.1.2:compile
-[WARNING]    javax.ws.rs:javax.ws.rs-api:jar:2.1:compile
-[WARNING]    org.eclipse.jetty:jetty-util:jar:9.4.12.v20180830:compile
-[WARNING]    org.springframework.boot:spring-boot:jar:2.0.3.RELEASE:compile
-[WARNING]    org.apache.commons:commons-lang3:jar:3.7:compile
-[WARNING]    org.springframework:spring-beans:jar:5.0.7.RELEASE:compile
-[WARNING]    com.opentable.components:otj-filterorder:jar:0.0.3:compile
-[WARNING]    commons-io:commons-io:jar:2.6:compile
-[WARNING]    org.springframework:spring-core:jar:5.0.7.RELEASE:compile
-[WARNING]    io.dropwizard.metrics:metrics-annotation:jar:3.1.2:compile
-[WARNING]    com.opentable.components:otj-logging:jar:2.7.5:compile
-[WARNING]    ch.qos.logback:logback-classic:jar:1.2.3:compile
-[WARNING]    org.eclipse.jetty:jetty-server:jar:9.4.12.v20180830:compile
-[WARNING]    javax.servlet:javax.servlet-api:jar:3.1.0:compile
-[WARNING]    org.slf4j:slf4j-api:jar:1.7.25:compile
-[WARNING]    com.google.guava:guava:jar:23.5-jre:compile
-[WARNING]    com.google.code.findbugs:findbugs-annotations:jar:3.0.1:compile
-[WARNING]    org.eclipse.jetty:jetty-servlet:jar:9.4.12.v20180830:compile
--->
+  <description>Provides Spring MVC wiring into otj-stack</description>
   <dependencies>
     <dependency>
       <groupId>com.opentable.components</groupId>
@@ -68,12 +45,12 @@
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
-      <artifactId>otj-pausedetector</artifactId>
+      <artifactId>otj-logging-kafka</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
-      <artifactId>otj-logging-kafka</artifactId>
-      <scope>runtime</scope>
+      <artifactId>otj-jackson</artifactId>
     </dependency>
 
     <dependency>

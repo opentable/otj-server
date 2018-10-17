@@ -65,5 +65,6 @@
         <module>core</module>
         <module>jaxrs</module>
         <module>mvc</module>
+        <module>server</module>
     </modules>
 </project>
