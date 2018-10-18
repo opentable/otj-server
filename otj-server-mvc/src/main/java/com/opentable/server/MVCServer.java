@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Import;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
+    // Core Jetty Servlet
+    EmbeddedJetty.class,
     // Pull mvc specific stuff
     MVCHttpServerCommonConfiguration.class,
 })
