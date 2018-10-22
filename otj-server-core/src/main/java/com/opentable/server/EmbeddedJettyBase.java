@@ -273,7 +273,7 @@ public abstract class EmbeddedJettyBase {
         if (BOOT_CONNECTOR_NAME.equals(name) && bootConnector != null) {
             connector.setHost(bootConnector.getHost());
             connector.setPort(bootConnector.getPort());
-            LOG.debug("Host/Port inferred from spring-");
+            LOG.debug("Configuring HTTP connector, setting host and port to Spring's defaults.");
         } else {
             connector.setHost(config.getBindAddress());
             connector.setPort(selectPort(port, config));
