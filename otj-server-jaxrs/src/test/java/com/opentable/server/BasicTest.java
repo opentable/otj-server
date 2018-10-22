@@ -41,7 +41,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = {
-    TestServer.class
+    TestJaxRsServerConfiguration.class
 })
 @TestPropertySource(properties= {
     "ot.httpserver.max-threads=13",
@@ -61,13 +61,13 @@ public class BasicTest {
     @Test(timeout = 10_000)
     public void test5xx() throws InterruptedException {
         String responseText = request.of("/5xx").request().get().readEntity(String.class);
-        assertEquals(TestServer.TestErrorHandler.TEXT, responseText);
+        assertEquals(TestJaxRsServerConfiguration.TestErrorHandler.TEXT, responseText);
         waitForCount("http-server.500-responses", 1);
     }
 
     @Test(timeout = 10_000)
     public void testHello() throws InterruptedException {
-        assertEquals(TestServer.HELLO_WORLD, request.of("/").request().get().readEntity(String.class));
+        assertEquals(TestJaxRsServerConfiguration.HELLO_WORLD, request.of("/").request().get().readEntity(String.class));
         waitForCount("http-server.200-responses", 1);
     }
 

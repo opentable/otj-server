@@ -35,6 +35,8 @@ import com.opentable.metrics.http.MetricsHttpConfiguration;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
+    // Embedded jetty
+    EmbeddedJetty.class,
     // Filter for transfer core info to MDC
     BackendInfoFilterConfiguration.class,
     // Pull configuration info for server connector

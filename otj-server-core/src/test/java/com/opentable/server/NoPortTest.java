@@ -22,7 +22,7 @@ import org.springframework.context.ApplicationContextException;
 public class NoPortTest {
     @Test(expected=ApplicationContextException.class)
     public void testNoPorts() throws Exception {
-        SpringApplication app = new SpringApplication(TestJaxRsServerConfiguration.class);
+        SpringApplication app = new SpringApplication(TestServerConfiguration.class);
         app.setDefaultProperties(Collections.singletonMap("ot.http.bind-port", ""));
         app.run();
     }

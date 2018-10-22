@@ -57,7 +57,7 @@ public abstract class AsyncBaseTest {
             .map(this::getSafe)
             .forEach(s -> {
                 LOG.info("result received");
-                assertEquals(TestServer.ASYNC_JOIN_RESULT, s);
+                assertEquals(TestJaxRsServerConfiguration.ASYNC_JOIN_RESULT, s);
             });
     }
 

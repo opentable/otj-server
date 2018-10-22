@@ -26,7 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = {
-    TestServer.class,
+    TestJaxRsServerConfiguration.class,
     EmbeddedReactiveJetty.class
 })
 @TestPropertySource(properties = {

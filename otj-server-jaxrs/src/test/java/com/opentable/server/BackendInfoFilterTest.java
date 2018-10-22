@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = {
-        TestServer.class
+        TestJaxRsServerConfiguration.class
 })
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",

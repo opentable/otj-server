@@ -47,16 +47,16 @@ import com.opentable.service.ServiceInfo;
 @Configuration
 @RestHttpServer
 @Import({
-    TestServer.TestResource.class,
+    TestJaxRsServerConfiguration.TestResource.class,
     LoopbackRequest.class,
     TestMBeanServerConfiguration.class,
 })
-public class TestServer {
+public class TestJaxRsServerConfiguration {
     public static final String HELLO_WORLD = "Hello, world!";
     public static final String ASYNC_JOIN_RESULT = "Welcome to the asynchronous future";
 
     public static void main(final String[] args) {
-        SpringApplication.run(TestServer.class, args);
+        SpringApplication.run(TestJaxRsServerConfiguration.class, args);
     }
 
     @Bean
@@ -99,7 +99,7 @@ public class TestServer {
 
         @GET
         public String get() {
-            return TestServer.HELLO_WORLD;
+            return TestJaxRsServerConfiguration.HELLO_WORLD;
         }
 
         @GET

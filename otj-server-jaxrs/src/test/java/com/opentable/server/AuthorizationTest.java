@@ -105,7 +105,7 @@ public class AuthorizationTest {
     }
 
     @Configuration
-    @Import(TestServer.class)
+    @Import(TestJaxRsServerConfiguration.class)
     public static class TestConfiguration {
 
         @Bean

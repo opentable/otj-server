@@ -140,7 +140,9 @@ public class MBeanServerTest {
      */
     @Configuration
     @CoreHttpServerCommon
-    @Import(ManagedHealthCheck.class)
+    @Import({
+        ManagedHealthCheck.class
+    })
     static class BadTestConfiguration {
         @Bean
         ServiceInfo getServiceInfo() {

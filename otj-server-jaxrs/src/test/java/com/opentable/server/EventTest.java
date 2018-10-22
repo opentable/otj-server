@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = {
-    TestServer.class, EventTestListener.class
+    TestJaxRsServerConfiguration.class, EventTestListener.class
 })
 @TestPropertySource(properties= {
     "ot.httpserver.max-threads=13",

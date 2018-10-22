@@ -37,7 +37,7 @@ import com.opentable.metrics.http.MetricsHttpConfiguration;
  */
 @Configuration
 @Import({
-        TestServer.class,
+        TestJaxRsServerConfiguration.class,
         MetricsHttpConfiguration.class,
         MetricsDemo.AnnotatedResource.class,
 })

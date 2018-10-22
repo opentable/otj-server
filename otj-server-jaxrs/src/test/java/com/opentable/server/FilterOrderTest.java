@@ -85,7 +85,7 @@ public class FilterOrderTest {
     }
 
     @Configuration
-    @Import(TestServer.class)
+    @Import(TestJaxRsServerConfiguration.class)
     public static class TestConfigurationBase {
         @Bean
         public FilterRegistrationBean<FilterA> filterAFilterRegistrationBean(final Callback cb) {
@@ -154,7 +154,7 @@ public class FilterOrderTest {
     }
 
     @Configuration
-    @Import(TestServer.class)
+    @Import(TestJaxRsServerConfiguration.class)
     public static class AnotherLast {
         @Bean
         public OrderDeclaration anotherLast() {

@@ -33,7 +33,7 @@ import com.opentable.conservedheaders.ConservedHeader;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = {
-    TestServer.class
+    TestJaxRsServerConfiguration.class
 })
 public class ConservedHeadersTest {
     private final static String RID = ConservedHeader.REQUEST_ID.getHeaderName();

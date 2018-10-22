@@ -45,7 +45,7 @@ public class DoublePortTest {
         }
         Assert.assertNull(context);
         Assert.assertNull(port);
-        SpringApplication app = new SpringApplication(TestJaxRsServerConfiguration.class);
+        SpringApplication app = new SpringApplication(TestServerConfiguration.class);
         app.setDefaultProperties(ImmutableMap.of(
                 "ot.httpserver.active-connectors", "default-http,extra-http",
                 "ot.httpserver.connector.extra-http.port", secondPort));
@@ -67,8 +67,8 @@ public class DoublePortTest {
     @Test
     public void testPorts() throws Exception {
         assertNotSame(port, secondPort);
-        assertEquals(TestJaxRsServerConfiguration.HELLO_WORLD, readHello(port));
-        assertEquals(TestJaxRsServerConfiguration.HELLO_WORLD, readHello(secondPort));
+        assertEquals(TestServerConfiguration.HELLO_WORLD, readHello(port));
+        assertEquals(TestServerConfiguration.HELLO_WORLD, readHello(secondPort));
     }
 
     private String readHello(int myPort) {
