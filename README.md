@@ -80,6 +80,9 @@ ot.httpserver.active-connectors=default-http,fixed-http,my-https
 The `default-http` connector is hard-wired to Spring Boot's default connector and is less customizable;
 the rest are created by the `otj-server` code and wired to Jetty ourselves.
 
+The `boot` connector is the same as the  `default-http` connector, but it takes its host and port from Spring Boot's default connector.
+
+
 Previous versions of `otj-server` had a configurable `ot.http.bind-port`; this usually would be replaced with e.g.
 ```
 ot.httpserver.connector.default-http.port=8080
