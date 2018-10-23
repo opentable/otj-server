@@ -13,25 +13,23 @@
  */
 package com.opentable.server;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.WebTarget;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+@Named
+class LoopbackRequest {
+    private final Client client;
+    private final Provider<HttpServerInfo> info;
+    @Inject
+    private LoopbackRequest(@Named("test") Client client, Provider<HttpServerInfo> info) {
+        this.client = client;
+        this.info = info;
+    }
 
-/**
- * REST HTTP Server.
- */
-@Configuration
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Import({
-    // Specific Jaxrs wiring
-    JAXRSHttpServerCommonConfiguration.class
-})
-// Core servlet + logging, metrics, etc
-@CoreHttpServerCommon
-public @interface JAXRSServer {
+    public WebTarget of(String path) {
+        return client.target("http://localhost:" + info.get().getPort()).path(path);
+    }
 }

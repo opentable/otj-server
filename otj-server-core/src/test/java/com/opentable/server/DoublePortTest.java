@@ -72,6 +72,6 @@ public class DoublePortTest {
     }
 
     private String readHello(int myPort) {
-        return client.target("http://localhost:" + myPort).request().get(String.class);
+        return client.target("http://localhost:" + myPort + "/hello").request().get().readEntity(String.class);
     }
 }

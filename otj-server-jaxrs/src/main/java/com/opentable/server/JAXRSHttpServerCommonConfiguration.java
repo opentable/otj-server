@@ -30,8 +30,6 @@ import org.springframework.context.annotation.Import;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-        // Conserved headers
-        ConservedHeadersConfiguration.class,
         // Core resteasy dispatcher, jackson, etc
         ResteasyAutoConfiguration.class,
         // JaxRS wiring
