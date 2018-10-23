@@ -23,7 +23,6 @@
   </parent>
   
   <artifactId>otj-server-mvc</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
   <description>Provides Spring MVC wiring into otj-stack</description>
   <dependencies>
     <dependency>

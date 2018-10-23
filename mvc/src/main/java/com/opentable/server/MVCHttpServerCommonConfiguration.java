@@ -22,7 +22,7 @@ import com.opentable.jackson.OpenTableJacksonConfiguration;
 @Import({
         // Core dispatcher for MVC servlets
         DispatcherServletAutoConfiguration.class,
-        // Converts JSON/XML usding jackson
+        // Converts JSON/XML using Jackson
         HttpMessageConvertersAutoConfiguration.class,
         // Core MVC
         WebMvcAutoConfiguration.class,
@@ -39,7 +39,7 @@ class MVCHttpServerCommonConfiguration {
         setupConverter(httpMessageConverters.getConverters(), objectMapper);
     }
 
-    private <T extends AbstractJackson2HttpMessageConverter> void setupConverter(final List<HttpMessageConverter<?>> converterList, ObjectMapper objectMapper) {
+    private void setupConverter(final List<HttpMessageConverter<?>> converterList, ObjectMapper objectMapper) {
         converterList.stream()
                 .filter(t -> t instanceof AbstractJackson2HttpMessageConverter)
                 .map(t -> (AbstractJackson2HttpMessageConverter) t)
