@@ -21,6 +21,8 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
+import com.opentable.conservedheaders.ConservedHeadersConfiguration;
 import com.opentable.metrics.http.HealthHttpConfiguration;
 import com.opentable.metrics.http.MetricsHttpConfiguration;
 
@@ -37,6 +39,8 @@ import com.opentable.metrics.http.MetricsHttpConfiguration;
 @Import({
     // Embedded jetty
     EmbeddedJetty.class,
+    // Conserved Headers
+    ConservedHeadersConfiguration.class,
     // Filter for transfer core info to MDC
     BackendInfoFilterConfiguration.class,
     // Pull configuration info for server connector
@@ -47,6 +51,8 @@ import com.opentable.metrics.http.MetricsHttpConfiguration;
     HealthHttpConfiguration.class,
     // Metrics for http
     MetricsHttpConfiguration.class,
+    // Filter order
+    FilterOrderResolverConfiguration.class,
 })
 // All the non web stuff
 @NonWebSetup
