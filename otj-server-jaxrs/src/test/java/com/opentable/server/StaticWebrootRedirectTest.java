@@ -79,7 +79,7 @@ public class StaticWebrootRedirectTest {
         return ctx;
     }
 
-    @RestHttpServer
+    @JAXRSServer
     @Import({
             StaticWebrootRedirect.class,
             LoopbackRequest.class,

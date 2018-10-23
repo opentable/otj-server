@@ -45,7 +45,7 @@ import com.opentable.jaxrs.StandardFeatureGroup;
 import com.opentable.service.ServiceInfo;
 
 @Configuration
-@RestHttpServer
+@JAXRSServer
 @Import({
     TestJaxRsServerConfiguration.TestResource.class,
     LoopbackRequest.class,

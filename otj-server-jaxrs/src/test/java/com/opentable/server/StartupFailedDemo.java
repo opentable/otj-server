@@ -30,7 +30,7 @@ public class StartupFailedDemo {
     }
 
     @Configuration
-    @RestHttpServer
+    @JAXRSServer
     public static class App {
         @Configuration
         public static class BustedConfiguration {

@@ -126,7 +126,7 @@ public class TestExtraConnectors {
         }
     }
 
-    @RestHttpServer
+    @JAXRSServer
     @Import(TestingServer.TestingResource.class)
     public static class TestingServer {
         @Bean

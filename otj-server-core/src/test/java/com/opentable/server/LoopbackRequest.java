@@ -13,17 +13,23 @@
  */
 package com.opentable.server;
 
-import java.util.Collections;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.WebTarget;
 
-import org.junit.Test;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContextException;
+@Named
+class LoopbackRequest {
+    private final Client client;
+    private final Provider<HttpServerInfo> info;
+    @Inject
+    private LoopbackRequest(@Named("test") Client client, Provider<HttpServerInfo> info) {
+        this.client = client;
+        this.info = info;
+    }
 
-public class NoPortTest {
-    @Test(expected=ApplicationContextException.class)
-    public void testNoPorts() throws Exception {
-        SpringApplication app = new SpringApplication(TestJaxRsServerConfiguration.class);
-        app.setDefaultProperties(Collections.singletonMap("ot.http.bind-port", ""));
-        app.run();
+    public WebTarget of(String path) {
+        return client.target("http://localhost:" + info.get().getPort()).path(path);
     }
 }
