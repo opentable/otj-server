@@ -24,7 +24,6 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.TestPropertySource;
 
 // See otj-server.properties in test resources for properties subject to override in this test.
 public class PropertyOverrideTest {

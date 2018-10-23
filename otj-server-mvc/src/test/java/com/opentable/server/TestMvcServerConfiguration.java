@@ -1,8 +1,7 @@
 package com.opentable.server;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,13 +16,8 @@ import com.opentable.service.ServiceInfo;
 public class TestMvcServerConfiguration {
 
     @Bean
-    public ServiceInfo getServiceInfo() {
-        return new ServiceInfo() {
-            @Override
-            public String getName() {
-                return "test";
-            }
-        };
+    ServiceInfo serviceInfo(@Value("${info.component}") final String serviceType) {
+        return () -> serviceType;
     }
 
     @RequestMapping("test")
