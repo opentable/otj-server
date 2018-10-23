@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 
+import com.opentable.conservedheaders.ConservedHeadersFilter;
 import com.opentable.jackson.OpenTableJacksonConfiguration;
 
 @Configuration
@@ -38,7 +39,9 @@ import com.opentable.jackson.OpenTableJacksonConfiguration;
     // To add dependency
     PropertyPlaceholderAutoConfiguration.class,
     // Redundant but prevents wiring warnings in IDE
-    OpenTableJacksonConfiguration.class
+    OpenTableJacksonConfiguration.class,
+    // Put conserved headers into the MDC
+    ConservedHeadersFilter.class,
 })
 class MVCHttpServerCommonConfiguration {
 
