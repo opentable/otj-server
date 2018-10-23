@@ -13,21 +13,30 @@
  */
 package com.opentable.server;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import com.opentable.conservedheaders.ConservedHeader;
+import com.opentable.server.TestMvcServerConfiguration.EchoResponse;
 
 public class ConservedHeadersTest extends AbstractTest {
-    private final static String RID = ConservedHeader.REQUEST_ID.getHeaderName();
-    private final static String AID = ConservedHeader.ANONYMOUS_ID.getHeaderName();
+
+    private static final String REQUEST_ID = ConservedHeader.REQUEST_ID.getHeaderName();
+    private static final String ANONYMOUS_ID = ConservedHeader.ANONYMOUS_ID.getHeaderName();
+
+    @Autowired
+    private TestRestTemplate testRestTemplate;
 
     @Test
     public void createRequestIdIndex() {
@@ -41,27 +50,41 @@ public class ConservedHeadersTest extends AbstractTest {
 
     @Test
     public void conserveRequestId() {
-        final String rid = UUID.randomUUID().toString();
-        ResponseEntity<String> resp = request("/api/test", RID, rid);
-        sanityCheck(resp);
-        Assert.assertEquals(rid, resp.getHeaders().get(RID).get(0));
+        final String requestId = UUID.randomUUID().toString();
+        ResponseEntity<String> response = request("/api/test", REQUEST_ID, requestId);
+        sanityCheck(response);
+        Assert.assertEquals(requestId, response.getHeaders().get(REQUEST_ID).get(0));
     }
 
     @Test
     public void replaceBadRequestId() {
-        final String badRid = "not a valid UUID";
-        ResponseEntity<String> resp = request("/api/test", RID, badRid);
-        sanityCheck(resp);
-        Assert.assertNotEquals(badRid, resp.getHeaders().get(RID).get(0));
+        final String badRequestId = "not a valid UUID";
+        ResponseEntity<String> response = request("/api/test", REQUEST_ID, badRequestId);
+        sanityCheck(response);
+        Assert.assertNotEquals(badRequestId, response.getHeaders().get(REQUEST_ID).get(0));
     }
 
     @Test
     public void conserveAnonymousId() {
-        final String aid = "fgsfds";
-        ResponseEntity<String> resp = request("/api/test", AID, aid);
-        sanityCheck(resp);
-        Assert.assertEquals(aid, resp.getHeaders().get(AID).get(0));
+        final String anonymousId = "fgsfds";
+        ResponseEntity<String> response = request("/api/test", ANONYMOUS_ID, anonymousId);
+        sanityCheck(response);
+        Assert.assertEquals(anonymousId, response.getHeaders().get(ANONYMOUS_ID).get(0));
 
+    }
+
+    @Test
+    public void testRequestIdPassedAlong() {
+        String requestId = UUID.randomUUID().toString();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(REQUEST_ID, requestId);
+        EchoResponse echoResponse = testRestTemplate.exchange("/api/echo",
+                HttpMethod.GET,
+                new HttpEntity<>(null, headers),
+                EchoResponse.class).getBody();
+        System.out.println(echoResponse);
+        String actualRequestId = echoResponse.headers.get("ot-requestid");
+        assertEquals(requestId, actualRequestId);
     }
 
     private ResponseEntity<String> request(String url, String header, String value) {
@@ -69,7 +92,7 @@ public class ConservedHeadersTest extends AbstractTest {
         if (header != null) {
             headers.add(header, value);
         }
-        return restTemplate.exchange("http://localhost:" + port + url,
+        return testRestTemplate.exchange(url,
             HttpMethod.GET,
             new HttpEntity<>(null, headers),
             String.class);
@@ -78,7 +101,7 @@ public class ConservedHeadersTest extends AbstractTest {
 
     private void sanityCheck(final ResponseEntity<String> resp) {
         final HttpHeaders headers = resp.getHeaders();
-        List<String> requestIds = headers.get(RID);
+        List<String> requestIds = headers.get(REQUEST_ID);
         Assert.assertNotNull(requestIds);
         Assert.assertEquals(requestIds.size(), 1);
         Assert.assertNotNull(requestIds.get(0));

@@ -13,10 +13,14 @@
  */
 package com.opentable.server;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
@@ -27,14 +31,20 @@ import org.springframework.test.context.TestPropertySource;
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
 })
 public class BackendInfoFilterTest extends AbstractTest {
+
+    private static final String HEADER_PREFIX_LOWER_CASE = BackendInfoFilterConfiguration.HEADER_PREFIX.toLowerCase();
+
+    @Autowired
+    private TestRestTemplate testRestTemplate;
+
     @Test
     public void test() {
-        ResponseEntity<String> res = restTemplate.exchange("http://localhost:" + port + "/api/test", HttpMethod.GET, null, String.class);
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/test", HttpMethod.GET, null, String.class);
         final AtomicBoolean sawBackendHeader = new AtomicBoolean();
-        res.getHeaders().forEach((name, objs) -> {
-            if (name.toLowerCase().startsWith(BackendInfoFilterConfiguration.HEADER_PREFIX.toLowerCase())) {
-                Assert.assertTrue(!objs.isEmpty());
-                final Object first = objs.get(0);
+        response.getHeaders().forEach((headerName, headerValues) -> {
+            if (headerName.toLowerCase().startsWith(HEADER_PREFIX_LOWER_CASE)) {
+                Assert.assertTrue(!headerValues.isEmpty());
+                final Object first = headerValues.get(0);
                 Assert.assertTrue(first instanceof String);
                 final String firstString = (String) first;
                 Assert.assertFalse(firstString.isEmpty());
@@ -42,5 +52,10 @@ public class BackendInfoFilterTest extends AbstractTest {
             }
         });
         Assert.assertTrue(sawBackendHeader.get());
+        assertEquals("some-service-3.14", response.getHeaders().get(BackendInfoFilterConfiguration.HEADER_PREFIX + "Build-Tag").get(0));
+        assertEquals("test", response.getHeaders().get(BackendInfoFilterConfiguration.HEADER_PREFIX + "Service-Name").get(0));
+        assertEquals("3", response.getHeaders().get(BackendInfoFilterConfiguration.HEADER_PREFIX + "Instance-No").get(0));
+        assertEquals("mesos-slave9001-dev-sf.qasql.opentable.com", response.getHeaders().get(BackendInfoFilterConfiguration.HEADER_PREFIX + "Task-Host").get(0));
     }
+
 }
