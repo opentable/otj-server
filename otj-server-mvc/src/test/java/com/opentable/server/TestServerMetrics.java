@@ -18,18 +18,20 @@ public class TestServerMetrics extends AbstractTest {
 
     @Test
     public void testRequestMetrics() throws InterruptedException {
+        SortedMap<String, Meter> meters = metricRegistry.getMeters();
+        Meter okResponseMeter = meters.get("http-server.2xx-responses");
+        Meter notFoundResponseMeter = meters.get("http-server.4xx-responses");
+        long currentOk = okResponseMeter.getCount();
+        long currntNotFound = notFoundResponseMeter.getCount();
         for (int i = 0; i < 123; i++) {
             testRestTemplate.getForObject("/api/test", String.class);
         }
         for (int i = 0; i < 51; i++) {
             testRestTemplate.getForObject("/totally/fake", String.class);
         }
-        SortedMap<String, Meter> meters = metricRegistry.getMeters();
-        Meter okResponseMeter = meters.get("http-server.2xx-responses");
-        Meter notFoundResponseMeter = meters.get("http-server.4xx-responses");
         Thread.sleep(2000l);
-        assertEquals(123, okResponseMeter.getCount());
-        assertEquals(51, notFoundResponseMeter.getCount());
+        assertEquals(123, okResponseMeter.getCount() - currentOk);
+        assertEquals(51, notFoundResponseMeter.getCount() - currntNotFound);
     }
 }
 
