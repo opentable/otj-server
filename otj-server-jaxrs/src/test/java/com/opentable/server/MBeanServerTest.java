@@ -139,7 +139,7 @@ public class MBeanServerTest {
      * @see ShouldBeGoodButIsNotConfiguration
      */
     @Configuration
-    @RestHttpServer
+    @JAXRSServer
     @Import(ManagedHealthCheck.class)
     static class BadTestConfiguration {
         @Bean

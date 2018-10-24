@@ -63,23 +63,18 @@ public class JaxrsReferrerTest {
     }
 
     @Configuration
-    @RestHttpServer
+    @JAXRSServer
     @Import(TestMBeanServerConfiguration.class)
     static class ClientConfiguration {
         static final String SERVICE_NAME = "service-baz";
         @Bean
         ServiceInfo serviceInfo() {
-            return new ServiceInfo() {
-                @Override
-                public String getName() {
-                    return SERVICE_NAME;
-                }
-            };
+            return () -> SERVICE_NAME;
         }
     }
 
     @Configuration
-    @RestHttpServer
+    @JAXRSServer
     @Import({
             TestResource.class,
             TestMBeanServerConfiguration.class,
@@ -88,12 +83,7 @@ public class JaxrsReferrerTest {
         static final String SERVICE_NAME = "service-foo-bar";
         @Bean
         ServiceInfo serviceInfo() {
-            return new ServiceInfo() {
-                @Override
-                public String getName() {
-                    return SERVICE_NAME;
-                }
-            };
+            return () -> SERVICE_NAME;
         }
     }
 
