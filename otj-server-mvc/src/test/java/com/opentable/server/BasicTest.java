@@ -3,13 +3,15 @@ package com.opentable.server;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
-import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.opentable.logging.CommonLogHolder;
 
-@Import(RestTemplateAutoConfiguration.class)
 public class BasicTest extends AbstractTest {
+
+    @Autowired
+    private TestRestTemplate testRestTemplate;
 
     @Test
     public void applicationLoads() {
@@ -23,7 +25,8 @@ public class BasicTest extends AbstractTest {
 
     @Test
     public void testApiCall() {
-        String res = restTemplate.getForObject("http://localhost:" + port + "/api/test", String.class);
+        String res = testRestTemplate.getForObject("/api/test", String.class);
         assertEquals("test", res);
     }
+
 }

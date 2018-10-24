@@ -37,6 +37,9 @@ public class TestServerConfiguration {
     @WebServlet(urlPatterns = {"/hello/*"}, loadOnStartup = 1)
     public static class HelloWorldServlet extends HttpServlet
     {
+
+        private static final long serialVersionUID = -2041933419195692364L;
+
         @Override
         public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
             response.getWriter().print(HELLO_WORLD);
