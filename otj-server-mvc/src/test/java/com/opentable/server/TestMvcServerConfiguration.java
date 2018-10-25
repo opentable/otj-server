@@ -1,6 +1,9 @@
 package com.opentable.server;
 
+import static org.assertj.core.api.Assertions.fail;
+
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import com.opentable.service.ServiceInfo;
 
@@ -74,6 +78,23 @@ public class TestMvcServerConfiguration {
         public @ResponseBody MrBean rsp() {
             return new MrBean("2", "1");
         }
+
+        @GetMapping("async")
+        public DeferredResult<String> async() {
+            DeferredResult<String> output = new DeferredResult<>();
+
+            ForkJoinPool.commonPool().submit(() -> {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    fail("sleep was interupted", e);
+                }
+                output.setResult("test");
+            });
+
+            return output;
+        }
+
     }
 
     public static class EchoResponse {

@@ -55,6 +55,19 @@ public class RequestLoggingTest extends AbstractTest {
     }
 
     @Test
+    public void testAsyncGet() throws InterruptedException {
+        String res = testRestTemplate.getForObject("/api/async", String.class);
+        assertEquals("test", res);
+        Thread.sleep(2000l);
+        RequestLogEvent loggingEvent = (RequestLogEvent) APPENDER.eventStack.pop();
+        HttpV1 payload = loggingEvent.getPayload();
+        assertEquals(200, payload.getStatus());
+        assertEquals("/api/async", payload.getUrl());
+        assertEquals(4, payload.getResponseSize());
+        assertTrue(payload.getDuration() > 0);
+    }
+
+    @Test
     public void test404() throws InterruptedException {
         testRestTemplate.getForObject("/this/is/not/a/real/path", String.class);
         Thread.sleep(2000l);
