@@ -33,7 +33,7 @@ import com.opentable.service.ServiceInfo;
 public class TestMvcServerConfiguration {
 
     @Bean
-    ServiceInfo serviceInfo(@Value("${info.component}") final String serviceType) {
+    ServiceInfo serviceInfo(@Value("${info.component:test-server}") final String serviceType) {
         return () -> serviceType;
     }
 

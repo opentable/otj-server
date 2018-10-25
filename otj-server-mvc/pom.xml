@@ -126,6 +126,14 @@
       <artifactId>slf4j-api</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>io.dropwizard.metrics</groupId>
+      <artifactId>metrics-healthchecks</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.dropwizard.metrics</groupId>
+      <artifactId>metrics-servlets</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>

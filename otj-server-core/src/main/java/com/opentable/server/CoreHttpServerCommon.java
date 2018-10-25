@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Import;
 import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
 import com.opentable.conservedheaders.ConservedHeadersConfiguration;
 import com.opentable.metrics.http.HealthHttpConfiguration;
-import com.opentable.metrics.http.MetricsHttpConfiguration;
 
 /**
  * Common configuration for REST HTTP Server instances
@@ -50,7 +49,7 @@ import com.opentable.metrics.http.MetricsHttpConfiguration;
     // Default health check
     HealthHttpConfiguration.class,
     // Metrics for http
-    MetricsHttpConfiguration.class,
+    // MetricsHttpConfiguration.class,
     // Filter order
     FilterOrderResolverConfiguration.class,
 })
