@@ -57,6 +57,14 @@ public class ConservedHeadersTest extends AbstractTest {
     }
 
     @Test
+    public void conserveRequestIdInAsync() {
+        final String requestId = UUID.randomUUID().toString();
+        ResponseEntity<String> response = request("/api/async", REQUEST_ID, requestId);
+        sanityCheck(response);
+        Assert.assertEquals(requestId, response.getHeaders().get(REQUEST_ID).get(0));
+    }
+
+    @Test
     public void replaceBadRequestId() {
         final String badRequestId = "not a valid UUID";
         ResponseEntity<String> response = request("/api/test", REQUEST_ID, badRequestId);
