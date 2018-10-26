@@ -38,9 +38,7 @@ import com.opentable.jackson.OpenTableJacksonConfiguration;
     // To add dependency
     PropertyPlaceholderAutoConfiguration.class,
     // Redundant but prevents wiring warnings in IDE
-    OpenTableJacksonConfiguration.class,
-    // Health endpoint
-    HealthHttpConfiguration.class
+    OpenTableJacksonConfiguration.class
 })
 class MVCHttpServerCommonConfiguration {
 

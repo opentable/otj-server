@@ -75,5 +75,6 @@
         <module>otj-server-jaxrs</module>
         <module>otj-server-mvc</module>
         <module>otj-server</module>
+        <module>otj-server-integration-tests</module>
     </modules>
 </project>
