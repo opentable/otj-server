@@ -41,6 +41,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.opentable.components</groupId>
+            <artifactId>otj-scopes</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
@@ -100,7 +105,7 @@
 
         <dependency>
             <groupId>com.opentable.components</groupId>
-            <artifactId>otj-conservedheaders</artifactId>
+            <artifactId>otj-conservedheaders-core</artifactId>
         </dependency>
 
         <dependency>
@@ -134,7 +139,7 @@
 
         <dependency>
             <groupId>com.opentable.components</groupId>
-            <artifactId>otj-metrics</artifactId>
+            <artifactId>otj-metrics-mvc</artifactId>
         </dependency>
 
         <dependency>
@@ -192,8 +197,13 @@
         <dependencies>
             <dependency>
                 <groupId>com.opentable.components</groupId>
-                <artifactId>otj-metrics</artifactId>
+                <artifactId>otj-metrics-mvc</artifactId>
                 <version>2.6.13-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-conservedheaders-core</artifactId>
+                <version>2.2.2-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -21,6 +21,9 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.opentable.metrics.http.HealthHttpConfiguration;
+import com.opentable.metrics.http.MetricsHttpConfiguration;
+
 /**
  * Common configuration for REST HTTP Server instances
  *
@@ -36,6 +39,12 @@ import org.springframework.context.annotation.Import;
         JaxRSClientShimConfiguration.class,
         // Forces jaxrs servlet to go last
         FilterOrderConfiguration.class,
+        // Default health check
+        HealthHttpConfiguration.class,
+        // Metrics for http
+        MetricsHttpConfiguration.class,
+        // Conserved Headers
+        ConservedHeadersConfiguration.class,
 })
 @interface JAXRSHttpServerCommonConfiguration {
 }
