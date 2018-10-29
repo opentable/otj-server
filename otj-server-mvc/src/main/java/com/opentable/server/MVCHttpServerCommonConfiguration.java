@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoCon
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
+import org.springframework.web.servlet.HandlerMapping;
 
 import com.opentable.jackson.OpenTableJacksonConfiguration;
 
@@ -28,6 +30,7 @@ import com.opentable.jackson.OpenTableJacksonConfiguration;
     // Core dispatcher for MVC servlets
     ServletWebServerFactoryAutoConfiguration.BeanPostProcessorsRegistrar.class,
     DispatcherServletAutoConfiguration.class,
+    ValidationAutoConfiguration.class,
     // Core MVC
     WebMvcAutoConfiguration.class,
     // Converts JSON/XML using jackson
@@ -42,6 +45,8 @@ import com.opentable.jackson.OpenTableJacksonConfiguration;
 })
 class MVCHttpServerCommonConfiguration {
 
+    // To make dependency checker happy
+    public static String URI_TEMPLATE_VARIABLES_ATTRIBUTE = HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
     @Inject
     MVCHttpServerCommonConfiguration(ObjectMapper objectMapper, HttpMessageConverters httpMessageConverters) {
