@@ -33,5 +33,6 @@ import org.springframework.context.annotation.Import;
 })
 // Core servlet + logging, metrics, etc
 @CoreHttpServerCommon
+@MVCServer
 public @interface JAXRSServer {
 }

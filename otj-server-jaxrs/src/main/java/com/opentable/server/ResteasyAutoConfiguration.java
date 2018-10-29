@@ -13,7 +13,6 @@
  */
 package com.opentable.server;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -24,62 +23,47 @@ import javax.ws.rs.ext.RuntimeDelegate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.core.Dispatcher;
-import org.jboss.resteasy.plugins.server.servlet.Filter30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ListenerBootstrap;
 import org.jboss.resteasy.plugins.spring.SpringBeanProcessor;
 import org.jboss.resteasy.spi.Registry;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.resteasy.springmvc.ResteasyHandlerAdapter;
+import org.jboss.resteasy.springmvc.ResteasyHandlerMapping;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Condition;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.type.AnnotatedTypeMetadata;
+import org.springframework.core.Ordered;
 
 @EnableConfigurationProperties
 @Configuration
-@Conditional(ResteasyAutoConfiguration.InstallJAXRS.class)
-// Install JaxRS Server if configured to do so. Filters will still be configured for WebMVC or whatever.
+// Install ResteasyHandlerMapping (http://docs.jboss.org/resteasy/docs/1.0.1.GA/userguide/html/RESTEasy_Spring_Integration.html)
 public class ResteasyAutoConfiguration {
-    public static class InstallJAXRS implements Condition {
-
-        @Override
-        public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            final String serverType = context.getEnvironment().
-                    getProperty("ot.server.type", "all");
-            return "all".equals(serverType) || "jaxrs".equals(serverType);
-        }
-    }
 
     // We need access to the javax.ws.rs-api at compile scope, otherwise
     // you fail with bizarre access exceptions -- so fake out the analyzer
     static final Class<?> RUNTIME_DELEGATE = RuntimeDelegate.class;
 
-    @Bean(name = "resteasyDispatcher")
-    public FilterRegistrationBean<Filter30Dispatcher> resteasyServletRegistration(
-            @Value("${ot.jaxrs.prefix:/}") String prefix) {
-        if (StringUtils.isBlank(prefix)) {
-            prefix = "/";
-        } else {
-            prefix = prefix.trim();
-        }
-        FilterRegistrationBean<Filter30Dispatcher> registrationBean = new FilterRegistrationBean<>(new Filter30Dispatcher());
-        registrationBean.addUrlPatterns("/*");
-        registrationBean.setInitParameters(Collections.singletonMap("resteasy.servlet.mapping.prefix", prefix)); // set prefix here
-        return registrationBean;
+    @Bean
+    @Inject
+    public ResteasyHandlerMapping resteasyHandlerMapping(RestEasySpringInitializer initializer) {
+        ResteasyHandlerMapping res = new ResteasyHandlerMapping(initializer.deployment);
+        res.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return res;
+    }
+
+    @Bean
+    @Inject
+    public ResteasyHandlerAdapter resteasyHandlerAdapter(RestEasySpringInitializer initializer) {
+        return new ResteasyHandlerAdapter(initializer.deployment);
     }
 
     @Bean(destroyMethod = "cleanup")

@@ -24,11 +24,10 @@ import com.opentable.jaxrs.JaxRsClientConfiguration;
 
 // Install JaxRS client and filters only if configured to do so
 @Configuration
-@Conditional(ResteasyAutoConfiguration.InstallJAXRS.class)
+@Conditional(JaxRSClientShimConfiguration.InstallJAXRSClient.class)
 @Import(JaxRsClientConfiguration.class)
 public class JaxRSClientShimConfiguration {
-    public static class InstallJAXRS implements Condition {
-
+    static class InstallJAXRSClient implements Condition {
         @Override
         public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
             // Only if both or specifically jaxrs
