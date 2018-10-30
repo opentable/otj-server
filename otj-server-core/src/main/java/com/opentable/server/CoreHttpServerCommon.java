@@ -22,14 +22,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
-import com.opentable.conservedheaders.ConservedHeadersConfiguration;
-import com.opentable.metrics.http.HealthHttpConfiguration;
-import com.opentable.metrics.http.MetricsHttpConfiguration;
 
 /**
  * Common configuration for REST HTTP Server instances
  * Public so "non web users" can access.
- * If you need a http client, see the README
+ * If you need an HTTP client, see the README
  *
  * @see ServerLoggingConfiguration for its special setup.
  */
@@ -39,18 +36,12 @@ import com.opentable.metrics.http.MetricsHttpConfiguration;
 @Import({
     // Embedded jetty
     EmbeddedJetty.class,
-    // Conserved Headers
-    ConservedHeadersConfiguration.class,
     // Filter for transfer core info to MDC
     BackendInfoFilterConfiguration.class,
     // Pull configuration info for server connector
     ServerConfigConfiguration.class,
     // Support static resources
     StaticResourceConfiguration.class,
-    // Default health check
-    HealthHttpConfiguration.class,
-    // Metrics for http
-    MetricsHttpConfiguration.class,
     // Filter order
     FilterOrderResolverConfiguration.class,
 })

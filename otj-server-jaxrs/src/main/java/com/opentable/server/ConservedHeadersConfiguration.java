@@ -24,8 +24,10 @@ import com.opentable.jaxrs.StandardFeatureGroup;
 @Configuration
 @Import(com.opentable.conservedheaders.ConservedHeadersConfiguration.class)
 public class ConservedHeadersConfiguration {
+
     @Bean
     JaxRsFeatureBinding getConserveHeadersFeatureBinding(final ClientConservedHeadersFeature feature) {
         return JaxRsFeatureBinding.bind(StandardFeatureGroup.PLATFORM_INTERNAL, feature);
     }
+
 }

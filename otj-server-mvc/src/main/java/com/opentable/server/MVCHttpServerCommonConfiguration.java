@@ -21,6 +21,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 
 import com.opentable.jackson.OpenTableJacksonConfiguration;
+import com.opentable.metrics.http.MVCMetricsEndpointConfiguration;
 
 @Configuration
 @EnableConfigurationProperties
@@ -39,6 +40,8 @@ import com.opentable.jackson.OpenTableJacksonConfiguration;
     PropertyPlaceholderAutoConfiguration.class,
     // Redundant but prevents wiring warnings in IDE
     OpenTableJacksonConfiguration.class,
+    MVCMetricsEndpointConfiguration.class,
+    ConservedHeadersConfiguration.class,
 })
 class MVCHttpServerCommonConfiguration {
 

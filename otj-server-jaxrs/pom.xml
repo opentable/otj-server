@@ -39,11 +39,15 @@
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
-      <artifactId>otj-metrics</artifactId>
+      <artifactId>otj-metrics-jaxrs</artifactId>
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
-      <artifactId>otj-conservedheaders</artifactId>
+      <artifactId>otj-conservedheaders-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.opentable.components</groupId>
+      <artifactId>otj-conservedheaders-core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
@@ -204,5 +208,25 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-metrics-jaxrs</artifactId>
+                <version>2.6.13-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-conservedheaders-jaxrs</artifactId>
+                <version>2.2.2-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-conservedheaders-core</artifactId>
+                <version>2.2.2-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
