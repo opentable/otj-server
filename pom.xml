@@ -75,15 +75,16 @@
         <module>otj-server-jaxrs</module>
         <module>otj-server-mvc</module>
         <module>otj-server</module>
+        <module>otj-server-integration-tests</module>
     </modules>
-    
+
     <build>
-  <plugins>
-    <plugin>
-      <groupId>com.github.ferstl</groupId>
-      <artifactId>depgraph-maven-plugin</artifactId>
-      <version>3.2.2</version>
-    </plugin>
-  </plugins>
-</build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.ferstl</groupId>
+                <artifactId>depgraph-maven-plugin</artifactId>
+                <version>3.2.2</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>

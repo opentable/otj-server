@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
+import org.springframework.web.servlet.HandlerMapping;
 
 import com.opentable.jackson.OpenTableJacksonConfiguration;
 import com.opentable.metrics.http.MVCMetricsEndpointConfiguration;
@@ -45,6 +46,9 @@ import com.opentable.metrics.http.MVCMetricsEndpointConfiguration;
 })
 class MVCHttpServerCommonConfiguration {
 
+    // To make dependency checker happy.
+    // We want spring-webmvc to be transitive here.
+    public static String URI_TEMPLATE_VARIABLES_ATTRIBUTE = HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
     @Inject
     MVCHttpServerCommonConfiguration(ObjectMapper objectMapper, HttpMessageConverters httpMessageConverters) {
