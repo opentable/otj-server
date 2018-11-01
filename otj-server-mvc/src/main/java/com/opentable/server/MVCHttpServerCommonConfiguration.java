@@ -48,7 +48,7 @@ class MVCHttpServerCommonConfiguration {
 
     // To make dependency checker happy.
     // We want spring-webmvc to be transitive here.
-    public static String URI_TEMPLATE_VARIABLES_ATTRIBUTE = HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
+      public static final String URI_TEMPLATE_VARIABLES_ATTRIBUTE = HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
     @Inject
     MVCHttpServerCommonConfiguration(ObjectMapper objectMapper, HttpMessageConverters httpMessageConverters) {
