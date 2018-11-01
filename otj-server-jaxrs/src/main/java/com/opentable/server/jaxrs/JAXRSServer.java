@@ -11,23 +11,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opentable.server;
+package com.opentable.server.jaxrs;
 
-import org.springframework.context.annotation.Bean;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.opentable.conservedheaders.ClientConservedHeadersFeature;
-import com.opentable.jaxrs.JaxRsFeatureBinding;
-import com.opentable.jaxrs.StandardFeatureGroup;
+import com.opentable.server.CoreHttpServerCommon;
 
+/**
+ * REST HTTP Server.
+ */
 @Configuration
-@Import(com.opentable.conservedheaders.ConservedHeadersConfiguration.class)
-public class ConservedHeadersConfiguration {
-
-    @Bean
-    JaxRsFeatureBinding getConserveHeadersFeatureBinding(final ClientConservedHeadersFeature feature) {
-        return JaxRsFeatureBinding.bind(StandardFeatureGroup.PLATFORM_INTERNAL, feature);
-    }
-
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Import({
+    // Specific Jaxrs wiring
+    JAXRSHttpServerCommonConfiguration.class
+})
+// Core servlet + logging, metrics, etc
+@CoreHttpServerCommon
+public @interface JAXRSServer {
 }

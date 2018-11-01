@@ -18,6 +18,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.opentable.server.jaxrs.JAXRSServer;
+
 public class StartupFailedDemo {
     public static void main(String[] args) throws InterruptedException {
         try {

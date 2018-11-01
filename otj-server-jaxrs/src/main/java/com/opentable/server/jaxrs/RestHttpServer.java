@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opentable.server;
+package com.opentable.server.jaxrs;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

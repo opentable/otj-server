@@ -11,18 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opentable.server;
+package com.opentable.server.jaxrs;
 
-import java.util.Map;
+import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.ext.Provider;
 
-@FunctionalInterface
-public interface ServletInitParameters {
+import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 
-    /**
-     * Get a map of servlet init params to set on the servlet
-     * @return a map of servlet init params
-     */
-    Map<String, String> getInitParams();
-
+@Provider
+@PreMatching
+class OTCorsFilter extends CorsFilter
+{
+    OTCorsFilter()
+    {
+        getAllowedOrigins().add("*");
+    }
 }
-

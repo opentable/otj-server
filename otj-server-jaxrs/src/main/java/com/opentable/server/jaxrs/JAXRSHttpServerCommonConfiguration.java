@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opentable.server;
+package com.opentable.server.jaxrs;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,17 +21,31 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.opentable.metrics.http.HealthHttpConfiguration;
+import com.opentable.metrics.http.MetricsHttpConfiguration;
+import com.opentable.server.ServerLoggingConfiguration;
+
 /**
- * REST HTTP Server.
+ * Common configuration for REST HTTP Server instances
+ *
+ * @see ServerLoggingConfiguration for its special setup.
  */
 @Configuration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-    // Specific Jaxrs wiring
-    JAXRSHttpServerCommonConfiguration.class
+        // Core resteasy dispatcher, jackson, etc
+        ResteasyAutoConfiguration.class,
+        // JaxRS wiring
+        JaxRSClientShimConfiguration.class,
+        // Forces jaxrs servlet to go last
+        FilterOrderConfiguration.class,
+        // Default health check
+        HealthHttpConfiguration.class,
+        // Metrics for http
+        MetricsHttpConfiguration.class,
+        // Conserved Headers
+        ConservedHeadersConfiguration.class,
 })
-// Core servlet + logging, metrics, etc
-@CoreHttpServerCommon
-public @interface JAXRSServer {
+@interface JAXRSHttpServerCommonConfiguration {
 }

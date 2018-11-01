@@ -28,6 +28,7 @@ import org.springframework.jmx.export.UnableToRegisterMBeanException;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+import com.opentable.server.jaxrs.JAXRSServer;
 import com.opentable.service.ServiceInfo;
 
 /**

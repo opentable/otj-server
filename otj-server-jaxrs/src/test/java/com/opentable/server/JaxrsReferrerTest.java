@@ -30,6 +30,7 @@ import org.springframework.context.annotation.Import;
 
 import com.opentable.jaxrs.JaxRsClientFactory;
 import com.opentable.jaxrs.StandardFeatureGroup;
+import com.opentable.server.jaxrs.JAXRSServer;
 import com.opentable.service.ServiceInfo;
 
 public class JaxrsReferrerTest {

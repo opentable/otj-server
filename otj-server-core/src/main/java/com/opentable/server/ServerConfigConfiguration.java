@@ -24,13 +24,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.PropertyResolver;
 
 import com.opentable.service.AppInfo;
 import com.opentable.service.EnvInfo;
 import com.opentable.spring.ConversionServiceConfiguration;
 import com.opentable.spring.PropertySourceUtil;
-import com.opentable.spring.SpecializedConfigFactory;
 
 @Configuration
 @Import({
@@ -56,8 +54,4 @@ public class ServerConfigConfiguration {
                           .collect(Collectors.joining("\n" + INDENT)));
     }
 
-    @Bean
-    public SpecializedConfigFactory<ServerConnectorConfig> connectorConfigs(PropertyResolver pr) {
-        return SpecializedConfigFactory.create(pr, ServerConnectorConfig.class, "ot.httpserver.connector.${name}");
-    }
 }

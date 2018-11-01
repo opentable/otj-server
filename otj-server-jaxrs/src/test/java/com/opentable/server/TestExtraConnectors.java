@@ -40,6 +40,7 @@ import org.springframework.context.annotation.Import;
 
 import com.opentable.jaxrs.JaxRsClientFactory;
 import com.opentable.server.HttpServerInfo.ConnectorInfo;
+import com.opentable.server.jaxrs.JAXRSServer;
 import com.opentable.service.ServiceInfo;
 
 public class TestExtraConnectors {

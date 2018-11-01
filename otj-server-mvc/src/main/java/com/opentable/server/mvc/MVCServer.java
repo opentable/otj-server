@@ -1,5 +1,5 @@
 
-package com.opentable.server;
+package com.opentable.server.mvc;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.opentable.server.CoreHttpServerCommon;
+
 /**
  * Mix-in Spring MVC
  */
@@ -16,12 +18,10 @@ import org.springframework.context.annotation.Import;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-    // Core Jetty Servlet
-    EmbeddedJetty.class,
-    // Pull mvc specific stuff
+    // Pull MVC specific stuff
     MVCHttpServerCommonConfiguration.class,
 })
-// All the non specific mvc servlet stuff
+// All the non specific MVC servlet stuff
 @CoreHttpServerCommon
 public @interface MVCServer {
 }

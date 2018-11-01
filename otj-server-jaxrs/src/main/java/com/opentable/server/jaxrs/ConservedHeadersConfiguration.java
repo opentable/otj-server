@@ -11,24 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opentable.server;
+package com.opentable.server.jaxrs;
 
-import org.jboss.resteasy.plugins.server.servlet.Filter30Dispatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
-import com.opentable.components.filterorder.OrderDeclaration;
+import com.opentable.conservedheaders.jaxrs.ClientConservedHeadersFeature;
+import com.opentable.jaxrs.JaxRsFeatureBinding;
+import com.opentable.jaxrs.StandardFeatureGroup;
 
 @Configuration
-//@Import(FilterOrderResolverConfiguration.class)
-public class FilterOrderConfiguration {
-    /**
-     * {@link org.jboss.resteasy.plugins.server.servlet.Filter30Dispatcher} must come last because it is the filter
-     * that does the <em>actual</em> work of handling the request; it is thus terminal.
-     * @return OrderDeclaration configured as the last item.
-     */
+@Import(com.opentable.conservedheaders.jaxrs.ConservedHeadersConfiguration.class)
+public class ConservedHeadersConfiguration {
+
     @Bean
-    public OrderDeclaration filter30OrderDeclaration() {
-        return OrderDeclaration.last(Filter30Dispatcher.class);
+    public JaxRsFeatureBinding getConserveHeadersFeatureBinding(final ClientConservedHeadersFeature feature) {
+        return JaxRsFeatureBinding.bind(StandardFeatureGroup.PLATFORM_INTERNAL, feature);
     }
+
 }
