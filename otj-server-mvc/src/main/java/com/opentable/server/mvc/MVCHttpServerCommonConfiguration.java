@@ -39,7 +39,6 @@ import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
     OpenTableJacksonConfiguration.class,
     HealthHttpMVCConfiguration.class,
     MetricsHttpMVCConfiguration.class,
-    WebMVCConfiguration.class,
     CoreConservedHeadersConfiguration.class,
 })
 class MVCHttpServerCommonConfiguration {
