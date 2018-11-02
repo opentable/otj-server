@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opentable.server.jaxrs;
+package com.opentable.server;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,6 +24,10 @@ import org.springframework.context.annotation.Import;
 import com.opentable.metrics.http.HealthHttpConfiguration;
 import com.opentable.metrics.http.MetricsHttpConfiguration;
 import com.opentable.server.ServerLoggingConfiguration;
+import com.opentable.server.jaxrs.ConservedHeadersConfiguration;
+import com.opentable.server.jaxrs.FilterOrderConfiguration;
+import com.opentable.server.jaxrs.JaxRSClientShimConfiguration;
+import com.opentable.server.jaxrs.ResteasyAutoConfiguration;
 
 /**
  * Common configuration for REST HTTP Server instances

@@ -11,27 +11,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opentable.server.jaxrs;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
-import com.opentable.server.EmbeddedReactiveJetty;
+package com.opentable.server;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
+import com.opentable.server.CoreHttpServerCommon;
+
 /**
- * REST Reactive HTTP Server.
+ * REST HTTP Server.
  */
 @Configuration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-    EmbeddedReactiveJetty.class,
+    // Specific Jaxrs wiring
     JAXRSHttpServerCommonConfiguration.class
 })
-public @interface RestReactiveHttpServer {
+// Core servlet + logging, metrics, etc
+@CoreHttpServerCommon
+public @interface JAXRSServer {
 }

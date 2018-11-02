@@ -1,6 +1,25 @@
 OpenTable Server Component
 ==========================
 
+The OpenTable Java Server component is the main code entry point into the OpenTable Java (OTJ) stack. It provides a customized Spring Boot set up. The customizations are numerous and include:
+
+* Graceful shutdown
+* Jetty HTTP server
+* RESTEasy JAX-RS runtime
+* OT Conserved Headers
+* `otj-metrics` integration
+* `otj-jackson` integration
+* JVM pause detector
+* JMX monitoring and management
+* Static resource serving over HTTP
+* Logging configuration
+
+There are 2 flavors of OTJ Server available:
+ - *JAX-RS* - this uses RestEasy to create web services and as a REST client. RestEasy is an implementation of the Java API for RESTful Web Services (JAX-RS) specification.
+ - *MVC* - this uses Spring's Model View Controller (MVC) framework to create web services. For a REST client with this flavor, we recommend otj-rest-template.
+ 
+There are 3 modules in this project, the core module is for code shared in common between both flavors.
+
 Component Charter
 -----------------
 
@@ -16,16 +35,6 @@ which does our initialization and then invokes `SpringApplication.run` to actual
 The [@RestHttpServer](https://github.com/opentable/otj-server/blob/master/server/src/main/java/com/opentable/server/RestHttpServer.java)
 configuration provides basic necessities for running a web service:
 
-* Jetty HTTP server
-* RESTEasy JAX-RS runtime
-* OT Conserved Headers
-* `otj-metrics` integration
-* `otj-jackson` integration
-* JVM pause detector
-* JMX monitoring and management
-* Static resource serving over HTTP
-* CORS header support
-* Logging configuration
 
 Jetty Configuration
 -------------------
@@ -104,4 +113,4 @@ ot.jmx.url-format=service:jmx:jmxmp://%s:%s
 ```
 
 ----
-Copyright (C) 2016 OpenTable, Inc.
+Copyright (C) 2018 OpenTable, Inc.

@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opentable.server.jaxrs;
+package com.opentable.server;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,21 +19,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
-import com.opentable.server.CoreHttpServerCommon;
 
 /**
  * REST HTTP Server.
+ * @deprecated Use JaxRSServer instead
  */
+@Deprecated
 @Configuration
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({
-    // Specific Jaxrs wiring
-    JAXRSHttpServerCommonConfiguration.class
-})
-// Core servlet + logging, metrics, etc
-@CoreHttpServerCommon
-public @interface JAXRSServer {
+@JAXRSServer
+public @interface RestHttpServer {
 }
