@@ -215,6 +215,7 @@ public abstract class EmbeddedJettyBase {
             activeConnectors.forEach((name, config) -> {
                 connectorInfos.put(name, createConnector(server, name, ports, config, bootConnector));
             });
+            bootConnector.close();
             this.connectorInfos = connectorInfos.build();
 
             server.setStopTimeout(shutdownTimeout.toMillis());

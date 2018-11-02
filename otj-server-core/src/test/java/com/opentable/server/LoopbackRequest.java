@@ -20,9 +20,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 @Named
-class LoopbackRequest {
+public class LoopbackRequest {
+
     private final Client client;
     private final Provider<HttpServerInfo> info;
+
     @Inject
     private LoopbackRequest(@Named("test") Client client, Provider<HttpServerInfo> info) {
         this.client = client;
@@ -32,4 +34,5 @@ class LoopbackRequest {
     public WebTarget of(String path) {
         return client.target("http://localhost:" + info.get().getPort()).path(path);
     }
+
 }

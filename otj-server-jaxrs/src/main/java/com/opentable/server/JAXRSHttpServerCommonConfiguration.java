@@ -21,8 +21,8 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.opentable.metrics.http.HealthHttpConfiguration;
-import com.opentable.metrics.http.MetricsHttpConfiguration;
+import com.opentable.metrics.jaxrs.HealthHttpJaxRsConfiguration;
+import com.opentable.metrics.jaxrs.MetricsHttpJaxRsConfiguration;
 import com.opentable.server.ServerLoggingConfiguration;
 import com.opentable.server.jaxrs.ConservedHeadersConfiguration;
 import com.opentable.server.jaxrs.FilterOrderConfiguration;
@@ -45,9 +45,9 @@ import com.opentable.server.jaxrs.ResteasyAutoConfiguration;
         // Forces jaxrs servlet to go last
         FilterOrderConfiguration.class,
         // Default health check
-        HealthHttpConfiguration.class,
+        HealthHttpJaxRsConfiguration.class,
         // Metrics for http
-        MetricsHttpConfiguration.class,
+        MetricsHttpJaxRsConfiguration.class,
         // Conserved Headers
         ConservedHeadersConfiguration.class,
 })

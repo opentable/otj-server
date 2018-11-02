@@ -21,7 +21,8 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import com.opentable.conservedheaders.CoreConservedHeadersConfiguration;
 import com.opentable.jackson.OpenTableJacksonConfiguration;
-import com.opentable.metrics.http.MVCMetricsEndpointConfiguration;
+import com.opentable.metrics.mvc.HealthHttpMVCConfiguration;
+import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
 
 @Configuration
 @EnableConfigurationProperties
@@ -36,7 +37,8 @@ import com.opentable.metrics.http.MVCMetricsEndpointConfiguration;
     ErrorMvcAutoConfiguration.class,
     // Redundant but prevents wiring warnings in IDE
     OpenTableJacksonConfiguration.class,
-    MVCMetricsEndpointConfiguration.class,
+    HealthHttpMVCConfiguration.class,
+    MetricsHttpMVCConfiguration.class,
     WebMVCConfiguration.class,
     CoreConservedHeadersConfiguration.class,
 })

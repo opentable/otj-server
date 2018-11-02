@@ -1,57 +1,147 @@
-OpenTable Server Component
-==========================
+# OpenTable Server Component
+
 
 The OpenTable Java Server component is the main code entry point into the OpenTable Java (OTJ) stack. It provides a customized Spring Boot set up. The customizations are numerous and include:
 
-* Graceful shutdown
-* Jetty HTTP server
-* RESTEasy JAX-RS runtime
-* OT Conserved Headers
-* `otj-metrics` integration
-* `otj-jackson` integration
-* JVM pause detector
-* JMX monitoring and management
-* Static resource serving over HTTP
-* Logging configuration
+ * Graceful shutdown
+ * Jetty HTTP server
+ * RESTEasy JAX-RS runtime
+ * OT Conserved Headers
+ * `otj-metrics` integration
+ * `otj-jackson` integration
+ * JVM pause detector
+ * JMX monitoring and management
+ * Static resource serving over HTTP
+ * Logging configuration
+
+## Flavors
 
 There are 2 flavors of OTJ Server available:
- - *JAX-RS* - this uses RestEasy to create web services and as a REST client. RestEasy is an implementation of the Java API for RESTful Web Services (JAX-RS) specification.
- - *MVC* - this uses Spring's Model View Controller (MVC) framework to create web services. For a REST client with this flavor, we recommend otj-rest-template.
+ * **JAX-RS** - this uses RestEasy to create web services and as a REST client. RestEasy is an implementation of the Java API for RESTful Web Services (JAX-RS) specification.
+ * **MVC** - this uses Spring's Model View Controller (MVC) framework to create web services. For a REST client with this flavor, we recommend otj-rest-template.
  
+## Differences Between Flavors
+
+For the most part we expect the servers to act the same. One difference is how we handle CORS headers. In JAX-RS we send CORS headers for all requests. In Spring MVC you need to add a `@CrossOrigin` header to the controller when needed.
+
+### Modules
+
 There are 3 modules in this project, the core module is for code shared in common between both flavors.
 
-Component Charter
------------------
+## Getting Started
 
-* Server startup and shutdown
-* Templates that integrate components into useful starting points for service development
+Much like Spring boot, you need to create an Application or Main class. There are examples below. You can also use our Maven archetype to create a new project from our template, see https://wiki.otcorp.opentable.com/display/PA/Create+a+New+Project+from+an+Archetype for more information.
 
-Server Main Class
------------------
+## Examples
+
+We have examples projects that show how to use server:
+ - https://github.com/opentable/service-demo (JAX-RS)
+ - https://github.com/opentable/service-otj-mvc-demo (Spring MVC)
+  
+### JAX-RS Example
+
+```java
+package com.opentable;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
+import com.opentable.server.JAXRSServer;
+import com.opentable.server.OTApplication;
+import com.opentable.service.ServiceInfo;
+import com.opentable.service.discovery.client.EnableDiscoveryClient;
+
+@Configuration
+@JAXRSServer // This enabled the JAX-RS server
+@EnableDiscoveryClient // This enables the discovery client
+@Import(DemoServerConfiguration.class) // Imports a configuration class, needed as component scanning is disabled by default
+public class DemoServerMain
+{
+    /**
+     * Standard Java entry point.  Almost all of the real work is done in the
+     * {@link JAXRSServer}.
+     */
+    public static void main(String[] args)
+    {
+        OTApplication.run(DemoServerMain.class, args); // Starts the application, equivalent to SpringApplication
+    }
+
+    @Bean
+    public ServiceInfo serviceInfo() { // Every service should create a service info bean
+        return new ServiceInfo() {
+            @Override
+            public String getName() {
+                return "demo-server"; // used for discovery name, metrics, etc.
+            }
+        };
+    }
+}
+```
+
+
+### Spring MVC Example
+
+```java
+package com.opentable.demo;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import com.opentable.server.MVCServer;
+import com.opentable.server.OTApplication;
+import com.opentable.service.ServiceInfo;
+import com.opentable.service.discovery.client.EnableDiscoveryClient;
+
+@Configuration
+@MVCServer // Configures the server with Spring MVC
+@EnableDiscoveryClient // Enable the discovery client
+@ComponentScan // Enable component scanning
+public class DemoServerMain {
+
+    /**
+     * Standard Java entry point.  Almost all of the real work is done in the
+     * {@link MVCServer}.
+     */
+    public static void main(String[] args)
+    {
+        OTApplication.run(DemoServerMain.class, args); // Starts the application, equivalent to SpringApplication
+    }
+
+    @Bean
+    public ServiceInfo serviceInfo() {
+        return new ServiceInfo() {
+            @Override
+            public String getName() {
+                return "otj-mvc-demo"; // used for discovery name, metrics, etc.
+            }
+        };
+    }
+}
+```
+
+## Server Main Class
 
 `otj-server` provides [OTApplication](https://github.com/opentable/otj-server/blob/master/server/src/main/java/com/opentable/server/OTApplication.java)
 which does our initialization and then invokes `SpringApplication.run` to actually boot the service.
 
-The [@RestHttpServer](https://github.com/opentable/otj-server/blob/master/server/src/main/java/com/opentable/server/RestHttpServer.java)
-configuration provides basic necessities for running a web service:
+The `@JAXRSServer` or `@MVCServer` annotations provide the basic necessities for running a web service:
 
 
-Jetty Configuration
--------------------
+### Jetty Configuration
 
-At first take, this might seem like something Spring Boot would provide for you -- but unfortunately the
-situation at the time of this writing is that the Spring Boot integration is quite simplistic and does not allow
-you to customize many important Jetty features, like graceful shutdown or additional HTTPS connectors with a custom keystore.
+We setup an embedded Jetty servlet container with many customizations like graceful shutdown and additional HTTPS connectors with a custom keystore. We also instrument the container and report metrics from it.
 
-The Boot team is tracking
-[various](https://github.com/spring-projects/spring-boot/issues/4657)
-[improvements](https://github.com/spring-projects/spring-boot/issues/5314)
-but until those ship we will maintain our own code.
+These customizations are not possible to do using just Spring Boot. We are monitoring Spring Boot and if it changes we will switch to use Spring Boot directly when possible.
 
-This doesn't seem to be improving meaningfully for Spring Boot 2.0 which is disappointing.
+Here are a couple of the Spring Boot issues we are tracking:
+[Issue #4657](https://github.com/spring-projects/spring-boot/issues/4657)
+[Issue #5314](https://github.com/spring-projects/spring-boot/issues/5314)
 
-We add support for declaring named connectors in configuration, and then
-choosing from those as a set of active connectors.
+### Named HTTP Connectors
+
+We add support for declaring named connectors in configuration, and then choosing from those as a set of active connectors.
 
 Each connector has properties `port`, `protocol`, `forceSecure`, `keystore`, and `keystorePassword`.
 
@@ -91,6 +181,7 @@ the rest are created by the `otj-server` code and wired to Jetty ourselves.
 
 The `boot` connector is the same as the  `default-http` connector, but it takes its host and port from Spring Boot's default connector.
 
+## Configuration
 
 Previous versions of `otj-server` had a configurable `ot.http.bind-port`; this usually would be replaced with e.g.
 ```
@@ -103,14 +194,28 @@ Usually the defaults are okay.  You might tune your thread pool size for heavily
 ot.httpserver.max-threads=32
 ```
 
-JMX Configuration
------------------
+### JMX Configuration
 
 ```
 ot.jmx.port=12345
 ot.jmx.address=127.0.0.1
 ot.jmx.url-format=service:jmx:jmxmp://%s:%s
 ```
+## Migration from 2.0.0
+
+JaxRS users (if you were using OTJ stack before then this is *probably* you):
+
+- Remove otj-server dependency and add `otj-server-core` & `otj-server-jaxrs` dependencies
+- Change annotation from `@RestHttpServer` to `@JaxRSServer`
+
+MVC users:
+
+- Remove `otj-server` dependency and add `otj-server-core` & `otj-server-mvc` dependencies
+- Change annotation from `@RestHttpServer` to `@MVCServer`
+
+If you want to use both:
+- Use both annotations!
+- Use `otj-server-core`, `otj-server-mvc`, `otj-server-jaxrs`
 
 ----
 Copyright (C) 2018 OpenTable, Inc.

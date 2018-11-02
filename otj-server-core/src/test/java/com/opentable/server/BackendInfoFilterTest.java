@@ -37,6 +37,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
 })
 public class BackendInfoFilterTest {
+
     @Inject
     private LoopbackRequest request;
 
@@ -57,4 +58,5 @@ public class BackendInfoFilterTest {
             Assert.assertTrue(sawBackendHeader.get());
         }
     }
+
 }
