@@ -48,7 +48,7 @@ class MVCHttpServerCommonConfiguration {
     public static final String URI_TEMPLATE_VARIABLES_ATTRIBUTE = HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
     @Inject
-    public MVCHttpServerCommonConfiguration(ObjectMapper objectMapper, HttpMessageConverters httpMessageConverters) {
+    MVCHttpServerCommonConfiguration(ObjectMapper objectMapper, HttpMessageConverters httpMessageConverters) {
         setupConverter(httpMessageConverters.getConverters(), objectMapper);
     }
 

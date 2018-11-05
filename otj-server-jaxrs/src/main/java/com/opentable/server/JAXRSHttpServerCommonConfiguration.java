@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Import;
 
 import com.opentable.metrics.jaxrs.HealthHttpJaxRsConfiguration;
 import com.opentable.metrics.jaxrs.MetricsHttpJaxRsConfiguration;
-import com.opentable.server.ServerLoggingConfiguration;
 import com.opentable.server.jaxrs.ConservedHeadersConfiguration;
 import com.opentable.server.jaxrs.FilterOrderConfiguration;
 import com.opentable.server.jaxrs.JaxRSClientShimConfiguration;

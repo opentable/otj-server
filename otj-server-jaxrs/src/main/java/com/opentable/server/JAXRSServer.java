@@ -21,8 +21,6 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.opentable.server.CoreHttpServerCommon;
-
 /**
  * REST HTTP Server.
  */

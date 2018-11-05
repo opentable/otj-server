@@ -41,11 +41,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-scopes</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
