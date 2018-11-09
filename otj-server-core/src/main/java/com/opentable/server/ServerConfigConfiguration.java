@@ -13,6 +13,7 @@
  */
 package com.opentable.server;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -47,11 +48,19 @@ public class ServerConfigConfiguration {
     @Inject
     public void logAppConfig(final ConfigurableEnvironment env) {
         final Logger log = LoggerFactory.getLogger(ServerConfigConfiguration.class);
-        log.info("{}\n{}{}", env, INDENT,
-                PropertySourceUtil.getKeys(env)
-                          .sorted()
-                          .map(k -> k + "=" + env.getProperty(k))
-                          .collect(Collectors.joining("\n" + INDENT)));
+        log.info("{}:\n\n{}{}\n", env, INDENT,
+            PropertySourceUtil.getKeys(env)
+                .sorted()
+                .distinct()
+                .map(k -> {
+                    try {
+                        return k + "=" + Optional.ofNullable(env.getProperty(k)).orElse("null")
+                            .replace("\n", "\\n");
+                    } catch (Exception e) {
+                        return k + "= Error: " + e.getMessage();
+                    }
+                })
+                .collect(Collectors.joining("\n" + INDENT)));
     }
 
 }
