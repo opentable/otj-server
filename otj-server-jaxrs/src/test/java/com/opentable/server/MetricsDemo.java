@@ -26,7 +26,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.opentable.metrics.http.MetricsHttpConfiguration;
+import com.opentable.metrics.jaxrs.MetricsHttpJaxRsConfiguration;
 
 /**
  * Demonstration of serving Dropwizard Metrics AdminServlet.
@@ -38,7 +38,7 @@ import com.opentable.metrics.http.MetricsHttpConfiguration;
 @Configuration
 @Import({
         TestJaxRsServerConfiguration.class,
-        MetricsHttpConfiguration.class,
+        MetricsHttpJaxRsConfiguration.class,
         MetricsDemo.AnnotatedResource.class,
 })
 public class MetricsDemo {

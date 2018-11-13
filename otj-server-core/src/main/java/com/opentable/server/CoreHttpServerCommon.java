@@ -38,8 +38,6 @@ import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
     EmbeddedJetty.class,
     // Filter for transfer core info to MDC
     BackendInfoFilterConfiguration.class,
-    // Pull configuration info for server connector
-    ServerConfigConfiguration.class,
     // Support static resources
     StaticResourceConfiguration.class,
     // Filter order
@@ -47,5 +45,5 @@ import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
 })
 // All the non web stuff
 @NonWebSetup
-@interface CoreHttpServerCommon {
+public @interface CoreHttpServerCommon {
 }

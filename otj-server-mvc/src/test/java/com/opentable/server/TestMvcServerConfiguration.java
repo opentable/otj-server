@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import com.opentable.server.mvc.MVCServer;
 import com.opentable.service.ServiceInfo;
 
 @Configuration

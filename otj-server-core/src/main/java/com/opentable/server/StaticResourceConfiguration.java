@@ -33,7 +33,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class StaticResourceConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(StaticResourceConfiguration.class);
 
-    static final String DEFAULT_PATH_NAME = "static";
+    public static final String DEFAULT_PATH_NAME = "static";
     private static final String PATH_CONFIG_VALUE = "${ot.httpserver.static-path:" + DEFAULT_PATH_NAME + "}";
 
     private final String staticPathName;

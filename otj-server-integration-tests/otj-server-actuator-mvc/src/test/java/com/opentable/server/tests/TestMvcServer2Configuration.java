@@ -8,7 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.opentable.server.MVCServer;
+
+import com.opentable.server.mvc.MVCServer;
 import com.opentable.service.ServiceInfo;
 
 @SpringBootApplication

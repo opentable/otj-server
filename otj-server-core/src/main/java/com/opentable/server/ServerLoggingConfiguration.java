@@ -29,7 +29,7 @@ import com.opentable.logging.AssimilateForeignLogging;
 import com.opentable.logging.CommonLogHolder;
 
 /* Registered via META-INF/spring.factories to capture early application lifecycle events */
-class ServerLoggingConfiguration implements ApplicationListener<ApplicationEvent> {
+public class ServerLoggingConfiguration implements ApplicationListener<ApplicationEvent> {
     public static final String DMITRY_COMPONENT_NAME_KEY = "info.component"; // Taken from Dmitry's stack
     public static final String OT_COMPONENT_NAME_KEY = "ot.component.id"; // New possible standard
     private static final Logger LOG = LoggerFactory.getLogger(ServerLoggingConfiguration.class);

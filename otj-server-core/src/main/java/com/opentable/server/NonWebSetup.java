@@ -46,6 +46,8 @@ import com.opentable.pausedetector.EnablePauseDetector;
     CheckManifest.class,
     // Hook up Jetty Dump as MBEAN operation
     JettyDumper.class,
+    // Sets up app and environment info beans and property converters
+    ServerConfigConfiguration.class,
 })
 @EnablePauseDetector
 public @interface NonWebSetup {

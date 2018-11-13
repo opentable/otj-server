@@ -42,15 +42,10 @@ public class TestServerConfiguration {
 
         @Override
         public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            LOG.debug("Writing hello world response.");
             response.getWriter().print(HELLO_WORLD);
         }
     }
-
-    /*
-    @WebServlet(urlPatterns = {"/health"}, loadOnStartup = 1)
-    public static class OtHealthServlet extends HealthCheckServlet {
-    }
-    */
 
     @Bean
     @Named("test")
