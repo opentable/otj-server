@@ -50,7 +50,7 @@ class MVCHttpServerCommonConfiguration {
     // We want spring-webmvc to be transitive here.
     public static final String URI_TEMPLATE_VARIABLES_ATTRIBUTE = HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
-/**/    @Inject
+    @Inject
     MVCHttpServerCommonConfiguration(ObjectMapper objectMapper, HttpMessageConverters httpMessageConverters) {
         setupConverter(httpMessageConverters.getConverters(), objectMapper);
     }
