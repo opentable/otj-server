@@ -13,269 +13,69 @@
 ~   limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.opentable</groupId>
-    <artifactId>otj-parent-spring</artifactId>
-    <version>169</version>
-  </parent>
+    <groupId>com.opentable.components</groupId>
+    <artifactId>otj-server-parent</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-  <groupId>com.opentable.components</groupId>
-  <artifactId>otj-server</artifactId>
-  <version>2.12.7-SNAPSHOT</version>
-
-  <properties>
-    <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
-    <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
-    <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
-  </properties>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.opentable</groupId>
+        <artifactId>otj-parent-spring</artifactId>
+        <version>179</version>
+    </parent>
 
 
-  <scm>
-    <connection>scm:git:git://github.com/opentable/${project.artifactId}.git</connection>
-    <developerConnection>scm:git:git@github.com:opentable/${project.artifactId}.git</developerConnection>
-    <url>http://github.com/opentable/${project.artifactId}</url>
-    <tag>HEAD</tag>
-  </scm>
+    <name>Build parent</name>
+    <url>http://www.opentable.com</url>
+    <organization>
+        <name>OpenTable</name>
+        <url>http://www.opentable.com</url>
+    </organization>
 
-  <!-- all of this should not exist in future it merely fixes the fact that spring bom before jetty bom won -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-bom</artifactId>
-        <version>${dep.jetty.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-server</artifactId>
-        <version>${dep.jetty.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.eclipse.jetty.orbit</groupId>
-            <artifactId>javax.servlet</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  <!-- end remove later -->
+    <properties>
+        <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
+        <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
+        <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-spring</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-pausedetector</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-logging-jetty</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-metrics</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-conservedheaders</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-jaxrs-shared</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-filterorder</artifactId>
-      <version>0.0.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-logging-kafka</artifactId>
-      <scope>runtime</scope>
-    </dependency>
 
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-jaxrs-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-jaxrs-clientfactory-resteasy</artifactId>
-      <scope>runtime</scope>
-    </dependency>
+    <scm>
+        <connection>scm:git:git://github.com/opentable/otj-server.git</connection>
+        <developerConnection>scm:git:git@github.com:opentable/otj-server.git</developerConnection>
+        <url>http://github.com/opentable/otj-server</url>
+        <tag>HEAD</tag>
+    </scm>
 
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot</artifactId>
-    </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-server-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-server-jaxrs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-server-mvc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-webapp</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-jmx</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.jaxrs</groupId>
-      <artifactId>jackson-jaxrs-json-provider</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-spring</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-annotation</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-healthchecks</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>findbugs-annotations</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-
-    <!-- jmxmp support -->
-    <dependency>
-      <groupId>com.betfair.net.java.opendmk</groupId>
-      <artifactId>jmx-optional</artifactId>
-      <version>1.0-b02</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- spring-boot-test uses this but has it optional :/ -->
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <modules>
+        <module>otj-server-core</module>
+        <module>otj-server-jaxrs</module>
+        <module>otj-server-mvc</module>
+        <module>otj-server</module>
+        <module>otj-server-integration-tests</module>
+    </modules>
 
 </project>
