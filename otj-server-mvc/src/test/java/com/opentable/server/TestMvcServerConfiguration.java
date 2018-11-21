@@ -2,6 +2,7 @@ package com.opentable.server;
 
 import static org.assertj.core.api.Assertions.fail;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
@@ -16,6 +17,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -38,7 +41,7 @@ import com.opentable.service.ServiceInfo;
 public class TestMvcServerConfiguration {
 
     @Bean
-    ServiceInfo serviceInfo(@Value("${info.component}") final String serviceType) {
+    ServiceInfo serviceInfo(@Value("${info.component:test-service}") final String serviceType) {
         return () -> serviceType;
     }
 
@@ -78,6 +81,18 @@ public class TestMvcServerConfiguration {
         @GetMapping("rsp")
         public @ResponseBody MrBean rsp() {
             return new MrBean("2", "1");
+        }
+
+        @GetMapping("request-param")
+        public @ResponseBody String rspParams(
+            @RequestParam(value = "date", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
+        ) {
+            return date.toString();
+        }
+
+        @GetMapping("fault")
+        public void rspFault() {
+            throw new RuntimeException("test");
         }
 
         @GetMapping("async")

@@ -40,8 +40,11 @@ import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
     HealthHttpMVCConfiguration.class,
     MetricsHttpMVCConfiguration.class,
     CoreConservedHeadersConfiguration.class,
+    // Logging exception handler
+    LoggingHandlerExceptionResolver.class
 })
 class MVCHttpServerCommonConfiguration {
+
 
     // To make dependency checker happy.
     // We want spring-webmvc to be transitive here.
