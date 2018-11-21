@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
 import com.opentable.components.filterorder.OrderDeclaration;
 
 @Configuration
-//@Import(FilterOrderResolverConfiguration.class)
 public class FilterOrderConfiguration {
     /**
      * {@link org.jboss.resteasy.plugins.server.servlet.Filter30Dispatcher} must come last because it is the filter
