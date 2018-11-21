@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+3.0.0
+-----
+* Split into multiple modules: core for shared logic and separate modules for MVC and JAX-RS
+* Support for Spring MVC!
+
 2.15.6
 ------
 * application.properties => otj-server.properties, preventing dep clash
