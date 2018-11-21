@@ -13,12 +13,11 @@
 ~   limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0</version>
     <packaging>pom</packaging>
 
     <modelVersion>4.0.0</modelVersion>
@@ -47,7 +46,7 @@
         <connection>scm:git:git://github.com/opentable/otj-server.git</connection>
         <developerConnection>scm:git:git@github.com:opentable/otj-server.git</developerConnection>
         <url>http://github.com/opentable/otj-server</url>
-        <tag>HEAD</tag>
+        <tag>otj-server-parent-3.0.0</tag>
     </scm>
 
     <dependencyManagement>
