@@ -19,6 +19,8 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
@@ -58,6 +60,8 @@ import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
 })
 class MVCHttpServerCommonConfiguration {
 
+    private static final Logger log = LoggerFactory.getLogger(MVCHttpServerCommonConfiguration.class);
+
 
     // To make dependency checker happy.
     // We want spring-webmvc to be transitive here.
@@ -72,6 +76,15 @@ class MVCHttpServerCommonConfiguration {
         converterList.stream()
             .filter(t -> t instanceof AbstractJackson2HttpMessageConverter)
             .map(t -> (AbstractJackson2HttpMessageConverter) t)
-            .forEach(converter -> converter.setObjectMapper(objectMapper));
+            .forEach(converter -> {
+                try {
+                    if (objectMapper != converter.getObjectMapper()) {
+                        converter.setObjectMapper(objectMapper);
+                        log.debug("Converter {} is configured", converter);
+                    }
+                } catch (IllegalArgumentException e) {
+                    log.warn("Error configuring converter {}: {}", converter, e.getMessage());
+                }
+            });
     }
 }
