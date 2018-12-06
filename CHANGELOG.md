@@ -1,6 +1,14 @@
 otj-server
 ==========
 
+3.0.2
+-----
+* Uses otj-filterorder 0.0.4
+
+3.0.1
+-----
+* OTPL-3010 - fix/workaround for "java.lang.IllegalArgumentException: CBORFactory required"
+
 3.0.0
 -----
 * Split into multiple modules: core for shared logic and separate modules for MVC and JAX-RS
