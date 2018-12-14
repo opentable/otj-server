@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>179</version>
+        <version>180</version>
     </parent>
 
 
@@ -39,6 +39,10 @@
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
+
+        <!-- Remove once parent updated -->
+        <dep.otj-metrics.version>4.0.0</dep.otj-metrics.version>
+        <dep.metrics.version>4.0.3</dep.metrics.version>
     </properties>
 
 
