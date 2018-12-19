@@ -27,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -35,6 +36,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 @CoreHttpServerCommon
 @Import({
     TestMBeanServerConfiguration.class
+})
+@TestPropertySource(properties = {
+        "spring.main.allow-bean-definition-overriding=true"
 })
 public class JettyJmxExportTest {
 

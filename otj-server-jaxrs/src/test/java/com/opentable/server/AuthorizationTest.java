@@ -61,6 +61,7 @@ import com.opentable.server.jaxrs.ServletInitParameters;
 @TestPropertySource(properties= {
     "ot.httpserver.max-threads=13",
     "ot.httpserver.static-path=static-test",
+     "spring.main.allow-bean-definition-overriding=true"
 })
 @DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorizationTest {
