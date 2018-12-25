@@ -18,12 +18,11 @@ import javax.management.MBeanServerFactory;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.MBeanExportConfiguration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jmx.export.MBeanExporter;
 import org.springframework.jmx.export.annotation.AnnotationMBeanExporter;
+import org.springframework.jmx.support.RegistrationPolicy;
 
 /**
  * This configuration class provides a non-static implementation of {@link MBeanServer} with a {@link Primary}
@@ -31,24 +30,20 @@ import org.springframework.jmx.export.annotation.AnnotationMBeanExporter;
  * multiple contexts; the annotation will ensure it overrides the default provision from
  * {@link JmxConfiguration}. Circumstances in which you might want to do this include integration testing.
  *
- * <p>
- * It is critical that this configuration class be imported <em>later</em> rather than earlier. This is an unfortunate
- * consequence of two aspects of Spring. 1. If there are two beans of the same name and type, the latter one silently
- * wins. 2. The Spring {@link MBeanExporter} initialization does not use the vanilla IoC setup.
- *
- * <p>
  * Note that this {@code MBeanServer} will not include the JVM's default registrations, such as for the
  * {@link java.lang.management.MemoryMXBean} or {@link java.lang.management.ThreadMXBean}.
+ *
+ * Note also that this works in Spring Boot 2.1 because the names are overridden as well as @Primary.
+ * Also, the REPLACE_EXISTING policy is used to avoid duplicate MBeans across contexts.
  *
  * @see JmxConfiguration
  * @see MBeanServerTest
  */
 @Configuration
-@EnableMBeanExport
 @Import(TestMBeanServerConfiguration.InnerTestMBeanServerConfiguration.class)
 public class TestMBeanServerConfiguration {
     @Configuration
-    public static class InnerTestMBeanServerConfiguration extends MBeanExportConfiguration {
+    public static class InnerTestMBeanServerConfiguration {
         private final MBeanServer mbs = MBeanServerFactory.createMBeanServer();
 
         @Bean
@@ -57,10 +52,12 @@ public class TestMBeanServerConfiguration {
             return mbs;
         }
 
-        @Override
-        public AnnotationMBeanExporter mbeanExporter() {
-            final AnnotationMBeanExporter amber = super.mbeanExporter();
+        @Bean
+        @Primary
+        public AnnotationMBeanExporter mbeanExporter2() {
+            final AnnotationMBeanExporter amber = new AnnotationMBeanExporter();
             amber.setServer(mbs);
+            amber.setRegistrationPolicy(RegistrationPolicy.REPLACE_EXISTING);
             return amber;
         }
     }

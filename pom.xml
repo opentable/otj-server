@@ -70,6 +70,13 @@
             </dependency>
             <dependency>
                 <groupId>com.opentable.components</groupId>
+                <artifactId>otj-server-core</artifactId>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
                 <artifactId>otj-server-jaxrs</artifactId>
                 <version>${project.version}</version>
             </dependency>

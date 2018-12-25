@@ -34,8 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
-        "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
-        "spring.main.allow-bean-definition-overriding=true"
+        "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com"
 })
 public class BackendInfoFilterTest {
     @Inject

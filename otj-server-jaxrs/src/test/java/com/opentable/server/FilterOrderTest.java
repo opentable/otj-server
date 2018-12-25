@@ -27,8 +27,6 @@ import javax.servlet.ServletResponse;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -62,8 +60,7 @@ public class FilterOrderTest {
 
     @Test(expected = ApplicationContextException.class)
     public void testSuperfluousLast() {
-        try (ConfigurableApplicationContext ctx = OTApplication.run(AnotherLast.class
-                , new String[0], ImmutableMap.of("spring.main.allow-bean-definition-overriding", "true"))) {
+        try (ConfigurableApplicationContext ctx = OTApplication.run(AnotherLast.class)) {
         }
     }
 
@@ -73,8 +70,7 @@ public class FilterOrderTest {
     }
 
     private void test(final Class<? extends TestConfigurationBase> configurationClass) {
-        try (ConfigurableApplicationContext ctx = OTApplication.run(configurationClass, new String[0],
-                ImmutableMap.of("spring.main.allow-bean-definition-overriding", "true"))) {
+        try (ConfigurableApplicationContext ctx = OTApplication.run(configurationClass)) {
             ctx.getBeanFactory().autowireBean(this);
             final AtomicBoolean testsPassed = ctx.getBean(BOOL_NAME, AtomicBoolean.class);
             final String target = String.format("http://localhost:%s/", serverInfo.getPort());

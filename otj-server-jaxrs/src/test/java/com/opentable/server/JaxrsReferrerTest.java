@@ -37,13 +37,13 @@ public class JaxrsReferrerTest {
 
     @Test
     public void test() {
-        try (ConfigurableApplicationContext serverCtx = OTApplication.run(ServerConfiguration.class, new String[0], ImmutableMap.of("spring.main.allow-bean-definition-overriding", "true"))) {
+        try (ConfigurableApplicationContext serverCtx = OTApplication.run(ServerConfiguration.class)) {
             final int serverPort = serverCtx.getBean(HttpServerInfo.class).getPort();
             final String serverTarget = String.format("http://localhost:%s/test", serverPort);
             try (ConfigurableApplicationContext clientCtx = OTApplication.run(
                     ClientConfiguration.class,
                     new String[]{},
-                    ImmutableMap.of("TASK_HOST", TASK_HOST,"spring.main.allow-bean-definition-overriding", "true"))
+                    ImmutableMap.of("TASK_HOST", TASK_HOST))
             ) {
                 final JaxRsClientFactory clientFactory = clientCtx.getBean(JaxRsClientFactory.class);
                 final Client internalClient = clientFactory
