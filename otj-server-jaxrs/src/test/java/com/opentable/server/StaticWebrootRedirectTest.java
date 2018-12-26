@@ -36,7 +36,7 @@ import com.opentable.service.ServiceInfo;
 
 public class StaticWebrootRedirectTest {
     @Inject
-    private LoopbackRequest request;
+    private JAXRSLoopbackRequest request;
 
     @Test
     public void testDefault() {
@@ -83,7 +83,7 @@ public class StaticWebrootRedirectTest {
     @JAXRSServer
     @Import({
             StaticWebrootRedirect.class,
-            LoopbackRequest.class,
+            JAXRSLoopbackRequest.class,
     })
     public static class TestServer {
         @Path("/asdf")

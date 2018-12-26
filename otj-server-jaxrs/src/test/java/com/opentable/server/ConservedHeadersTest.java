@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.opentable.conservedheaders.ConservedHeader;
@@ -36,15 +35,12 @@ import com.opentable.conservedheaders.ConservedHeader;
 @ContextConfiguration(classes = {
     TestJaxRsServerConfiguration.class
 })
-@TestPropertySource(properties = {
-        "spring.main.allow-bean-definition-overriding=true"
-})
 public class ConservedHeadersTest {
     private final static String RID = ConservedHeader.REQUEST_ID.getHeaderName();
     private final static String AID = ConservedHeader.ANONYMOUS_ID.getHeaderName();
 
     @Inject
-    LoopbackRequest request;
+    JAXRSLoopbackRequest request;
 
     @Test
     public void createRequestIdIndex() {

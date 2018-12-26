@@ -45,13 +45,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 })
 @TestPropertySource(properties = {
         "ot.httpserver.max-threads=13",
-        "ot.httpserver.static-path=static-test",
-        "spring.main.allow-bean-definition-overriding=true"
+        "ot.httpserver.static-path=static-test"
 })
 @DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class BasicTest {
     @Inject
-    LoopbackRequest request;
+    JAXRSLoopbackRequest request;
 
     @Inject
     EmbeddedJetty ej;
