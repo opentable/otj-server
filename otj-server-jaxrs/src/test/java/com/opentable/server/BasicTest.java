@@ -50,7 +50,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class BasicTest {
     @Inject
-    LoopbackRequest request;
+    JAXRSLoopbackRequest request;
 
     @Inject
     EmbeddedJetty ej;

@@ -66,7 +66,7 @@ import com.opentable.server.jaxrs.ServletInitParameters;
 public class AuthorizationTest {
 
     @Inject
-    private LoopbackRequest request;
+    private JAXRSLoopbackRequest request;
 
     @Inject
     private MetricRegistry metrics;
