@@ -31,5 +31,6 @@ import org.springframework.context.annotation.Import;
     EmbeddedReactiveJetty.class,
     JAXRSHttpServerCommonConfiguration.class
 })
+@NonWebSetup
 public @interface RestReactiveHttpServer {
 }
