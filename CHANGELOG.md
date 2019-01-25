@@ -4,6 +4,7 @@ otj-server
 -----
 * Rebuild for DAG
 * otj-filterorder 0.0.5
+* Substantive rework of TestMBeanServerConfiguration to support SBT 2.11 properly
 
 3.0.3
 -----
