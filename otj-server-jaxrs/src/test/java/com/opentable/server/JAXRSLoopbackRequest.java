@@ -20,11 +20,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 @Named
-class LoopbackRequest {
+class JAXRSLoopbackRequest {
     private final Client client;
     private final Provider<HttpServerInfo> info;
     @Inject
-    private LoopbackRequest(@Named("test") Client client, Provider<HttpServerInfo> info) {
+    private JAXRSLoopbackRequest(@Named("test") Client client, Provider<HttpServerInfo> info) {
         this.client = client;
         this.info = info;
     }

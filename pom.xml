@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>180</version>
+        <version>184</version>
     </parent>
 
 
@@ -40,9 +40,7 @@
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
 
-        <!-- Remove once parent updated -->
-        <dep.otj-metrics.version>4.0.0</dep.otj-metrics.version>
-        <dep.metrics.version>4.0.3</dep.metrics.version>
+        <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
     </properties>
 
 
@@ -62,6 +60,13 @@
             </dependency>
             <dependency>
                 <groupId>com.opentable.components</groupId>
+                <artifactId>otj-server-core</artifactId>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
                 <artifactId>otj-server-jaxrs</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -69,6 +74,11 @@
                 <groupId>com.opentable.components</groupId>
                 <artifactId>otj-server-mvc</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-filterorder</artifactId>
+                <version>${dep.otj-filterorder.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

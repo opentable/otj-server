@@ -1,6 +1,16 @@
 otj-server
 ==========
+3.0.4
+-----
+* Rebuild for DAG
+* otj-filterorder 0.0.5
+* Substantive rework of TestMBeanServerConfiguration to support SBT 2.11 properly
 
+3.0.3
+-----
+* Clean up internal dependency declarations
+* Dropwizard 4 recompile
+c
 3.0.2
 -----
 * Uses otj-filterorder 0.0.4

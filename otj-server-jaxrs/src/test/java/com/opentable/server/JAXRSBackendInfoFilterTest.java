@@ -34,11 +34,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
-        "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
+        "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com"
 })
-public class BackendInfoFilterTest {
+public class JAXRSBackendInfoFilterTest {
     @Inject
-    private LoopbackRequest request;
+    private JAXRSLoopbackRequest request;
 
     @Test
     public void test() {

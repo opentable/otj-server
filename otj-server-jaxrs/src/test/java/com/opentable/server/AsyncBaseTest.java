@@ -40,7 +40,7 @@ public abstract class AsyncBaseTest {
     static final int N_REQUESTS = 50;
 
     @Inject
-    LoopbackRequest request;
+    JAXRSLoopbackRequest request;
 
     protected abstract EmbeddedJettyBase getEmbeddedJetty();
 

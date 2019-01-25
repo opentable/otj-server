@@ -48,7 +48,7 @@ import com.opentable.service.ServiceInfo;
 @JAXRSServer
 @Import({
     TestJaxRsServerConfiguration.TestResource.class,
-    LoopbackRequest.class,
+    JAXRSLoopbackRequest.class,
     TestMBeanServerConfiguration.class,
 })
 public class TestJaxRsServerConfiguration {

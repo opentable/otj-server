@@ -40,7 +40,7 @@ public class ConservedHeadersTest {
     private final static String AID = ConservedHeader.ANONYMOUS_ID.getHeaderName();
 
     @Inject
-    LoopbackRequest request;
+    JAXRSLoopbackRequest request;
 
     @Test
     public void createRequestIdIndex() {

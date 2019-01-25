@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.context.annotation.Import;
+import org.springframework.jmx.export.annotation.AnnotationMBeanExporter;
 import org.springframework.stereotype.Component;
 
 
@@ -53,8 +53,15 @@ import com.opentable.server.JmxConfiguration.JmxmpServer;
  */
 @Configuration
 @Import(JmxmpServer.class)
-@EnableMBeanExport
 public class JmxConfiguration {
+
+    @Bean
+    public AnnotationMBeanExporter mbeanExporter(MBeanServer mBeanServer) {
+        AnnotationMBeanExporter exporter = new AnnotationMBeanExporter();
+        exporter.setServer(mBeanServer);
+        return exporter;
+    }
+
     private static final String LEGACY_JMX = "service:jmx:jmxmp://%s:%s";
 
     @Bean

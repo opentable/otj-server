@@ -60,13 +60,13 @@ import com.opentable.server.jaxrs.ServletInitParameters;
 })
 @TestPropertySource(properties= {
     "ot.httpserver.max-threads=13",
-    "ot.httpserver.static-path=static-test",
+    "ot.httpserver.static-path=static-test"
 })
 @DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorizationTest {
 
     @Inject
-    private LoopbackRequest request;
+    private JAXRSLoopbackRequest request;
 
     @Inject
     private MetricRegistry metrics;

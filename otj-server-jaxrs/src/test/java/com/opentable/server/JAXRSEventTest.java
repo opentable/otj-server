@@ -31,10 +31,10 @@ import org.springframework.test.context.junit4.SpringRunner;
     TestJaxRsServerConfiguration.class, EventTestListener.class
 })
 @TestPropertySource(properties= {
-    "ot.httpserver.max-threads=13",
+    "ot.httpserver.max-threads=13"
 })
-public class EventTest {
-    private static final Logger LOG = LoggerFactory.getLogger(EventTest.class);
+public class JAXRSEventTest {
+    private static final Logger LOG = LoggerFactory.getLogger(JAXRSEventTest.class);
 
     @Inject
     HttpServerInfo info;
