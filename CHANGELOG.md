@@ -1,6 +1,15 @@
 otj-server
 ==========
+3.0.4
+-----
+* Rebuild for DAG
+* otj-filterorder 0.0.5
 
+3.0.3
+-----
+* Clean up internal dependency declarations
+* Dropwizard 4 recompile
+c
 3.0.2
 -----
 * Uses otj-filterorder 0.0.4
