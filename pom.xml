@@ -39,7 +39,7 @@
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
-
+        <dep.jetty.version>9.4.14.v20181114</dep.jetty.version>
         <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
     </properties>
 
