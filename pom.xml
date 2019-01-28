@@ -52,6 +52,7 @@
         <dep.flyway.version>5.2.4</dep.flyway.version>
         <dep.validator.version>6.0.14.Final</dep.validator.version>
         <dep.bytebuddy.version>1.9.7</dep.bytebuddy.version>
+        <dep.mockito.version>2.23.4</dep.mockito.version>
         <!-- end parent update -->
         <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
     </properties>
