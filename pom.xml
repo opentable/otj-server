@@ -41,10 +41,17 @@
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
 
         <!-- Parent update -->
+        <dep.plugin.assembly.version>3.1.1</dep.plugin.assembly.version>
+        <dep.plugin.jar.version>3.1.1</dep.plugin.jar.version>
+        <dep.plugin.git-commit-id.version>2.2.6</dep.plugin.git-commit-id.version>
         <dep.jetty.version>9.4.14.v20181114</dep.jetty.version>
         <dep.spring-boot.version>2.1.2.RELEASE</dep.spring-boot.version>
         <dep.spring.version>5.1.4.RELEASE</dep.spring.version>
         <dep.spring-security.version>5.1.3.RELEASE</dep.spring-security.version>
+        <dep.metrics4.version>4.0.5</dep.metrics4.version>
+        <dep.flyway.version>5.2.4</dep.flyway.version>
+        <dep.validator.version>6.0.14.Final</dep.validator.version>
+        <dep.bytebuddy.version>1.9.7</dep.bytebuddy.version>
         <!-- end parent update -->
         <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
     </properties>
