@@ -33,7 +33,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.opentable.conservedheaders.CoreConservedHeadersConfiguration;
@@ -72,18 +71,6 @@ class MVCHttpServerCommonConfiguration {
     @Inject
     MVCHttpServerCommonConfiguration(ObjectMapper objectMapper, HttpMessageConverters httpMessageConverters) {
         setupConverter(httpMessageConverters.getConverters(), objectMapper, MappingJackson2HttpMessageConverter.class);
-        if (xmlExists()) {
-            setupConverter(httpMessageConverters.getConverters(), objectMapper, MappingJackson2XmlHttpMessageConverter.class);
-        }
-    }
-
-    private boolean xmlExists() {
-        try {
-            Class.forName("com.fasterxml.jackson.dataformat.xml.XmlMapper");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
     }
 
     private <T extends AbstractJackson2HttpMessageConverter> void setupConverter(final List<HttpMessageConverter<?>> converterList, ObjectMapper objectMapper, final Class<T> converterClazz) {
