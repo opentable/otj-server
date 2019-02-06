@@ -1,5 +1,10 @@
 otj-server
 ==========
+
+3.0.5
+-----
+* In reaction to the issues with 16 cores, log processors.
+
 3.0.4
 -----
 * Rebuild for DAG
