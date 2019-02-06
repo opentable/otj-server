@@ -1,5 +1,10 @@
 otj-server
 ==========
+
+3.0.5
+-----
+* Remove xml mapping for otj-server-mvc that would throw exception
+
 3.0.4
 -----
 * Rebuild for DAG
