@@ -17,7 +17,7 @@
 
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>3.0.5-SNAPSHOT</version>
+    <version>3.0.5</version>
     <packaging>pom</packaging>
 
     <modelVersion>4.0.0</modelVersion>
@@ -48,7 +48,7 @@
         <connection>scm:git:git://github.com/opentable/otj-server.git</connection>
         <developerConnection>scm:git:git@github.com:opentable/otj-server.git</developerConnection>
         <url>http://github.com/opentable/otj-server</url>
-        <tag>HEAD</tag>
+        <tag>otj-server-parent-3.0.5</tag>
     </scm>
 
     <dependencyManagement>
