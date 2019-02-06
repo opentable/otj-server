@@ -43,7 +43,7 @@ import com.opentable.pausedetector.EnablePauseDetector;
     DefaultMetricsConfiguration.class,
     StartupShutdownFailedHandler.class,
     // Spit out version info on startup
-    CheckManifest.class,
+    PreFlight.class,
     // Hook up Jetty Dump as MBEAN operation
     JettyDumper.class,
     // Sets up app and environment info beans and property converters
