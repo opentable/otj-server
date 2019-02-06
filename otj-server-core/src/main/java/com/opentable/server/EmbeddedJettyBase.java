@@ -301,6 +301,7 @@ public abstract class EmbeddedJettyBase {
         final QueuedThreadPool qtp = (QueuedThreadPool) server.getThreadPool();
         qtp.setMinThreads(maxThreads);
         qtp.setMaxThreads(maxThreads);
+
     }
 
     @EventListener
