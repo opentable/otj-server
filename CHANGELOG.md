@@ -4,6 +4,7 @@ otj-server
 3.0.5
 -----
 * In reaction to the issues with 16 cores, log processors.
+* Remove xml mapping for otj-server-mvc that would throw exception
 
 3.0.4
 -----
