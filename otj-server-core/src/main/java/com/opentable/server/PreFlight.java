@@ -54,7 +54,7 @@ public class PreFlight {
     @PostConstruct
     public void start() {
         try {
-            LOG.info("Starting up, JVM {} processors, and Jetty {} processors", Runtime.getRuntime().availableProcessors(), ProcessorUtils.availableProcessors());
+            LOG.info("At startup: JVM {} processors, and Jetty {} processors", Runtime.getRuntime().availableProcessors(), ProcessorUtils.availableProcessors());
             readManifests();
         } catch (IOException e) {
             LOG.debug("Error while reading manifest", e);
