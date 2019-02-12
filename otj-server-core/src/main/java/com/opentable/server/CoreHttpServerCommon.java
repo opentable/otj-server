@@ -34,6 +34,8 @@ import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
+    // Set up dependencies of EmbeddedJettyBase
+    EmbeddedJettyConfiguration.class,
     // Embedded jetty
     EmbeddedJetty.class,
     // Filter for transfer core info to MDC

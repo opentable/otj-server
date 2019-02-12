@@ -35,7 +35,6 @@ import org.springframework.core.env.PropertyResolver;
 
 import com.opentable.components.filterorder.FilterOrderResolver;
 import com.opentable.logging.jetty.JsonRequestLogConfig;
-import com.opentable.spring.SpecializedConfigFactory;
 
 /**
  * Configure an embedded {@code Jetty 9} HTTP(S) server, and tie it into the Spring Boot lifecycle.
@@ -57,11 +56,6 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
 
     @Inject
     Optional<Collection<Consumer<WebAppContext>>> webAppContextCustomizers;
-
-    @Bean
-    public SpecializedConfigFactory<ServerConnectorConfig> connectorConfigs(PropertyResolver pr) {
-        return SpecializedConfigFactory.create(pr, ServerConnectorConfig.class, "ot.httpserver.connector.${name}");
-    }
 
     /**
      * @param filterOrderResolver The filter order resolver is injected here since this method is the one in which we
