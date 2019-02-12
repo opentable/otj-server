@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>187</version>
+        <version>190</version>
     </parent>
 
 
@@ -41,6 +41,9 @@
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
 
         <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
+
+        <dep.otj-metrics.version>4.0.5</dep.otj-metrics.version>
+        <netty.version>4.1.32.Final</netty.version>
     </properties>
 
 
@@ -77,8 +80,20 @@
             </dependency>
             <dependency>
                 <groupId>com.opentable.components</groupId>
+                <artifactId>otj-server-reactive</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
                 <artifactId>otj-filterorder</artifactId>
                 <version>${dep.otj-filterorder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -87,6 +102,7 @@
         <module>otj-server-core</module>
         <module>otj-server-jaxrs</module>
         <module>otj-server-mvc</module>
+        <module>otj-server-reactive</module>
         <module>otj-server</module>
         <module>otj-server-integration-tests</module>
     </modules>
