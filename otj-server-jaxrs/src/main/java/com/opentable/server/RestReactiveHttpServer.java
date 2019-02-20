@@ -21,6 +21,8 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
+
 /**
  * REST Reactive HTTP Server.
  */
@@ -28,8 +30,16 @@ import org.springframework.context.annotation.Import;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
+    EmbeddedJettyConfiguration.class,
     EmbeddedReactiveJetty.class,
-    JAXRSHttpServerCommonConfiguration.class
+    JAXRSHttpServerCommonConfiguration.class,
+    // Filter for transfer core info to MDC
+    BackendInfoFilterConfiguration.class,
+    // Support static resources
+    StaticResourceConfiguration.class,
+    // Filter order
+    FilterOrderResolverConfiguration.class,
 })
+@NonWebSetup
 public @interface RestReactiveHttpServer {
 }
