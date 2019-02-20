@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+3.0.6
+-----
+* Fix EmbeddedReactiveJetty to work after module split (fixes regression post pom 180).
+
 3.0.5
 -----
 * In reaction to the issues with 16 cores, log processors.
