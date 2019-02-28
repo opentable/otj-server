@@ -19,7 +19,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -269,12 +268,8 @@ public abstract class EmbeddedJettyBase {
 
         if (ssl != null) {
             if (!CollectionUtils.isEmpty(excludedProtocols)) {
-                LOG.warn("***************************************************************************************");
-                LOG.warn("Excluding following protocols");
-                excludedProtocols.forEach(protocol ->
-                        LOG.warn("    * {}", protocol)
-                );
-                LOG.warn("***************************************************************************************");
+                LOG.warn("Excluding following protocols:");
+                excludedProtocols.forEach(protocol -> LOG.info("Disabling {}", protocol));
                 ssl.setExcludeProtocols(excludedProtocols.toArray(new String[0]));
             }
 
