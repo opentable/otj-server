@@ -32,11 +32,6 @@ import org.springframework.web.reactive.config.DelegatingWebFluxConfiguration;
  * See {@link ReactiveServerUnconfigured} for more advanced control of configuration.
  *
  * This annotation is generally equivalent to {@link org.springframework.web.reactive.config.EnableWebFlux}.
- *
- * TODO: Look at @ImportAutoConfiguration class?
- *
- * https://spring.io/blog/2019/01/21/manual-bean-definitions-in-spring-boot
- *
  */
 @Configuration
 @Target(ElementType.TYPE)

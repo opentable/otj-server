@@ -5,8 +5,6 @@ otj-server
 -----
 * Split Reactive Server in to its own top-level server component
 * Replace @RestReactiveHttpServer with @ReactiveServer annotation
-* Server request logging for Reactive Server
-* Reactive health and metrics endpoints for Reactive Server
 
 3.0.6
 -----

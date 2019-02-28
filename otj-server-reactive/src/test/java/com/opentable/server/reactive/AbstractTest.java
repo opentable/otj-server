@@ -27,9 +27,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.opentable.server.HttpServerInfo;
 
-/**
- *
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestReactiveServerConfiguration.class, webEnvironment = RANDOM_PORT)
 @ActiveProfiles(profiles = "test")

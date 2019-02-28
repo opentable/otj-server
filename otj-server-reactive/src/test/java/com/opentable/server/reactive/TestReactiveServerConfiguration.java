@@ -37,9 +37,6 @@ import reactor.core.scheduler.Schedulers;
 
 import com.opentable.service.ServiceInfo;
 
-/**
- *
- */
 @Configuration
 @ReactiveServer
 public class TestReactiveServerConfiguration {

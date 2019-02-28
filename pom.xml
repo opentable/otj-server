@@ -42,7 +42,10 @@
 
         <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
 
+        <!-- TODO: Remove once this is updated in the parent pom -->
         <dep.otj-metrics.version>4.0.5</dep.otj-metrics.version>
+
+        <!-- TODO: Remove once this is managed correctly in the parent pom -->
         <netty.version>4.1.32.Final</netty.version>
     </properties>
 
@@ -88,6 +91,7 @@
                 <artifactId>otj-filterorder</artifactId>
                 <version>${dep.otj-filterorder.version}</version>
             </dependency>
+            <!-- TODO: Remove once this is managed correctly in the parent pom -->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
