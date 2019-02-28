@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -77,6 +78,7 @@ import com.opentable.logging.jetty.JsonRequestLogConfig;
 import com.opentable.server.HttpServerInfo.ConnectorInfo;
 import com.opentable.spring.SpecializedConfigFactory;
 import com.opentable.util.Optionals;
+import org.springframework.util.CollectionUtils;
 
 /**
  * base class providing common configuration for creating Embedded Jetty instances
@@ -111,6 +113,9 @@ public abstract class EmbeddedJettyBase {
 
     @Value("${ot.httpserver.ssl-allowed-deprecated-ciphers:}")
     List<String> allowedDeprecatedCiphers;
+
+    @Value("${ot.httpserver.ssl-excluded-protocols:}")
+    List<String> excludedProtocols;
 
     // the following two values (shouldSleepBeforeShutdown, sleepDurationBeforeShutdown) help an application control whether they want a pause before jetty shutdown to ensure that the discovery unannounce has propagated to all clients requesting the application
     @Value("${ot.httpserver.sleep-before-shutdown:#{false}}")
@@ -263,6 +268,16 @@ public abstract class EmbeddedJettyBase {
         final HttpConnectionFactory http = new HttpConnectionFactory(httpConfig);
 
         if (ssl != null) {
+            if (!CollectionUtils.isEmpty(excludedProtocols)) {
+                LOG.warn("***************************************************************************************");
+                LOG.warn("Excluding following protocols");
+                excludedProtocols.forEach(protocol ->
+                        LOG.warn("    * {}", protocol)
+                );
+                LOG.warn("***************************************************************************************");
+                ssl.setExcludeProtocols(excludedProtocols.toArray(new String[0]));
+            }
+
             factories.add(new SslConnectionFactory(ssl, http.getProtocol()));
         }
 
