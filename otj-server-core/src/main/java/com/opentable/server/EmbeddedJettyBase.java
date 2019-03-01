@@ -269,7 +269,7 @@ public abstract class EmbeddedJettyBase {
         if (ssl != null) {
             if (!CollectionUtils.isEmpty(excludedProtocols)) {
                 LOG.warn("Excluding following protocols:");
-                excludedProtocols.forEach(protocol -> LOG.info("Disabling {}", protocol));
+                excludedProtocols.forEach(protocol -> LOG.warn("Disabling {}", protocol));
                 ssl.setExcludeProtocols(excludedProtocols.toArray(new String[0]));
             }
 
