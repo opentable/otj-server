@@ -24,8 +24,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,8 +38,7 @@ import com.opentable.service.ServiceInfo;
  */
 @Configuration
 @Import(BackendInfoFilterConfiguration.BackendInfoFilter.class)
-public class BackendInfoFilterConfiguration {
-    public static final String HEADER_PREFIX = "X-OT-Backend-";
+public class BackendInfoFilterConfiguration extends BackendInfoFilterBaseConfiguration {
 
     @Bean
     public FilterRegistrationBean<BackendInfoFilter> getBackendInfoFilterRegistrationBean(final BackendInfoFilter filter) {
@@ -72,33 +69,5 @@ public class BackendInfoFilterConfiguration {
 
         @Override
         public void destroy() {}
-
-        /**
-         * @return map of headers we'll add to responses; unavailable information will result in headers
-         * not being set
-         */
-        private Map<String, String> assembleInfo(final AppInfo appInfo, final ServiceInfo serviceInfo) {
-            final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-            builder.put(named("Service-Name"), serviceInfo.getName());
-
-            if (appInfo.getBuildTag() != null) {
-                builder.put(named("Build-Tag"), appInfo.getBuildTag());
-            }
-
-            final Integer instanceNo = appInfo.getInstanceNumber();
-            if (instanceNo != null) {
-                builder.put(named("Instance-No"), instanceNo.toString());
-            }
-
-            if (appInfo.getTaskHost() != null) {
-                builder.put(named("Task-Host"), appInfo.getTaskHost());
-            }
-
-            return builder.build();
-        }
-
-        private static String named(final String name) {
-            return HEADER_PREFIX + name;
-        }
     }
 }

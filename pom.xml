@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>187</version>
+        <version>191</version>
     </parent>
 
 
@@ -41,6 +41,10 @@
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
 
         <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
+        <dep.otj-httpheaders.version>0.1.2</dep.otj-httpheaders.version>
+
+        <!-- Remove when parent is updated -->
+        <dep.otj-logging.version>3.0.2</dep.otj-logging.version>
     </properties>
 
 
@@ -77,8 +81,18 @@
             </dependency>
             <dependency>
                 <groupId>com.opentable.components</groupId>
+                <artifactId>otj-server-reactive</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
                 <artifactId>otj-filterorder</artifactId>
                 <version>${dep.otj-filterorder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable</groupId>
+                <artifactId>otj-httpheaders</artifactId>
+                <version>${dep.otj-httpheaders.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -87,6 +101,7 @@
         <module>otj-server-core</module>
         <module>otj-server-jaxrs</module>
         <module>otj-server-mvc</module>
+        <module>otj-server-reactive</module>
         <module>otj-server</module>
         <module>otj-server-integration-tests</module>
     </modules>
