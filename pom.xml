@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>190</version>
+        <version>191</version>
     </parent>
 
 
@@ -41,12 +41,10 @@
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
 
         <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
+        <dep.otj-httpheaders.version>0.1.2</dep.otj-httpheaders.version>
 
-        <!-- TODO: Remove once this is updated in the parent pom -->
-        <dep.otj-metrics.version>4.0.5</dep.otj-metrics.version>
-
-        <!-- TODO: Remove once this is managed correctly in the parent pom -->
-        <netty.version>4.1.32.Final</netty.version>
+        <!-- Remove when parent is updated -->
+        <dep.otj-logging.version>3.0.2</dep.otj-logging.version>
     </properties>
 
 
@@ -91,13 +89,10 @@
                 <artifactId>otj-filterorder</artifactId>
                 <version>${dep.otj-filterorder.version}</version>
             </dependency>
-            <!-- TODO: Remove once this is managed correctly in the parent pom -->
             <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-bom</artifactId>
-                <version>${netty.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
+                <groupId>com.opentable</groupId>
+                <artifactId>otj-httpheaders</artifactId>
+                <version>${dep.otj-httpheaders.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

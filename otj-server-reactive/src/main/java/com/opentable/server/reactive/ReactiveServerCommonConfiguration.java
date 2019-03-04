@@ -49,7 +49,7 @@ import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration
         BackendInfoWebFilterConfiguration.class,
 
         // Support static resources
-        // TODO: Need to test serving static resources the WebFlux way
+        // TODO: Need to test serving static resources the WebFlux way. See OTPL-3648.
 })
 @ImportAutoConfiguration({
         // Core WebFlux

@@ -24,16 +24,16 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import com.opentable.server.BackendInfoFilterConfiguration;
+import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration;
 
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
 })
-public class BackendInfoFilterTest extends AbstractTest {
+public class BackendInfoWebFilterTest extends AbstractTest {
 
-    private static final String HEADER_PREFIX_LOWER_CASE = BackendInfoFilterConfiguration.HEADER_PREFIX.toLowerCase();
+    private static final String HEADER_PREFIX_LOWER_CASE = BackendInfoWebFilterConfiguration.HEADER_PREFIX.toLowerCase();
 
     @Autowired
     private WebTestClient webTestClient;
@@ -58,10 +58,10 @@ public class BackendInfoFilterTest extends AbstractTest {
         });
 
         Assert.assertTrue(sawBackendHeader.get());
-        assertEquals("some-service-3.14", result.getResponseHeaders().get(BackendInfoFilterConfiguration.HEADER_PREFIX + "Build-Tag").get(0));
-        assertEquals("test", result.getResponseHeaders().get(BackendInfoFilterConfiguration.HEADER_PREFIX + "Service-Name").get(0));
-        assertEquals("3", result.getResponseHeaders().get(BackendInfoFilterConfiguration.HEADER_PREFIX + "Instance-No").get(0));
-        assertEquals("mesos-slave9001-dev-sf.qasql.opentable.com", result.getResponseHeaders().get(BackendInfoFilterConfiguration.HEADER_PREFIX + "Task-Host").get(0));
+        assertEquals("some-service-3.14", result.getResponseHeaders().get(BackendInfoWebFilterConfiguration.HEADER_PREFIX + "Build-Tag").get(0));
+        assertEquals("test", result.getResponseHeaders().get(BackendInfoWebFilterConfiguration.HEADER_PREFIX + "Service-Name").get(0));
+        assertEquals("3", result.getResponseHeaders().get(BackendInfoWebFilterConfiguration.HEADER_PREFIX + "Instance-No").get(0));
+        assertEquals("mesos-slave9001-dev-sf.qasql.opentable.com", result.getResponseHeaders().get(BackendInfoWebFilterConfiguration.HEADER_PREFIX + "Task-Host").get(0));
     }
 
 }
