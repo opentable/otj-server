@@ -16,27 +16,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-server-parent</artifactId>
         <version>3.0.8-SNAPSHOT</version>
     </parent>
 
-    <artifactId>otj-server-jaxrs</artifactId>
-    <description>Provides JAXRS wiring into otj-stack</description>
+    <artifactId>otj-server-reactive</artifactId>
+    <description>Provides Spring WebFlux wiring into otj-stack</description>
+
+    <properties>
+
+    </properties>
+
     <dependencies>
-
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-server-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-server-core</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>com.opentable.components</groupId>
             <artifactId>otj-core</artifactId>
@@ -44,54 +38,52 @@
 
         <dependency>
             <groupId>com.opentable.components</groupId>
-            <artifactId>otj-jackson</artifactId>
+            <artifactId>otj-logging-jetty</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.opentable.components</groupId>
-            <artifactId>otj-metrics-jaxrs</artifactId>
+            <artifactId>otj-server-core</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.opentable.components</groupId>
-            <artifactId>otj-conservedheaders-jaxrs</artifactId>
+            <artifactId>otj-metrics-reactive</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.opentable.components</groupId>
-            <artifactId>otj-conservedheaders-core</artifactId>
+            <artifactId>otj-logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.opentable</groupId>
+            <artifactId>otj-httpheaders</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.opentable.components</groupId>
-            <artifactId>otj-jaxrs-shared</artifactId>
+            <artifactId>otj-spring</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-filterorder</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-logging-kafka</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-jaxrs-client</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-jaxrs-clientfactory-resteasy</artifactId>
-            <scope>runtime</scope>
+            <groupId>com.opentable.logging</groupId>
+            <artifactId>otj-otl</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
 
         <dependency>
@@ -110,43 +102,18 @@
         </dependency>
 
         <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-util</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-spring</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
-            <artifactId>metrics-annotation</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
         </dependency>
 
         <dependency>
@@ -155,18 +122,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
 
         <dependency>
@@ -175,32 +132,26 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
+        <!-- spring-boot-test uses this but has it optional :/ -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <!-- jmxmp support -->
-        <dependency>
-            <groupId>com.betfair.net.java.opendmk</groupId>
-            <artifactId>jmx-optional</artifactId>
-            <version>1.0-b02</version>
-            <scope>runtime</scope>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -226,13 +177,6 @@
             <artifactId>spring-boot-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- spring-boot-test uses this but has it optional :/ -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
+
 </project>

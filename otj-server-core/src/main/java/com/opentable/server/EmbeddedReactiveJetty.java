@@ -80,7 +80,7 @@ public class EmbeddedReactiveJetty extends EmbeddedJettyBase {
 
         @Override
         public void setSessionTimeout(Duration duration) {
-            // Currently spring 5 does not expose this property at this level. Possibly an oversight
+            // Currently Spring Boot 2.1.2 does not expose this property at this level. Possibly an oversight
             // Also it is questionable that anyone is actually using this feature
             // consider removing
             throw new UnsupportedOperationException("operation not supported by JettyReactiveWebServerFactory");
@@ -91,9 +91,10 @@ public class EmbeddedReactiveJetty extends EmbeddedJettyBase {
             factory.setThreadPool(threadPool);
         }
 
+        // TODO: Investigate if this is supported now
         @Override
         public void addInitializers(ServletContextInitializer... initializers) {
-            // currently not supported by Spring 5. Consider removing since we only
+            // currently not supported by Spring Boot 2.1.2. Consider removing since we only
             // add two listeners health and metrics which have spring equivalents
             throw new UnsupportedOperationException("operation not supported by JettyReactiveWebServerFactory");
         }
