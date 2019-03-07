@@ -40,12 +40,36 @@
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
 
+        <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
+        <dep.plugin.spotbugs.version>3.1.11</dep.plugin.spotbugs.version>
         <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
         <dep.otj-httpheaders.version>0.1.2</dep.otj-httpheaders.version>
 
         <!-- Remove when parent is updated -->
         <dep.otj-logging.version>3.0.2</dep.otj-logging.version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.shared</groupId>
+                        <artifactId>maven-dependency-analyzer</artifactId>
+                        <version>1.11.1</version>
+                        <exclusions>
+                            <exclusion>
+                                <artifactId>maven-project</artifactId>
+                                <groupId>org.apache.maven</groupId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
 
 
     <scm>

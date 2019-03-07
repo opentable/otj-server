@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+3.0.8
+-----
+* Added configuration parameter `ot.httpserver.ssl-excluded-protocols`  
+To address Java 11's problematic implementation of TLS 1.3
+
 3.0.7
 -----
 * Split Reactive Server in to its own top-level server component
