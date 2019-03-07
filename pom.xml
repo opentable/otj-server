@@ -40,7 +40,6 @@
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
 
-        <project.build.targetJdk>11</project.build.targetJdk>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
         <dep.plugin.spotbugs.version>3.1.11</dep.plugin.spotbugs.version>
         <dep.otj-filterorder.version>0.0.5</dep.otj-filterorder.version>
