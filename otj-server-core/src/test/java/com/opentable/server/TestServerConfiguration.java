@@ -60,6 +60,19 @@ public class TestServerConfiguration {
         }
     }
 
+    @WebServlet(urlPatterns = {"/threadname/*"}, loadOnStartup = 1)
+    public static class ThreadServlet extends HttpServlet
+    {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            LOG.debug("Writing thread name response.");
+            response.getWriter().print(Thread.currentThread().getName());
+        }
+    }
+
     @Bean
     @Named("test")
     Client testClient() {

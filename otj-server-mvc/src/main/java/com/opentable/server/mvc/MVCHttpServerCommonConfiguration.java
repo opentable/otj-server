@@ -28,6 +28,8 @@ import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactor
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -35,10 +37,13 @@ import org.springframework.http.converter.json.AbstractJackson2HttpMessageConver
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.opentable.components.filterorder.OrderDeclaration;
 import com.opentable.conservedheaders.CoreConservedHeadersConfiguration;
 import com.opentable.jackson.OpenTableJacksonConfiguration;
 import com.opentable.metrics.mvc.HealthHttpMVCConfiguration;
 import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
+import com.opentable.scopes.threaddelegate.servlet.ThreadDelegatingScopeFilter;
+import com.opentable.server.ThreadNameFilterConfiguration;
 
 @Configuration
 @EnableConfigurationProperties
@@ -57,7 +62,10 @@ import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
     MetricsHttpMVCConfiguration.class,
     CoreConservedHeadersConfiguration.class,
     // Logging exception handler
-    LoggingHandlerExceptionResolver.class
+    LoggingHandlerExceptionResolver.class,
+    ThreadNameFilterConfiguration.class,
+    // Logging exception filter
+    ExceptionLogFilter.class
 })
 class MVCHttpServerCommonConfiguration {
 
@@ -88,4 +96,15 @@ class MVCHttpServerCommonConfiguration {
                 }
             });
     }
+
+    @Bean
+    public FilterRegistrationBean<ExceptionLogFilter> exceptionLogFilterRegistration(final ExceptionLogFilter filter) {
+        return new FilterRegistrationBean<>(filter);
+    }
+
+    @Bean
+    public OrderDeclaration exceptionLogFilterOrderDeclaration() {
+        return OrderDeclaration.of(ExceptionLogFilter.class).dependsOn(ThreadDelegatingScopeFilter.class);
+    }
+
 }
