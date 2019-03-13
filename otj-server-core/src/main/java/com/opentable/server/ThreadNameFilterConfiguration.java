@@ -15,14 +15,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Condition;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.stereotype.Component;
 
 
 @Configuration
+@Conditional(ThreadNameFilterConfiguration.InstallThreadNameFilter.class)
 @Import(ThreadNameFilterConfiguration.ThreadNameFilter.class)
 public class ThreadNameFilterConfiguration {
+
+    public static class InstallThreadNameFilter implements Condition {
+        @Override
+        public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+            final String value = context.getEnvironment().
+                getProperty("ot.server.thread-name-filter", "true");
+            return "true".equals(value);
+        }
+    }
 
     @Bean
     public FilterRegistrationBean<ThreadNameFilter> getThreadNameFilterRegistrationBean(final ThreadNameFilter filter) {

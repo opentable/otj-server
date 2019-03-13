@@ -13,14 +13,28 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.jetty.io.QuietException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Condition;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.NestedServletException;
 
 
 @Component
+@Conditional(ExceptionLogFilter.InstallExceptionLogFilter.class)
 public class ExceptionLogFilter implements Filter {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionLogFilter.class);
+
+    public static class InstallExceptionLogFilter implements Condition {
+        @Override
+        public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+            final String value = context.getEnvironment().
+                getProperty("ot.server.exception-log-filter", "true");
+            return "true".equals(value);
+        }
+    }
 
     @Override
     public void init(FilterConfig filterConfig) {
