@@ -44,6 +44,8 @@ import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
     StaticResourceConfiguration.class,
     // Sets thread name to the req.getRequestURI()
     ThreadNameFilterConfiguration.class,
+    // Logs exception inside filter chain
+    ExceptionLogFilterConfiguration.class,
     // Filter order
     FilterOrderResolverConfiguration.class,
 })

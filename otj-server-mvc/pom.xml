@@ -116,19 +116,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-filterorder</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-scopes</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId> com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <scope>runtime</scope>
@@ -168,6 +155,13 @@
             <artifactId>logback-classic</artifactId>
             <scope>runtime</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.slf4j</groupId>
