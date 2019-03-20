@@ -159,6 +159,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
+            <!--should be "test" but changed to the "runtime" due maven bug-->
             <scope>runtime</scope>
         </dependency>
 
