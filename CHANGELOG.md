@@ -1,6 +1,12 @@
 otj-server
 ==========
 
+3.0.10
+-----
+* Make constructor for otj-sever-reactive's ServerRequestLog public, to support request-id logging for reactive
+servers who override JsonRequestLog with their own OTLs. *NOTE: This will be deprecated once otj-conservedheaders-reactive
+is released, which will provide a more official solution.*
+
 3.0.9
 -----
 * ThreadNameFilter - changes thread name executing servlet chain to the `<timestamp>:HttpServletRequest::getRequestURI()`
