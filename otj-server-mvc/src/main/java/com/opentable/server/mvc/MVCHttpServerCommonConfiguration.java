@@ -39,6 +39,7 @@ import com.opentable.conservedheaders.CoreConservedHeadersConfiguration;
 import com.opentable.jackson.OpenTableJacksonConfiguration;
 import com.opentable.metrics.mvc.HealthHttpMVCConfiguration;
 import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
+import com.opentable.server.ThreadNameFilterConfiguration;
 
 @Configuration
 @EnableConfigurationProperties
@@ -57,7 +58,8 @@ import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
     MetricsHttpMVCConfiguration.class,
     CoreConservedHeadersConfiguration.class,
     // Logging exception handler
-    LoggingHandlerExceptionResolver.class
+    LoggingHandlerExceptionResolver.class,
+    ThreadNameFilterConfiguration.class,
 })
 class MVCHttpServerCommonConfiguration {
 
@@ -88,4 +90,5 @@ class MVCHttpServerCommonConfiguration {
                 }
             });
     }
+
 }

@@ -42,6 +42,10 @@ import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
     BackendInfoFilterConfiguration.class,
     // Support static resources
     StaticResourceConfiguration.class,
+    // Sets thread name to the req.getRequestURI()
+    ThreadNameFilterConfiguration.class,
+    // Logs exception inside filter chain
+    ExceptionLogFilterConfiguration.class,
     // Filter order
     FilterOrderResolverConfiguration.class,
 })

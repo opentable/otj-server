@@ -1,6 +1,14 @@
 otj-server
 ==========
 
+3.0.9
+-----
+* ThreadNameFilter - changes thread name executing servlet chain to the `<timestamp>:HttpServletRequest::getRequestURI()`
+Can be disabled by configuration parameter `ot.server.thread-name-filter=false`
+* ExceptionLogFilter - provides additional exception logging. This avoids losing valuable MDC information. 
+Can be disabled by configuration parameter `ot.server.exception-log-filter=false`
+* SECURITY: No longer sends Server: Jetty version header.
+
 3.0.8
 -----
 * Added configuration parameter `ot.httpserver.ssl-excluded-protocols`  

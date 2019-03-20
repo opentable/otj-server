@@ -157,6 +157,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <!--should be "test" but changed to the "runtime" due maven bug-->
+            <scope>runtime</scope>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>

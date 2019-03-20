@@ -94,6 +94,7 @@ public class TestJaxRsServerConfiguration {
         @GET()
         @Path("5xx")
         public Response get5xx() {
+            LOG.info("It is going to happen.");
             throw new RuntimeException("it has happened");
         }
 

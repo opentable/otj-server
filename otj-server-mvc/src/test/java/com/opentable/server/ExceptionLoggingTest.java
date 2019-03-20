@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Stack;
 
+import org.eclipse.jetty.servlet.ServletHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,10 @@ public class ExceptionLoggingTest extends AbstractTest {
         logger.addAppender(APPENDER);
         logger.setLevel(Level.ALL);
         logger.setAdditive(true);
+        logger = (Logger) LoggerFactory.getLogger(ServletHandler.class);
+        logger.addAppender(APPENDER);
+        logger.setLevel(Level.WARN);
+        logger.setAdditive(true);
 
     }
 
@@ -68,8 +73,11 @@ public class ExceptionLoggingTest extends AbstractTest {
     public void testExceptionInMethodLoggedOnlyOnce() throws InterruptedException {
         String res = testRestTemplate.getForObject("/api/fault", String.class);
         Thread.sleep(2000l);
-        assertEquals(0, APPENDER.eventStack.size());
+        assertEquals(1, APPENDER.eventStack.size());
+        LoggingEvent loggingEvent = (LoggingEvent) APPENDER.eventStack.pop();
         assertTrue(res.contains("\"status\":500"));
+        assertEquals("/api/fault", loggingEvent.getFormattedMessage());
+        assertEquals("org.springframework.web.util.NestedServletException", loggingEvent.getThrowableProxy().getClassName());
     }
 
     @Test
