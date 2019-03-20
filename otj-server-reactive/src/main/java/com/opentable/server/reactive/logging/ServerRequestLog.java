@@ -32,7 +32,7 @@ import com.opentable.logging.otl.HttpV1;
  */
 public class ServerRequestLog extends JsonRequestLog {
 
-    ServerRequestLog(Clock clock, JsonRequestLogConfig config) {
+    public ServerRequestLog(Clock clock, JsonRequestLogConfig config) {
         super(clock, config);
     }
 
