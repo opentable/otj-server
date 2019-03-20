@@ -5,8 +5,9 @@ otj-server
 -----
 * ThreadNameFilter - changes thread name executing servlet chain to the `<timestamp>:HttpServletRequest::getRequestURI()`
 Can be disabled by configuration parameter `ot.server.thread-name-filter=false`
-* ExceptionLogFilter - provides additional exception logging for MVC controllers. 
+* ExceptionLogFilter - provides additional exception logging. This avoids losing valuable MDC information. 
 Can be disabled by configuration parameter `ot.server.exception-log-filter=false`
+* SECURITY: No longer sends Server: Jetty version header.
 
 3.0.8
 -----
