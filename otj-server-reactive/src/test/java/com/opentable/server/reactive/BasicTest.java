@@ -28,7 +28,7 @@ import com.opentable.logging.CommonLogHolder;
 public class BasicTest extends AbstractTest {
 
     @Autowired
-    WebTestClient webTestClient;
+    private WebTestClient webTestClient;
 
     @Test
     public void applicationLoads() {
@@ -45,6 +45,7 @@ public class BasicTest extends AbstractTest {
         EntityExchangeResult<String> result = webTestClient.get()
                 .uri("/api/test")
                 .exchange()
+                .expectStatus().isOk()
                 .expectBody(String.class)
                 .returnResult();
 

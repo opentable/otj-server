@@ -1,6 +1,14 @@
 otj-server
 ==========
 
+3.0.11
+-----
+* Supports conserved headers for reactive Spring WebFlux applications (server-side, not for WebClient which will be
+handled as part of the upcoming otj-webclient library). Uses otj-conservedheaders-reactive 3.0.2.
+- Copies conserved headers to the MDC for application and server request logging
+- Copies conserved headers to the outgoing request
+- Creates a request-id if none was provided on incoming headers
+
 3.0.10
 -----
 * Make constructor for otj-sever-reactive's ServerRequestLog public, to support request-id logging for reactive

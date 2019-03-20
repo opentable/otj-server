@@ -25,11 +25,25 @@ import com.opentable.logging.jetty.JsonRequestLogConfig;
 import com.opentable.logging.otl.HttpV1;
 
 /**
+ * NOTE: With the introduction of otj-conservedheaders-reactive, this class is no longer needed, and implementing
+ * reactive servers should now use or extend {@link JsonRequestLog} directly.
+ *
+ * We are leaving this here for the time being as some reactive servers are directly extending this class. It will
+ * be removed in the future once servers are updated to a parent pom version that supports otj-conservedheaders-reactive.
+ *
+ * ------
+ *
  * Logs {@link HttpV1} events for incoming server requests using the underlying Jetty RequestLog.
  *
- * The primary difference between this class and {@link JsonRequestLog} is that this class pulls the OT-RequestId
+ * The *original* difference between this class and {@link JsonRequestLog} is that this class pulls the OT-RequestId
  * header off of the incoming server request, instead of the response.
+ *
+ * EDIT: This behavior has been changed to match the original behavior of {@link JsonRequestLog}, by pulling
+ * the request id from the response.
+ *
+ * @deprecated Users of this class should extend JsonRequestLog directly instead of extending ServerRequestLog.
  */
+@Deprecated
 public class ServerRequestLog extends JsonRequestLog {
 
     public ServerRequestLog(Clock clock, JsonRequestLogConfig config) {
@@ -38,6 +52,6 @@ public class ServerRequestLog extends JsonRequestLog {
 
     @Override
     protected UUID getRequestIdFrom(Request request, Response response) {
-        return optUuid(request.getHeader(OTHeaders.REQUEST_ID));
+        return optUuid(response.getHeader(OTHeaders.REQUEST_ID));
     }
 }
