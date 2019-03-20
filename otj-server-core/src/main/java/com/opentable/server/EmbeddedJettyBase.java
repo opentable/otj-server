@@ -257,6 +257,11 @@ public abstract class EmbeddedJettyBase {
         }
 
         final HttpConfiguration httpConfig = new HttpConfiguration();
+
+        // Don't reveal these
+        httpConfig.setSendServerVersion(false);
+        httpConfig.setSendXPoweredBy(false);
+
         if (ssl != null) {
             httpConfig.addCustomizer(new SecureRequestCustomizer());
         } else if (config.isForceSecure()) {
