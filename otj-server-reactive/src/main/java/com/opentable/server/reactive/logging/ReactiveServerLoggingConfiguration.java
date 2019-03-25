@@ -23,7 +23,11 @@ import com.opentable.logging.jetty.JsonRequestLogConfig;
 
 /**
  * Configures automatic server request logging using Jetty for reactive applications.
+ *
+ * @deprecated Reactive services should utilize the JsonRequestLog that is already imported as part of the
+ * EmbeddedJetty server.
  */
+@Deprecated
 @Configuration
 public class ReactiveServerLoggingConfiguration {
 

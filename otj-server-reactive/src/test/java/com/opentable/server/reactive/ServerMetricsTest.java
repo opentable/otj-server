@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-public class TestServerMetrics extends AbstractTest {
+public class ServerMetricsTest extends AbstractTest {
 
     @Autowired private WebTestClient webTestClient;
     @Autowired private MetricRegistry metricRegistry;
