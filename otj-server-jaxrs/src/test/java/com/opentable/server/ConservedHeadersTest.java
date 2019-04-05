@@ -62,6 +62,24 @@ public class ConservedHeadersTest {
     }
 
     @Test
+    public void conserveRequestIdWithFault() {
+        final String rid = UUID.randomUUID().toString();
+        try(final Response resp = request.of("/5xx").request().header(RID, rid).get()){
+            sanityCheck(resp);
+            Assert.assertEquals(rid, resp.getHeaderString(RID));
+        }
+    }
+
+    @Test
+    public void conserveRequestIdWithFault2() {
+        final String rid = UUID.randomUUID().toString();
+        try(final Response resp = request.of("/5xx2").request().header(RID, rid).get()){
+            sanityCheck(resp);
+            Assert.assertEquals(rid, resp.getHeaderString(RID));
+        }
+    }
+
+    @Test
     public void replaceBadRequestId() {
         final String badRid = "not a valid UUID";
         try(final Response resp = request.of("/").request().header(RID, badRid).get()){

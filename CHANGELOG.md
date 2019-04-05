@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+3.0.12
+-----
+* ConservedHeadersJettyErrorHandler preserves conserved headers for unhandled servlet exceptions. 
+
 3.0.11
 -----
 * Supports conserved headers for reactive Spring WebFlux applications (server-side, not for WebClient which will be

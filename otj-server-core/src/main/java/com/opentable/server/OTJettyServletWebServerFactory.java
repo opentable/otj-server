@@ -50,6 +50,7 @@ public class OTJettyServletWebServerFactory extends JettyServletWebServerFactory
     protected org.eclipse.jetty.webapp.Configuration[] getWebAppContextConfigurations(WebAppContext webAppContext,
                                                                                       ServletContextInitializer... initializers) {
         webAppContextCustomizers.ifPresent(consumers -> consumers.forEach(c -> c.accept(webAppContext)));
+        webAppContext.setErrorHandler(new ConservedHeadersJettyErrorHandler(webAppContext.getErrorHandler()));
         return super.getWebAppContextConfigurations(webAppContext, initializers);
     }
 

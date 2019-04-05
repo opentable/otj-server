@@ -24,6 +24,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Client;
@@ -96,6 +97,13 @@ public class TestJaxRsServerConfiguration {
         public Response get5xx() {
             LOG.info("It is going to happen.");
             throw new RuntimeException("it has happened");
+        }
+
+        @GET()
+        @Path("5xx2")
+        public Response get5xx2() {
+            LOG.info("It is going to happen.");
+            throw new InternalServerErrorException("it has happened");
         }
 
         @GET
