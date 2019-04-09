@@ -75,7 +75,7 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
             final PropertyResolver pr,
             final Optional<FilterOrderResolver> filterOrderResolver) {
 
-        final JettyServletWebServerFactory factory = new OTJettyServletWebServerFactory(webAppContextCustomizers);
+        final JettyServletWebServerFactory factory = new OTJettyServletWebServerFactory(webAppContextCustomizers, showStacks);
         JettyWebServerFactoryAdapter factoryAdapter = new JettyWebServerFactoryAdapter(factory);
         this.configureFactoryContainer(requestLogConfig, activeConnectors, pr, factoryAdapter);
 

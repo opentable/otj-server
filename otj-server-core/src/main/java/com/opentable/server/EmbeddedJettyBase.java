@@ -123,6 +123,9 @@ public abstract class EmbeddedJettyBase {
     @Value("${ot.httpserver.sleep-duration-before-shutdown:PT5s}")
     Duration sleepDurationBeforeShutdown;
 
+    @Value("${ot.httpserver.show-stack-on-error:#{environment.acceptsProfiles(\"!deployed\")}}")
+    boolean showStacks;
+
     /**
      * In the case that we bind to port 0, we'll get back a port from the OS.
      * With {@link #containerInitialized(WebServerInitializedEvent)}, we capture this value
