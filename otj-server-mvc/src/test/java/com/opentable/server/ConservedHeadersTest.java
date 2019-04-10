@@ -95,6 +95,14 @@ public class ConservedHeadersTest extends AbstractTest {
         assertEquals(requestId, actualRequestId);
     }
 
+    @Test
+    public void conserveRequestIdFault() {
+        final String requestId = UUID.randomUUID().toString();
+        ResponseEntity<String> response = request("/api/fault", REQUEST_ID, requestId);
+        sanityCheck(response);
+        Assert.assertEquals(requestId, response.getHeaders().get(REQUEST_ID).get(0));
+    }
+
     private ResponseEntity<String> request(String url, String header, String value) {
         HttpHeaders headers = new HttpHeaders();
         if (header != null) {

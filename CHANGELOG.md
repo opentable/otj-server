@@ -1,6 +1,12 @@
 otj-server
 ==========
 
+3.0.12
+-----
+* ConservedHeadersJettyErrorHandler preserves conserved headers for unhandled servlet exceptions.
+* Jetty default error response for 5xx is modified to disable printing of the full stack trace. It can be explicitly enabled
+by property `ot.httpserver.show-stack-on-error=true`
+
 3.0.11
 -----
 * Supports conserved headers for reactive Spring WebFlux applications (server-side, not for WebClient which will be

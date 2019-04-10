@@ -26,30 +26,36 @@ import org.springframework.boot.web.servlet.ServletContextInitializer;
 public class OTJettyServletWebServerFactory extends JettyServletWebServerFactory {
 
     private final Optional<Collection<Consumer<WebAppContext>>> webAppContextCustomizers;
+    private final boolean showStacks;
 
-    public OTJettyServletWebServerFactory(Optional<Collection<Consumer<WebAppContext>>> webAppContextCustomizers) {
+    public OTJettyServletWebServerFactory(Optional<Collection<Consumer<WebAppContext>>> webAppContextCustomizers, boolean showStacks) {
         this.webAppContextCustomizers = webAppContextCustomizers;
+        this.showStacks = showStacks;
     }
 
     public OTJettyServletWebServerFactory(int port) {
         super(port);
         this.webAppContextCustomizers = Optional.empty();
+        this.showStacks = true;
     }
 
     public OTJettyServletWebServerFactory(String contextPath, int port) {
         super(contextPath, port);
         this.webAppContextCustomizers = Optional.empty();
+        this.showStacks = true;
     }
 
     public OTJettyServletWebServerFactory() {
         super();
         this.webAppContextCustomizers = Optional.empty();
+        this.showStacks = true;
     }
 
     @Override
     protected org.eclipse.jetty.webapp.Configuration[] getWebAppContextConfigurations(WebAppContext webAppContext,
                                                                                       ServletContextInitializer... initializers) {
         webAppContextCustomizers.ifPresent(consumers -> consumers.forEach(c -> c.accept(webAppContext)));
+        webAppContext.setErrorHandler(new ConservedHeadersJettyErrorHandler(webAppContext.getErrorHandler(), showStacks));
         return super.getWebAppContextConfigurations(webAppContext, initializers);
     }
 
