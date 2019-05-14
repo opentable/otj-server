@@ -23,7 +23,7 @@ There are 3 flavors of OTJ Server available:
  
 ## Differences Between Flavors
 
-For the most part we expect the servers to act the same. One difference is how we handle CORS headers. In JAX-RS we send CORS headers for all requests. In Spring MVC you need to add a `@CrossOrigin` header to the controller when needed.
+For the most part we expect the servers to act the same. One difference is how we handle CORS headers. In JAX-RS we send CORS headers for all requests. In Spring MVC and WebFlux you need to add a `@CrossOrigin` header to the controller when needed.
 
 ### Modules
 
