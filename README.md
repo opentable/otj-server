@@ -124,7 +124,7 @@ public class DemoServerMain {
 
 
 ### Spring WebFlux Reactive Example
-```
+```java
 package com.opentable.reactivedemo;
  
 import org.springframework.beans.factory.annotation.Value;
