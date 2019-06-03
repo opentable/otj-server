@@ -41,7 +41,9 @@
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
 
+        <dep.otj-metrics.version>4.0.8-SNAPSHOT</dep.otj-metrics.version>
         <dep.otj-jaxrs.version>3.0.0-SNAPSHOT</dep.otj-jaxrs.version>
+        <dep.otj-conservedheaders.version>3.0.5-SNAPSHOT</dep.otj-conservedheaders.version>
     </properties>
 
 
