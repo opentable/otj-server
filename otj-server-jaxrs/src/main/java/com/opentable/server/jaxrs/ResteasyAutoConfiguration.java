@@ -25,10 +25,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.Filter30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ListenerBootstrap;
 import org.jboss.resteasy.plugins.spring.SpringBeanProcessor;
+import org.jboss.resteasy.spi.Dispatcher;
 import org.jboss.resteasy.spi.Registry;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;

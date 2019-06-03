@@ -138,11 +138,15 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-spring</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
+            <artifactId>resteasy-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-core-spi</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>

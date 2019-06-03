@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>199</version>
+        <version>206-SNAPSHOT</version>
     </parent>
 
 
@@ -40,6 +40,8 @@
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
+
+        <dep.otj-jaxrs.version>3.0.0-SNAPSHOT</dep.otj-jaxrs.version>
     </properties>
 
 
