@@ -15,6 +15,7 @@ package com.opentable.server.jaxrs;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -25,6 +26,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.resteasy.plugins.server.servlet.Filter30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ListenerBootstrap;
 import org.jboss.resteasy.plugins.spring.SpringBeanProcessor;
@@ -48,6 +53,9 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.type.AnnotatedTypeMetadata;
+
+import io.smallrye.config.PropertiesConfigSource;
+import io.smallrye.config.SmallRyeConfigBuilder;
 
 @EnableConfigurationProperties
 @Configuration
@@ -126,7 +134,23 @@ public class ResteasyAutoConfiguration {
         @Override
         public void onStartup(ServletContext servletContext) throws ServletException {
             servletInitParams.ifPresent(params -> params.getInitParams().forEach((key, value) -> servletContext.setInitParameter(key, value)));
-
+            // As of 4.0.0.CR1+ this seems to be necessary to make sure the servlet context is really config sourced.
+            final Properties props = new Properties();
+            servletInitParams.ifPresent(params -> params.getInitParams().forEach((key, value) -> props.setProperty(key, value)));
+            if (!props.isEmpty()) {
+                final ConfigSource pconfig = new PropertiesConfigSource(props, "sourceFromServletInitParams");
+                final ConfigBuilder b = new SmallRyeConfigBuilder();
+                b.withSources(pconfig);
+                // Copy existing sources if any
+                Iterable<ConfigSource> it = ConfigProvider.getConfig().getConfigSources();
+                for (ConfigSource s : it) {
+                    if ("sourceFromServletInitParams".equals(s.getName())) {
+                        continue; // don't double copy
+                    }
+                    b.withSources(s);
+                }
+                ConfigProviderResolver.instance().registerConfig(b.build(), getClass().getClassLoader());
+            }
             ListenerBootstrap config = new ListenerBootstrap(servletContext);
             deployment = config.createDeployment();
             deployment.start();
