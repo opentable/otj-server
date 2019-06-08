@@ -133,25 +133,25 @@ public class ResteasyAutoConfiguration {
 
         @Override
         public void onStartup(ServletContext servletContext) throws ServletException {
-            servletInitParams.ifPresent(params -> params.getInitParams().forEach((key, value) -> servletContext.setInitParameter(key, value)));
+            servletInitParams.ifPresent(params -> params.getInitParams().forEach(servletContext::setInitParameter));
             // As of 4.0.0.CR1+ this seems to be necessary to make sure the servlet context is really config sourced.
             final Properties props = new Properties();
-            servletInitParams.ifPresent(params -> params.getInitParams().forEach((key, value) -> props.setProperty(key, value)));
+            servletInitParams.ifPresent(params -> params.getInitParams().forEach(props::setProperty));
             if (!props.isEmpty()) {
                 final ConfigSource pconfig = new PropertiesConfigSource(props, "sourceFromServletInitParams");
                 final ConfigBuilder b = new SmallRyeConfigBuilder();
                 b.withSources(pconfig);
                 // Copy existing sources if any
-                Iterable<ConfigSource> it = ConfigProvider.getConfig().getConfigSources();
+                final Iterable<ConfigSource> it = ConfigProvider.getConfig().getConfigSources();
                 for (ConfigSource s : it) {
                     if ("sourceFromServletInitParams".equals(s.getName())) {
                         continue; // don't double copy
                     }
                     b.withSources(s);
                 }
-                ConfigProviderResolver.instance().registerConfig(b.build(), getClass().getClassLoader());
+                ConfigProviderResolver.instance().registerConfig(b.build(), Thread.currentThread().getContextClassLoader());
             }
-            ListenerBootstrap config = new ListenerBootstrap(servletContext);
+            final ListenerBootstrap config = new ListenerBootstrap(servletContext);
             deployment = config.createDeployment();
             deployment.start();
 
@@ -159,7 +159,7 @@ public class ResteasyAutoConfiguration {
             servletContext.setAttribute(Dispatcher.class.getName(), deployment.getDispatcher());
             servletContext.setAttribute(Registry.class.getName(), deployment.getRegistry());
 
-            SpringBeanProcessor processor = new SpringBeanProcessor(deployment.getDispatcher(),
+            final SpringBeanProcessor processor = new SpringBeanProcessor(deployment.getDispatcher(),
                     deployment.getRegistry(), deployment.getProviderFactory());
             processor.postProcessBeanFactory(beanFactory);
             applicationContext.addApplicationListener(processor);
