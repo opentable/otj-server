@@ -28,7 +28,6 @@ import com.opentable.metrics.reactive.MetricsHttpReactiveConfiguration;
 import com.opentable.server.EmbeddedJettyConfiguration;
 import com.opentable.server.EmbeddedReactiveJetty;
 import com.opentable.server.NonWebSetup;
-import com.opentable.server.reactive.logging.ReactiveServerLoggingConfiguration;
 import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration;
 
 /**
@@ -40,9 +39,6 @@ import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration
         // OT Embedded Jetty
         EmbeddedJettyConfiguration.class,
         EmbeddedReactiveJetty.class,
-        // Log server request information
-        // TODO: Remove this after updating servers that use ServerRequestLog directly
-        ReactiveServerLoggingConfiguration.class,
         // Conserved headers
         ReactiveServerConservedHeadersConfiguration.class,
         // Default health check
