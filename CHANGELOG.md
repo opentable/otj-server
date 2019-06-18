@@ -4,6 +4,7 @@ otj-server
 3.0.13
 -----
 * Remove deprecated `ServerRequestLog` class. Reactive server logging is now handled entirely by the standard `JsonRequestLog`.
+* Integrate ReadyCheck system.
 
 3.0.12
 -----
