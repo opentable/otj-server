@@ -36,7 +36,8 @@
     </organization>
 
     <properties>
-        <dep.otj-metrics.version>4.0.8-SNAPSHOT</dep.otj-metrics.version>
+        <!-- Remove once parent updated -->
+        <dep.otj-metrics.version>4.0.9</dep.otj-metrics.version>
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
