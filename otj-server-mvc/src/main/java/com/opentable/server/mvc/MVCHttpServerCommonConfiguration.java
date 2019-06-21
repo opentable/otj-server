@@ -39,27 +39,29 @@ import com.opentable.conservedheaders.CoreConservedHeadersConfiguration;
 import com.opentable.jackson.OpenTableJacksonConfiguration;
 import com.opentable.metrics.mvc.HealthHttpMVCConfiguration;
 import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
+import com.opentable.metrics.mvc.ReadyHttpMVCConfiguration;
 import com.opentable.server.ThreadNameFilterConfiguration;
 
 @Configuration
 @EnableConfigurationProperties
 @Import({
-    // Core dispatcher for MVC servlets
-    ServletWebServerFactoryAutoConfiguration.BeanPostProcessorsRegistrar.class,
-    DispatcherServletAutoConfiguration.class,
-    // Core MVC
-    WebMvcAutoConfiguration.class,
-    HttpMessageConvertersAutoConfiguration.class,
-    // Error handler default (I'm ambivalent about this - will go with consensus
-    ErrorMvcAutoConfiguration.class,
-    // Redundant but prevents wiring warnings in IDE
-    OpenTableJacksonConfiguration.class,
-    HealthHttpMVCConfiguration.class,
-    MetricsHttpMVCConfiguration.class,
-    CoreConservedHeadersConfiguration.class,
-    // Logging exception handler
-    LoggingHandlerExceptionResolver.class,
-    ThreadNameFilterConfiguration.class,
+        // Core dispatcher for MVC servlets
+        ServletWebServerFactoryAutoConfiguration.BeanPostProcessorsRegistrar.class,
+        DispatcherServletAutoConfiguration.class,
+        // Core MVC
+        WebMvcAutoConfiguration.class,
+        HttpMessageConvertersAutoConfiguration.class,
+        // Error handler default (I'm ambivalent about this - will go with consensus
+        ErrorMvcAutoConfiguration.class,
+        // Redundant but prevents wiring warnings in IDE
+        OpenTableJacksonConfiguration.class,
+        HealthHttpMVCConfiguration.class,
+        MetricsHttpMVCConfiguration.class,
+        ReadyHttpMVCConfiguration.class,
+        CoreConservedHeadersConfiguration.class,
+        // Logging exception handler
+        LoggingHandlerExceptionResolver.class,
+        ThreadNameFilterConfiguration.class,
 })
 class MVCHttpServerCommonConfiguration {
 

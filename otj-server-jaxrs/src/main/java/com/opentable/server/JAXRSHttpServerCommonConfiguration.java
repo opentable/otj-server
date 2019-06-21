@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Import;
 
 import com.opentable.metrics.jaxrs.HealthHttpJaxRsConfiguration;
 import com.opentable.metrics.jaxrs.MetricsHttpJaxRsConfiguration;
+import com.opentable.metrics.jaxrs.ReadyHttpJaxRsConfiguration;
 import com.opentable.server.jaxrs.ConservedHeadersConfiguration;
 import com.opentable.server.jaxrs.FilterOrderConfiguration;
 import com.opentable.server.jaxrs.JaxRSClientShimConfiguration;
@@ -45,6 +46,8 @@ import com.opentable.server.jaxrs.ResteasyAutoConfiguration;
         FilterOrderConfiguration.class,
         // Default health check
         HealthHttpJaxRsConfiguration.class,
+        // Default Ready Check
+        ReadyHttpJaxRsConfiguration.class,
         // Metrics for http
         MetricsHttpJaxRsConfiguration.class,
         // Conserved Headers
