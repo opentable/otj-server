@@ -25,10 +25,10 @@ import org.springframework.context.annotation.Import;
 import com.opentable.conservedheaders.reactive.ReactiveServerConservedHeadersConfiguration;
 import com.opentable.metrics.reactive.HealthHttpReactiveConfiguration;
 import com.opentable.metrics.reactive.MetricsHttpReactiveConfiguration;
+import com.opentable.metrics.reactive.ReadyHttpReactiveConfiguration;
 import com.opentable.server.EmbeddedJettyConfiguration;
 import com.opentable.server.EmbeddedReactiveJetty;
 import com.opentable.server.NonWebSetup;
-import com.opentable.server.reactive.logging.ReactiveServerLoggingConfiguration;
 import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration;
 
 /**
@@ -40,13 +40,12 @@ import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration
         // OT Embedded Jetty
         EmbeddedJettyConfiguration.class,
         EmbeddedReactiveJetty.class,
-        // Log server request information
-        // TODO: Remove this after updating servers that use ServerRequestLog directly
-        ReactiveServerLoggingConfiguration.class,
         // Conserved headers
         ReactiveServerConservedHeadersConfiguration.class,
         // Default health check
         HealthHttpReactiveConfiguration.class,
+        // Ready check
+        ReadyHttpReactiveConfiguration.class,
         // Metrics for http
         MetricsHttpReactiveConfiguration.class,
         // Filter for transfer of core backend info

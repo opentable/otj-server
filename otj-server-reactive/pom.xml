@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-server-parent</artifactId>
-        <version>3.0.13-SNAPSHOT</version>
+        <version>3.0.15-SNAPSHOT</version>
     </parent>
 
     <artifactId>otj-server-reactive</artifactId>
@@ -105,11 +105,6 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
         </dependency>
 
         <dependency>
