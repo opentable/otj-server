@@ -27,6 +27,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.opentable</groupId>
+      <artifactId>otj-httpheaders</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.opentable.components</groupId>
       <artifactId>otj-core</artifactId>
     </dependency>

@@ -24,9 +24,10 @@ import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 
 import com.opentable.conservedheaders.ConservedHeadersFilter;
+import com.opentable.httpheaders.HeaderBlacklist;
 
 class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
-
+    private static final HeaderBlacklist HEADER_BLACKLIST = new HeaderBlacklist();
     private final ErrorHandler delegate;
 
 
@@ -47,7 +48,11 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (this.delegate != null) {
             ConservedHeadersFilter.extractHeaders(request)
-                .forEach((header, value) -> response.setHeader(header.getHeaderName(), value));
+                .forEach((header, value) -> {
+                    if (HEADER_BLACKLIST.copyToResponse(header.getHeaderName())) {
+                        response.setHeader(header.getHeaderName(), value);
+                    }
+                });
             this.delegate.handle(target, baseRequest, request, response);
         }
     }
