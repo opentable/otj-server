@@ -27,7 +27,7 @@ import com.opentable.conservedheaders.ConservedHeadersFilter;
 import com.opentable.httpheaders.HeaderBlacklist;
 
 class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
-    private static final HeaderBlacklist HEADER_BLACKLIST = new HeaderBlacklist();
+    private static final HeaderBlacklist HEADER_BLACKLIST = HeaderBlacklist.INSTANCE;
     private final ErrorHandler delegate;
 
 
