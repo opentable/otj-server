@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+
+3.0.15
+------
+* OTApplication: Do not set `org.springframework.boot.logging.LoggingSystem=none` property on startup.
+
 3.0.14
 ------
 * Bug fixes on ready check.
