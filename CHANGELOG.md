@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+3.0.15
+------
+* Recompile for Resteasy 4.1.1
+
 3.0.14
 ------
 * Bug fixes on ready check.
