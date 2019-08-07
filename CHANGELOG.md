@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+3.0.16
+------
+* Obey HttpBlacklist in ConservedHeadersJettyErrorHandler
+
 3.0.15
 ------
 * Recompile for Resteasy 4.1.1
