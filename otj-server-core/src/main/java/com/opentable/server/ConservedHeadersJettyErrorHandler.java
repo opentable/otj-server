@@ -49,7 +49,7 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
         if (this.delegate != null) {
             ConservedHeadersFilter.extractHeaders(request)
                 .forEach((header, value) -> {
-                    if (HEADER_BLACKLIST.copyToResponse(header.getHeaderName())) {
+                    if (HEADER_BLACKLIST.canCopyToResponse(header.getHeaderName())) {
                         response.setHeader(header.getHeaderName(), value);
                     }
                 });
