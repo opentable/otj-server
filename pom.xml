@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>213</version>
+        <version>216</version>
     </parent>
 
 
@@ -42,6 +42,10 @@
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
+
+        <!-- TODO: Remove once parent is updated -->
+        <dep.otj-otl.version>0.9.1</dep.otj-otl.version>
+        <dep.otj-service-security.version>0.0.2-SNAPSHOT</dep.otj-service-security.version>
     </properties>
 
 
@@ -81,6 +85,30 @@
                 <artifactId>otj-server-reactive</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <!-- TODO: Remove when parent pom is updated -->
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-service-security-reactive</artifactId>
+                <version>${dep.otj-service-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-service-security-servlet</artifactId>
+                <version>${dep.otj-service-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-service-security-sign</artifactId>
+                <version>${dep.otj-service-security.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.opentable.components</groupId>
+                <artifactId>otj-service-security-api</artifactId>
+                <version>${dep.otj-service-security.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

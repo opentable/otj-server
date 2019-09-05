@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration threshold="WARN">
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="OTL" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="com.opentable.logging.JsonLogEncoder"/>
+    </appender>
+
+    <logger name="root" level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <logger name="com.opentable.servicesecurity" level="DEBUG" />
+
+    <logger name="com.opentable" level="DEBUG">
+        <appender-ref ref="OTL" />
+    </logger>
+
+</configuration>

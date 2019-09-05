@@ -30,6 +30,7 @@ import com.opentable.server.EmbeddedJettyConfiguration;
 import com.opentable.server.EmbeddedReactiveJetty;
 import com.opentable.server.NonWebSetup;
 import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration;
+import com.opentable.servicesecurity.reactive.ServiceSecurityWebFilterConfiguration;
 
 /**
  * Common configuration for Spring WebFlux reactive servers.
@@ -50,6 +51,8 @@ import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration
         MetricsHttpReactiveConfiguration.class,
         // Filter for transfer of core backend info
         BackendInfoWebFilterConfiguration.class,
+        // Filter for applying service security verification on incoming requests
+        ServiceSecurityWebFilterConfiguration.class,
 
         // Support static resources
         // TODO: Need to test serving static resources the WebFlux way. See OTPL-3648.
