@@ -286,6 +286,7 @@ public abstract class EmbeddedJettyBase {
 
         factories.add(http);
 
+        @SuppressWarnings("PMD.CloseResource")
         final ServerConnector connector = new ServerConnector(server,
                 factories.toArray(new ConnectionFactory[factories.size()]));
         connector.setName(name);
