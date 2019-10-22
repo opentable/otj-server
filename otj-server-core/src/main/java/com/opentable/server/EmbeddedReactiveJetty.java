@@ -47,14 +47,7 @@ public class EmbeddedReactiveJetty extends EmbeddedJettyBase {
     public JettyReactiveWebServerFactory webServerFactory(final JsonRequestLogConfig requestLogConfig,
                                                           final Map<String, ServerConnectorConfig> activeConnectors,
                                                           final PropertyResolver pr) {
-        final JettyReactiveWebServerFactory factory = new JettyReactiveWebServerFactory() {
-            @Override
-            public WebServer getWebServer(HttpHandler httpHandler) {
-                JettyHttpHandlerAdapter servlet = new JettyHttpHandlerAdapter(httpHandler);
-                Server server = createJettyServer(servlet);
-                return new JettyWebServer(server, true);
-            }
-        };
+        final JettyReactiveWebServerFactory factory = new OtJettyReactiveWebServerFactory();
         JettyReactiveWebServerFactoryAdapter factoryAdapter = new JettyReactiveWebServerFactoryAdapter(factory);
         this.configureFactoryContainer(requestLogConfig, activeConnectors, pr, factoryAdapter);
         return factoryAdapter.getFactory();
@@ -105,4 +98,17 @@ public class EmbeddedReactiveJetty extends EmbeddedJettyBase {
         }
     }
 
+    /*
+    Declaring this as a static-inner class to prevent:
+        org.springframework.beans.FatalBeanException: ReactiveWebServerFactory implementation com.opentable.server.EmbeddedReactiveJetty$1 cannot be instantiated.
+        To allow a separate management port to be used, a top-level class or static inner class should be used instead
+    */
+    static class OtJettyReactiveWebServerFactory extends JettyReactiveWebServerFactory {
+        @Override
+        public WebServer getWebServer(HttpHandler httpHandler) {
+            JettyHttpHandlerAdapter servlet = new JettyHttpHandlerAdapter(httpHandler);
+            Server server = createJettyServer(servlet);
+            return new JettyWebServer(server, true);
+        }
+    }
 }
