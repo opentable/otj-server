@@ -3,9 +3,7 @@ otj-server
 
 3.0.17
 ------
-
 * JettyReactiveWebServerFactory implementation moved to the static class, to avoid Actuator initialization problems.
-
 
 3.0.16
 ------
