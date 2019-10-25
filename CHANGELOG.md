@@ -1,10 +1,21 @@
 otj-server
 ==========
 
+3.0.18
+------
+* OTApplication: Do not set `org.springframework.boot.logging.LoggingSystem=none` property on startup.
+
+3.0.17
+------
+* JettyReactiveWebServerFactory implementation moved to the static class, to avoid Actuator initialization problems.
+
+3.0.16
+------
+* Obey HttpBlacklist in ConservedHeadersJettyErrorHandler
 
 3.0.15
 ------
-* OTApplication: Do not set `org.springframework.boot.logging.LoggingSystem=none` property on startup.
+* Recompile for Resteasy 4.1.1
 
 3.0.14
 ------

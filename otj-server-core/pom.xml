@@ -19,13 +19,17 @@
   <parent>
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>3.0.15-SNAPSHOT</version>
+    <version>3.0.18-SNAPSHOT</version>
   </parent>
 
   <artifactId>otj-server-core</artifactId>
   <description>Wiring for basic Jetty core servlet regardless of MVC or JaxRS choices. Also wires logging, metrics, etc</description>
 
   <dependencies>
+    <dependency>
+      <groupId>com.opentable</groupId>
+      <artifactId>otj-httpheaders</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.opentable.components</groupId>
       <artifactId>otj-core</artifactId>
