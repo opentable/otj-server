@@ -44,7 +44,7 @@
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
 
         <!-- TODO: Remove once parent pom is updated -->
-        <dep.otj-service-security.version>0.1.0</dep.otj-service-security.version>
+        <dep.otj-service-security.version>0.1.1</dep.otj-service-security.version>
         <dep.otj-otl.version>0.9.1</dep.otj-otl.version>
     </properties>
 
