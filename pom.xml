@@ -45,6 +45,7 @@
 
         <!-- TODO: Remove once parent pom is updated -->
         <dep.otj-service-security.version>1.0.0</dep.otj-service-security.version>
+        <dep.plugin.pmd.ruleset.version>1.2.6</dep.plugin.pmd.ruleset.version>
     </properties>
 
 
