@@ -41,6 +41,7 @@ import com.opentable.metrics.mvc.HealthHttpMVCConfiguration;
 import com.opentable.metrics.mvc.MetricsHttpMVCConfiguration;
 import com.opentable.metrics.mvc.ReadyHttpMVCConfiguration;
 import com.opentable.server.ThreadNameFilterConfiguration;
+import com.opentable.servicesecurity.servlet.ServiceSecurityFilterConfiguration;
 
 @Configuration
 @EnableConfigurationProperties
@@ -62,6 +63,8 @@ import com.opentable.server.ThreadNameFilterConfiguration;
         // Logging exception handler
         LoggingHandlerExceptionResolver.class,
         ThreadNameFilterConfiguration.class,
+        // Service Security filter to verify requests
+        ServiceSecurityFilterConfiguration.class,
 })
 class MVCHttpServerCommonConfiguration {
 

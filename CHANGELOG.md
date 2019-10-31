@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+3.0.18
+------
+* Adds Service Security filters to jaxrs, mvc, and reactive servers (disabled by default)
+
 3.0.17
 ------
 * JettyReactiveWebServerFactory implementation moved to the static class, to avoid Actuator initialization problems.
