@@ -1,9 +1,13 @@
 otj-server
 ==========
 
-3.0.18
+3.0.19
 ------
 * OTApplication: Do not set `org.springframework.boot.logging.LoggingSystem=none` property on startup.
+
+3.0.18
+------
+* Adds Service Security filters to jaxrs, mvc, and reactive servers (disabled by default)
 
 3.0.17
 ------
