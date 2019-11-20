@@ -57,7 +57,6 @@ public final class OTApplication {
      * @return the configured application context
      */
     public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args, Consumer<SpringApplicationBuilder> customize) {
-        System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
         final SpringApplicationBuilder builder = new SpringApplicationBuilder(new Class<?>[]{applicationClass});
         builder.main(applicationClass);
         customize.accept(builder);
