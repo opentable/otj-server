@@ -45,7 +45,6 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidRethrowingException")
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (this.delegate != null) {
             ConservedHeadersFilter.extractHeaders(request)
@@ -54,14 +53,8 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
                         response.setHeader(header.getHeaderName(), value);
                     }
                 });
-            // ServletException wont be thrown in future jetty, so catch, wrap
-            try {
-                this.delegate.handle(target, baseRequest, request, response);
-            } catch (IOException | RuntimeException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            // ServletException wont be thrown in future jetty, so similar to their code we avoid issue...
+            this.delegate.doError(target, baseRequest, request, response);
         }
     }
 
