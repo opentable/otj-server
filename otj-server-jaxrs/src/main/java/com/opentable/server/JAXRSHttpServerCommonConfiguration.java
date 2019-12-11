@@ -28,7 +28,6 @@ import com.opentable.server.jaxrs.ConservedHeadersConfiguration;
 import com.opentable.server.jaxrs.FilterOrderConfiguration;
 import com.opentable.server.jaxrs.JaxRSClientShimConfiguration;
 import com.opentable.server.jaxrs.ResteasyAutoConfiguration;
-import com.opentable.servicesecurity.servlet.ServiceSecurityFilterConfiguration;
 
 /**
  * Common configuration for REST HTTP Server instances
@@ -53,8 +52,6 @@ import com.opentable.servicesecurity.servlet.ServiceSecurityFilterConfiguration;
         MetricsHttpJaxRsConfiguration.class,
         // Conserved Headers
         ConservedHeadersConfiguration.class,
-        // Service Security filter to verify requests
-        ServiceSecurityFilterConfiguration.class,
 })
 @interface JAXRSHttpServerCommonConfiguration {
 }
