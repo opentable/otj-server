@@ -43,8 +43,6 @@
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
 
-        <!-- TODO: Remove once parent pom is updated -->
-        <dep.otj-service-security.version>1.0.0</dep.otj-service-security.version>
         <dep.plugin.pmd.ruleset.version>1.2.6</dep.plugin.pmd.ruleset.version>
     </properties>
 
@@ -84,18 +82,6 @@
                 <groupId>com.opentable.components</groupId>
                 <artifactId>otj-server-reactive</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <!-- TODO: Remove once parent pom is updated -->
-            <dependency>
-                <groupId>com.opentable.components</groupId>
-                <artifactId>otj-service-security-servlet</artifactId>
-                <version>${dep.otj-service-security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.opentable.components</groupId>
-                <artifactId>otj-service-security-reactive</artifactId>
-                <version>${dep.otj-service-security.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
