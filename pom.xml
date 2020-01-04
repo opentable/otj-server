@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>225-SNAPSHOT</version>
+        <version>226-SNAPSHOT</version>
     </parent>
 
 
@@ -40,7 +40,9 @@
         <dep.spring-boot.version>2.1.10.RELEASE</dep.spring-boot.version>
         <dep.spring.version>5.1.12.RELEASE</dep.spring.version>
         <dep.jetty.version>9.4.20.v20190813</dep.jetty.version>
+        9.4.25.v20191220
         -->
+        <dep.jetty.version>9.4.25.v20191220</dep.jetty.version>
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
