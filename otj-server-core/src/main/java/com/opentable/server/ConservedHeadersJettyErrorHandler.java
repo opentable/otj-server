@@ -16,6 +16,7 @@ package com.opentable.server;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,7 +46,7 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
     }
 
     @Override
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (this.delegate != null) {
             ConservedHeadersFilter.extractHeaders(request)
                 .forEach((header, value) -> {
@@ -53,8 +54,7 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
                         response.setHeader(header.getHeaderName(), value);
                     }
                 });
-            // ServletException wont be thrown in future jetty, so similar to their code we avoid issue...
-            this.delegate.doError(target, baseRequest, request, response);
+            this.delegate.handle(target, baseRequest, request, response);
         }
     }
 

@@ -32,7 +32,6 @@ public abstract class BackendInfoFilterBaseConfiguration {
      * not being set
      * @param appInfo AppInfo
      * @param serviceInfo ServiceInfo
-     * @return map assembled.
      */
     public static Map<String, String> assembleInfo(final AppInfo appInfo, final ServiceInfo serviceInfo) {
         final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
