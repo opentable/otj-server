@@ -13,11 +13,16 @@
  */
 package com.opentable.server;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.webapp.AbstractConfiguration;
+import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.embedded.jetty.JettyWebServer;
@@ -52,11 +57,22 @@ public class OTJettyServletWebServerFactory extends JettyServletWebServerFactory
     }
 
     @Override
-    protected org.eclipse.jetty.webapp.Configuration[] getWebAppContextConfigurations(WebAppContext webAppContext,
-                                                                                      ServletContextInitializer... initializers) {
-        webAppContextCustomizers.ifPresent(consumers -> consumers.forEach(c -> c.accept(webAppContext)));
-        webAppContext.setErrorHandler(new ConservedHeadersJettyErrorHandler(webAppContext.getErrorHandler(), showStacks));
-        return super.getWebAppContextConfigurations(webAppContext, initializers);
+    protected Configuration[] getWebAppContextConfigurations(WebAppContext webAppContext,
+                                                             ServletContextInitializer... initializers) {
+        List<Configuration> res = new ArrayList<>(Arrays.asList(super.getWebAppContextConfigurations(webAppContext, initializers)));
+        res.add(new AbstractConfiguration() {
+            @Override
+            public void configure(WebAppContext context) {
+                webAppContextCustomizers.ifPresent(consumers -> consumers.forEach(c -> c.accept(context)));
+            }
+        });
+        res.add(new AbstractConfiguration() {
+            @Override
+            public void configure(WebAppContext context) {
+                context.setErrorHandler(new ConservedHeadersJettyErrorHandler(context.getErrorHandler(), showStacks));
+            }
+        });
+        return res.toArray(new Configuration[0]);
     }
 
     @Override
