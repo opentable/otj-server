@@ -21,7 +21,7 @@
     <parent>
         <artifactId>otj-server-integration-tests</artifactId>
         <groupId>com.opentable.components</groupId>
-        <version>3.0.20-SNAPSHOT</version>
+        <version>3.0.20</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
