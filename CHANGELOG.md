@@ -4,6 +4,9 @@ otj-server
 3.0.19
 ------
 * OTApplication: Do not set `org.springframework.boot.logging.LoggingSystem=none` property on startup.
+* Remove service security filter installation so that it will be handled as a manual process by each backend server. Avoids
+a circular dependency issue for certain platform libraries. Filters must be manually installed directly in backend servers
+by importing the relevant config class. See otj-service-security README for more details.
 
 3.0.18
 ------

@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-server-parent</artifactId>
-        <version>3.0.19-SNAPSHOT</version>
+        <version>3.0.20-SNAPSHOT</version>
     </parent>
 
     <artifactId>otj-server-jaxrs</artifactId>
@@ -195,11 +195,6 @@
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-service-security-servlet</artifactId>
         </dependency>
 
         <dependency>

@@ -17,7 +17,7 @@
 
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>3.0.19-SNAPSHOT</version>
+    <version>3.0.20-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modelVersion>4.0.0</modelVersion>
@@ -36,13 +36,6 @@
     </organization>
 
     <properties>
-        <!--
-        <dep.spring-boot.version>2.1.10.RELEASE</dep.spring-boot.version>
-        <dep.spring.version>5.1.12.RELEASE</dep.spring.version>
-        <dep.jetty.version>9.4.20.v20190813</dep.jetty.version>
-        9.4.25.v20191220
-        <dep.jetty.version>9.4.25.v20191220</dep.jetty.version>
-        -->
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
@@ -85,18 +78,6 @@
                 <groupId>com.opentable.components</groupId>
                 <artifactId>otj-server-reactive</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <!-- TODO: Remove once parent pom is updated -->
-            <dependency>
-                <groupId>com.opentable.components</groupId>
-                <artifactId>otj-service-security-servlet</artifactId>
-                <version>${dep.otj-service-security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.opentable.components</groupId>
-                <artifactId>otj-service-security-reactive</artifactId>
-                <version>${dep.otj-service-security.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
