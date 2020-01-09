@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+3.0.20
+------
+* Revert "OTApplication: Do not set `org.springframework.boot.logging.LoggingSystem=none` property on startup."
+
 3.0.19
 ------
 * OTApplication: Do not set `org.springframework.boot.logging.LoggingSystem=none` property on startup.
