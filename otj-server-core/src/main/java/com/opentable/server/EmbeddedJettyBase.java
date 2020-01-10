@@ -419,10 +419,10 @@ public abstract class EmbeddedJettyBase {
         return httpActualPort;
     }
 
-    class SuperSadSslContextFactory extends SslContextFactory {
+    class SuperSadSslContextFactory extends SslContextFactory.Server {
         SuperSadSslContextFactory(String name, ServerConnectorConfig config) {
-            super(config.getKeystore());
             Preconditions.checkState(config.getKeystore() != null, "no keystore specified for '%s'", name);
+            setKeyStorePath(config.getKeystore());
             setKeyStorePassword(config.getKeystorePassword());
         }
 
