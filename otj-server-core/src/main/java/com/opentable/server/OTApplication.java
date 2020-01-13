@@ -57,7 +57,11 @@ public final class OTApplication {
      * @return the configured application context
      */
     public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args, Consumer<SpringApplicationBuilder> customize) {
-        System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
+        //System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
+        if ((System.getProperty("logging.config") == null) && (System.getProperty("logback.configurationFile") != null)) {
+            System.setProperty("logging.config", System.getProperty("logback.configurationFile"));
+            System.clearProperty("logback.configurationFile");
+        }
         final SpringApplicationBuilder builder = new SpringApplicationBuilder(applicationClass);
         builder.main(applicationClass);
         customize.accept(builder);
