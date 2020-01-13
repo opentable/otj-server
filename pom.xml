@@ -17,14 +17,14 @@
 
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>3.0.20-SNAPSHOT</version>
+    <version>3.0.21-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>226-SNAPSHOT</version>
+        <version>227-SNAPSHOT</version>
     </parent>
 
 
