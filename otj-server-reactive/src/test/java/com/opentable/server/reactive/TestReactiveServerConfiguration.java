@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,7 +61,7 @@ public class TestReactiveServerConfiguration {
      * reactive operations from different requests are scheduled on threads that were previously used by another
      * request.
      */
-    @Bean
+    @Bean("parallelScheduler")
     Scheduler getScheduler() {
         return Schedulers.newParallel("parallel-scheduler", 3);
     }
@@ -75,6 +76,7 @@ public class TestReactiveServerConfiguration {
         private WebClient webClient;
 
         @Autowired
+        @Qualifier("parallelScheduler")
         private Scheduler parallelScheduler;
 
         @RequestMapping("test")

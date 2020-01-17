@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+3.0.21
+------
+* Fixes for Spring Boot changing order of configuration
+
 3.0.20
 ------
 * Revert "OTApplication: Do not set `org.springframework.boot.logging.LoggingSystem=none` property on startup."
