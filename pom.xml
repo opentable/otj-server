@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>228-SNAPSHOT</version>
+        <version>227</version>
     </parent>
 
 
@@ -36,6 +36,20 @@
     </organization>
 
     <properties>
+        <!-- Remove after parent upgrade -->
+        <dep.spring-boot.version>2.1.12.RELEASE</dep.spring-boot.version>
+        <dep.spring.version>5.1.13.RELEASE</dep.spring.version>
+        <dep.spring-security.version>5.1.7.RELEASE</dep.spring-security.version>
+        <dep.slf4j.version>1.7.30</dep.slf4j.version>
+        <dep.otj-otl.version>0.9.9</dep.otj-otl.version>
+        <dep.scala.version>2.12.6</dep.scala.version>
+        <dep.validator.version>6.0.18.Final</dep.validator.version>
+        <dep.jetty.version>9.4.25.v20191220</dep.jetty.version>
+        <dep.netty.version>4.1.45.Final</dep.netty.version>
+        <dep.jackson.version>2.10.2</dep.jackson.version>
+        <!-- END Remove after parent upgrade -->
+
+
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
@@ -52,6 +66,23 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Remove after parent upgrade -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <version>${dep.jackson.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>jakarta.xml.bind-api</artifactId>
+                        <groupId>jakarta.xml.bind</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>jakarta.activation</groupId>
+                        <artifactId>jakarta.activation-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- END Remove after parent upgrade -->
             <dependency>
                 <groupId>com.opentable.components</groupId>
                 <artifactId>otj-server-core</artifactId>
