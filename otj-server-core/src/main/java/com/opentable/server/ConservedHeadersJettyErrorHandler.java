@@ -97,6 +97,11 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
             ((ErrorPageErrorHandler)delegate).addErrorPage(from, to, uri);
         }
     }
+
+    @Override
+    public boolean errorPageForMethod(String method) {
+        return  delegate.errorPageForMethod(method);
+    }
 }
 
 
