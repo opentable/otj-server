@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+3.0.22
+------
+* Fixes Spring Boot white error page handler for all HTTP methods
+
 3.0.21
 ------
 * Fixes for Spring Boot changing order of configuration
