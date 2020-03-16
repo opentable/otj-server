@@ -21,15 +21,25 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.eclipse.jetty.util.ProcessorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opentable.logging.CommonLogHolder;
+import com.opentable.service.K8sInfo;
+
 public class PreFlight {
     private static final String COMMIT = "X-BasePOM-Git-Commit-Id";
 
     private static final Logger LOG = LoggerFactory.getLogger(PreFlight.class);
+
+    @Inject
+    public PreFlight(K8sInfo k8sInfo) {
+        LOG.debug("Setting k8sInfo");
+        CommonLogHolder.setK8sInfo(k8sInfo);
+    }
 
     public void readManifests() throws IOException {
         final Enumeration<URL> urlsEnum = Thread.currentThread().getContextClassLoader().getResources("META-INF/MANIFEST.MF");

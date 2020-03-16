@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+3.0.23
+------
+* K8s logging
+
 3.0.22
 ------
 * Fixes Spring Boot white error page handler for all HTTP methods
