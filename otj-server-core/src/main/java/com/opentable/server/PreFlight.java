@@ -37,7 +37,8 @@ public class PreFlight {
 
     @Inject
     public PreFlight(K8sInfo k8sInfo) {
-        LOG.debug("Setting k8sInfo");
+        LOG.debug("Setting k8sInfo kubernetes: {}, cluster: {}, namespace:{}",
+                k8sInfo.isKubernetes(), k8sInfo.getClusterName().orElse(null), k8sInfo.getNamespace().orElse(null));
         CommonLogHolder.setK8sInfo(k8sInfo);
     }
 
