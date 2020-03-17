@@ -28,14 +28,16 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.opentable.service.AppInfo;
 import com.opentable.service.EnvInfo;
+import com.opentable.service.K8sInfo;
 import com.opentable.spring.ConversionServiceConfiguration;
 import com.opentable.spring.PropertySourceUtil;
 
 @Configuration
 @Import({
-    ConversionServiceConfiguration.class,
-    AppInfo.class,
-    EnvInfo.class,
+        ConversionServiceConfiguration.class,
+        AppInfo.class,
+        EnvInfo.class,
+        K8sInfo.class,
 })
 public class ServerConfigConfiguration {
     private static final String INDENT = "    ";
