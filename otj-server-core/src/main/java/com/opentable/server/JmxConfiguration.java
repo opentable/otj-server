@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.OptionalInt;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -37,8 +38,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jmx.export.annotation.AnnotationMBeanExporter;
 import org.springframework.stereotype.Component;
 
-
 import com.opentable.server.JmxConfiguration.JmxmpServer;
+import com.opentable.service.AppInfo;
+import com.opentable.service.K8sInfo;
+import com.opentable.service.PayloadSelector;
 
 /**
  * JMX Configuration.
@@ -75,9 +78,6 @@ public class JmxConfiguration {
         private static final Logger LOG = LoggerFactory.getLogger(JmxmpServer.class);
         static final String WILDCARD_BIND = "0.0.0.0"; // NOPMD
 
-        @Value("${ot.jmx.port:${PORT1:#{null}}}")
-        private Integer jmxPort;
-
         @Value("${ot.jmx.address:#{null}}")
         private String jmxAddress;
 
@@ -88,46 +88,64 @@ public class JmxConfiguration {
         private boolean jmxEnabled;
 
         private final MBeanServer mbs;
+        private final K8sInfo k8sInfo;
+        private final AppInfo appInfo;
+        private final PayloadSelector payloadSelector;
+
         private JMXConnectorServer server;
 
+
         @Inject
-        JmxmpServer(MBeanServer mbs) {
+        JmxmpServer(K8sInfo k8sInfo, AppInfo app, PayloadSelector payloadSelector,  MBeanServer mbs) {
             this.mbs = mbs;
+            this.k8sInfo = k8sInfo;
+            this.appInfo = app;
+            this.payloadSelector = payloadSelector;
         }
 
         @PostConstruct
         public void start() throws IOException {
             // Always need this - effectively it's a noop since old code references PORT1 directly.
-            if (jmxPort == null) {
+            PayloadSelector.PayloadResult payloadResult = payloadSelector.getJMXPort();
+            OptionalInt jmxPort = payloadResult.getAsInteger();
+            if (!jmxPort.isPresent() || jmxPort.getAsInt() <= 0) {
                 LOG.info("No JMX port set, not exporting. JMX configuration disabled");
                 return;
+            } else {
+                LOG.info("jmxPort {}", payloadResult);
+            }
+
+            if (k8sInfo.isKubernetes()) {
+                LOG.info("In kubernetes, force the jmxAddress to be 127.0.0.1 instead of {}", jmxAddress);
+                jmxAddress = "127.0.0.1"; //NOPMD
             }
 
             if (LEGACY_JMX.equals(urlFormat)) {
                 // Honestly we'd prefer it's always false and not here at all. But for compatibility (consider newer coommon config, older pom and hence otj-server)...
                 // This lets us eventually turn it off once we decide all otj-server's we care about have this switch
+                final String bind = MoreObjects.firstNonNull(jmxAddress, WILDCARD_BIND);
                 if (!jmxEnabled) {
                     LOG.info("Programmatic JMX Configuration is disabled. You must have command line options set, or JMX won't be accessible.");
                     if (System.getProperty(JAVA_RMI_SERVER_HOSTNAME) == null) {
                         LOG.debug("Looks like it's not set up -- ");
-                        logCommandLineOptions();
+                        logCommandLineOptions(k8sInfo.isKubernetes(), "$TASK_HOST");
                     }
                     return;
                 }
 
                 final String simpleURL = String.format(
                         urlFormat,
-                       System.getenv("TASK_HOST"),
-                        jmxPort);
-                LOG.info("Starting jmx with jmxmp support. You'll need to connnect to this service using the jmxmp jar and protocol, using \n\t{} " +
-                        "\n\tSee https://wiki.otcorp.opentable.com/x/YsoIAQ for more information.", simpleURL);
+                        bind,
+                        jmxPort.getAsInt());
+                LOG.info("Starting jmx with jmxmp support bound to {} You'll need to connnect to this service using the jmxmp jar and protocol, using \n\t{} " +
+                        "\n\tSee https://wiki.otcorp.opentable.com/x/YsoIAQ for more information.", bind, simpleURL);
                 LOG.debug("Alternatively, switch ot.jmx.enabled=false in application-deployed.properties and set jvm.properties options (Recommended). Then you can just connect via {}:{}",
-                        System.getenv("TASK_HOST"), jmxPort);
-                logCommandLineOptions();
+                        appInfo.getTaskHost(), jmxPort.getAsInt());
+                logCommandLineOptions(k8sInfo.isKubernetes(), "$TASK_HOST");
                 final String url = String.format(
                         urlFormat,
-                        MoreObjects.firstNonNull(jmxAddress, WILDCARD_BIND),
-                        jmxPort);
+                        bind,
+                        jmxPort.getAsInt());
                 server = doLegacy(url);
                 server.start();
             } else {
@@ -154,15 +172,17 @@ public class JmxConfiguration {
 
         }
 
-        private void logCommandLineOptions() {
+        private void logCommandLineOptions(boolean isKubernetes, String bind) {
+            String portName = isKubernetes ? "PORT_JMX" : "PORT1";
+            String bindName = isKubernetes ? "127.0.0.1" : bind; //NOPMD
             LOG.debug("In jvm.propertes, add" +
             "\n\t-Dcom.sun.management.jmxremote=true" +
-            "\n\t-Dcom.sun.management.jmxremote.port=$PORT1" +
-            "\n\t-Dcom.sun.management.jmxremote.rmi.port=$PORT1" +
+            "\n\t-Dcom.sun.management.jmxremote.port=$" + portName +
+            "\n\t-Dcom.sun.management.jmxremote.rmi.port=$" + portName +
             "\n\t-Dcom.sun.management.jmxremote.ssl=false" +
             "\n\t-Dcom.sun.management.jmxremote.authenticate=false" +
             "\n\t-Dcom.sun.management.jmxremote.local.only=false" +
-            "\n\t-Djava.rmi.server.hostname=$TASK_HOST");
+            "\n\t-Djava.rmi.server.hostname=" + bindName);
         }
 
         private JMXConnectorServer doLegacy(String url) throws IOException {

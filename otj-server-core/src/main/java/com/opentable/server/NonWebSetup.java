@@ -24,6 +24,9 @@ import org.springframework.context.annotation.Import;
 import com.opentable.jackson.OpenTableJacksonConfiguration;
 import com.opentable.metrics.DefaultMetricsConfiguration;
 import com.opentable.pausedetector.EnablePauseDetector;
+import com.opentable.service.AppInfo;
+import com.opentable.service.K8sInfo;
+import com.opentable.service.PayloadSelector;
 
 /**
  * Common configuration for REST HTTP Server instances
@@ -35,19 +38,22 @@ import com.opentable.pausedetector.EnablePauseDetector;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-    // Customized object mapper
-    OpenTableJacksonConfiguration.class,
-    // Setup JMX server
-    JmxConfiguration.class,
-    // Setup metrics
-    DefaultMetricsConfiguration.class,
-    StartupShutdownFailedHandler.class,
-    // Spit out version info on startup
-    PreFlight.class,
-    // Hook up Jetty Dump as MBEAN operation
-    JettyDumper.class,
-    // Sets up app and environment info beans and property converters
-    ServerConfigConfiguration.class,
+        // Customized object mapper
+        OpenTableJacksonConfiguration.class,
+        // Setup JMX server
+        JmxConfiguration.class,
+        PayloadSelector.class,
+        K8sInfo.class,
+        AppInfo.class,
+        // Setup metrics
+        DefaultMetricsConfiguration.class,
+        StartupShutdownFailedHandler.class,
+        // Spit out version info on startup
+        PreFlight.class,
+        // Hook up Jetty Dump as MBEAN operation
+        JettyDumper.class,
+        // Sets up app and environment info beans and property converters
+        ServerConfigConfiguration.class,
 })
 @EnablePauseDetector
 public @interface NonWebSetup {
