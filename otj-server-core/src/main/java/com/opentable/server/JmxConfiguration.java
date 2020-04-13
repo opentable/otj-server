@@ -137,7 +137,7 @@ public class JmxConfiguration {
                         urlFormat,
                         bind,
                         jmxPort.getAsInt());
-                LOG.info("Starting jmx with jmxmp support bound to {} You'll need to connnect to this service using the jmxmp jar and protocol, using \n\t{} " +
+                LOG.info("Starting jmx with jmxmp support bound to {} You'll need to connect to this service using the jmxmp jar and protocol, using \n\t{} " +
                         "\n\tSee https://wiki.otcorp.opentable.com/x/YsoIAQ for more information.", bind, simpleURL);
                 LOG.debug("Alternatively, switch ot.jmx.enabled=false in application-deployed.properties and set jvm.properties options (Recommended). Then you can just connect via {}:{}",
                         appInfo.getTaskHost(), jmxPort.getAsInt());
@@ -175,7 +175,7 @@ public class JmxConfiguration {
         private void logCommandLineOptions(boolean isKubernetes, String bind) {
             String portName = isKubernetes ? "PORT_JMX" : "PORT1";
             String bindName = isKubernetes ? "127.0.0.1" : bind; //NOPMD
-            LOG.debug("In jvm.propertes, add" +
+            LOG.debug("In jvm.properties, add" +
             "\n\t-Dcom.sun.management.jmxremote=true" +
             "\n\t-Dcom.sun.management.jmxremote.port=$" + portName +
             "\n\t-Dcom.sun.management.jmxremote.rmi.port=$" + portName +
