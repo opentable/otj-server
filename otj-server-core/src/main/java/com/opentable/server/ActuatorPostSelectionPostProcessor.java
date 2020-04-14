@@ -19,7 +19,7 @@ public class ActuatorPostSelectionPostProcessor implements EnvironmentPostProces
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
         final PortSelector portSelector = new PortSelector(environment);
         final PortSelector.PortSelection portSelection = portSelector.getActuatorPort();
-        if (!portSelection.hasValue() && portSelection.getAsInteger().isPresent()) {
+        if (!portSelection.hasValue() || !portSelection.getAsInteger().isPresent()) {
             LOG.error("Can't set up actuator...");
         } else {
             LOG.debug("actuatorPort {}",  portSelection);
