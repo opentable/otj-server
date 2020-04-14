@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 import com.opentable.server.JmxConfiguration.JmxmpServer;
 import com.opentable.service.AppInfo;
 import com.opentable.service.K8sInfo;
-import com.opentable.service.PayloadSelector;
+import com.opentable.service.PortSelector;
 
 /**
  * JMX Configuration.
@@ -90,29 +90,29 @@ public class JmxConfiguration {
         private final MBeanServer mbs;
         private final K8sInfo k8sInfo;
         private final AppInfo appInfo;
-        private final PayloadSelector payloadSelector;
+        private final PortSelector portSelector;
 
         private JMXConnectorServer server;
 
 
         @Inject
-        JmxmpServer(K8sInfo k8sInfo, AppInfo app, PayloadSelector payloadSelector,  MBeanServer mbs) {
+        JmxmpServer(K8sInfo k8sInfo, AppInfo app, PortSelector portSelector,  MBeanServer mbs) {
             this.mbs = mbs;
             this.k8sInfo = k8sInfo;
             this.appInfo = app;
-            this.payloadSelector = payloadSelector;
+            this.portSelector = portSelector;
         }
 
         @PostConstruct
         public void start() throws IOException {
             // Always need this - effectively it's a noop since old code references PORT1 directly.
-            PayloadSelector.PayloadResult payloadResult = payloadSelector.getJMXPort();
-            OptionalInt jmxPort = payloadResult.getAsInteger();
+            PortSelector.PortSelection portSelection = portSelector.getJMXPort();
+            OptionalInt jmxPort = portSelection.getAsInteger();
             if (!jmxPort.isPresent() || jmxPort.getAsInt() <= 0) {
                 LOG.info("No JMX port set, not exporting. JMX configuration disabled");
                 return;
             } else {
-                LOG.info("jmxPort {}", payloadResult);
+                LOG.info("jmxPort {}", portSelection);
             }
 
             if (k8sInfo.isKubernetes()) {
