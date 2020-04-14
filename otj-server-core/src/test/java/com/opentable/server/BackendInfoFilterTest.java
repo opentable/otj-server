@@ -36,6 +36,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
         "PORT_ACTUATOR=9999",
+        "management.server.port=50",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
 })
 public class BackendInfoFilterTest {
@@ -65,9 +66,9 @@ public class BackendInfoFilterTest {
     }
 
     @Test
+    // Shows PORT_ACTUATOR is picked up and takes precedence over a previously configured port value
     public void testActuator() {
         Assert.assertEquals("9999", environment.getProperty(ActuatorPostSelectionPostProcessor.ACTUATOR_ENV_KEY));
-
     }
 
 }
