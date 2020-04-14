@@ -26,7 +26,7 @@ import com.opentable.metrics.DefaultMetricsConfiguration;
 import com.opentable.pausedetector.EnablePauseDetector;
 import com.opentable.service.AppInfo;
 import com.opentable.service.K8sInfo;
-import com.opentable.service.PayloadSelector;
+import com.opentable.service.PortSelector;
 
 /**
  * Common configuration for REST HTTP Server instances
@@ -42,7 +42,7 @@ import com.opentable.service.PayloadSelector;
         OpenTableJacksonConfiguration.class,
         // Setup JMX server
         JmxConfiguration.class,
-        PayloadSelector.class,
+        PortSelector.class,
         K8sInfo.class,
         AppInfo.class,
         // Setup metrics
