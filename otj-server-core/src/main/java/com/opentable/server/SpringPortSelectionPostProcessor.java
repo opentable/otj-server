@@ -1,3 +1,16 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.opentable.server;
 
 import java.util.Arrays;
@@ -12,6 +25,9 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
 
     private static final String PORT_SELECTOR_PROPERTY_SOURCE = "OtPortSelectorPropertySource";
     static final String MANAGEMENT_SERVER_PORT = "management.server.port";
+    static final String JMX_PORT = "ot.jmx.port";
+    static final String HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT = "ot.httpserver.connector.default-http.port";
+    static final String SERVER_PORT = "server.port";
 
     @Override
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
@@ -30,12 +46,12 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
                     @Override
                     public Integer getProperty(String s) {
                         // Default spring boot
-                        if ("server.port".equalsIgnoreCase(s)) {
+                        if (SERVER_PORT.equalsIgnoreCase(s)) {
                             return Integer.parseInt(environment.getProperty("PORT_HTTP",
                                     environment.getProperty("PORT0", "0")));
                         }
                         // otj-server default connector
-                        if ("ot.httpserver.connector.default-http.port".equalsIgnoreCase(s)) {
+                        if (HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT.equalsIgnoreCase(s)) {
                             return Integer.parseInt(environment.getProperty("PORT_HTTP",
                                     environment.getProperty("PORT0", "0")));
                         }
@@ -45,7 +61,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
                             return Integer.parseInt(environment.getProperty("PORT_" + name,"0"));
                         }
                         // jmx
-                        if ("ot.jmx.port".equalsIgnoreCase(s)) {
+                        if (JMX_PORT.equalsIgnoreCase(s)) {
                             return Integer.parseInt(environment.getProperty("PORT_JMX",
                                     environment.getProperty("PORT1", "0")));
                         }
