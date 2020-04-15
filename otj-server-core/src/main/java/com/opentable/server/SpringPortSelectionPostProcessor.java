@@ -20,6 +20,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertySource;
+import org.springframework.lang.NonNull;
 
 public class SpringPortSelectionPostProcessor implements EnvironmentPostProcessor {
 
@@ -44,7 +45,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         environment.getPropertySources()
                 .addLast(new PropertySource<Integer>(PORT_SELECTOR_PROPERTY_SOURCE) {
                     @Override
-                    public Integer getProperty(String s) {
+                    public Integer getProperty(@NonNull String s) {
                         boolean isK8s = (!"IS_KUBERNETES".equalsIgnoreCase(s)) && "true".equalsIgnoreCase(environment.getProperty("IS_KUBERNETES", "false"));
                         // Default spring boot
                         if (SERVER_PORT.equalsIgnoreCase(s)) {
@@ -54,12 +55,12 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
                         // otj-server default connector
                         if (HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT.equalsIgnoreCase(s)) {
                             return Integer.parseInt(environment.getProperty("PORT_HTTP",
-                                    environment.getProperty("PORT0", "0")));
+                                    environment.getProperty("PORT0", "-1")));
                         }
                         // otj-server named connector
                         if (isK8s && s.matches("ot\\.httpserver\\.connector\\..*-.*\\.port")) {
                             final String name = s.split("\\.")[3].split("-")[0].toUpperCase(Locale.US);
-                            return Integer.parseInt(environment.getProperty("PORT_" + name,"0"));
+                            return Integer.parseInt(environment.getProperty("PORT_" + name, "-1"));
                         }
                         // jmx
                         if (JMX_PORT.equalsIgnoreCase(s)) {
