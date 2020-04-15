@@ -45,6 +45,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
                 .addLast(new PropertySource<Integer>(PORT_SELECTOR_PROPERTY_SOURCE) {
                     @Override
                     public Integer getProperty(String s) {
+                        boolean isK8s = (!"IS_KUBERNETES".equalsIgnoreCase(s)) && "true".equalsIgnoreCase(environment.getProperty("IS_KUBERNETES", "false"));
                         // Default spring boot
                         if (SERVER_PORT.equalsIgnoreCase(s)) {
                             return Integer.parseInt(environment.getProperty("PORT_HTTP",
@@ -56,8 +57,8 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
                                     environment.getProperty("PORT0", "0")));
                         }
                         // otj-server named connector
-                        if (s.matches("ot\\.httpserver\\.connector\\..*\\.port")) {
-                            final String name = s.split("\\.")[3].toUpperCase(Locale.US);
+                        if (isK8s && s.matches("ot\\.httpserver\\.connector\\..*-.*\\.port")) {
+                            final String name = s.split("\\.")[3].split("-")[0].toUpperCase(Locale.US);
                             return Integer.parseInt(environment.getProperty("PORT_" + name,"0"));
                         }
                         // jmx

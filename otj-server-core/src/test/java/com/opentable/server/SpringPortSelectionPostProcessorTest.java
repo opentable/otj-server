@@ -36,10 +36,11 @@ import org.springframework.test.context.junit4.SpringRunner;
         "INSTANCE_NO=3",
         "PORT_ACTUATOR=9999",
         "PORT_HTTP=9998",
-        "PORT_HTTPS=9997",
+        "PORT_MY=9997",
         "PORT_JMX=9996",
 //        "management.server.port=50",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
+        "IS_KUBERNETES=TRUE"
 })
 public class SpringPortSelectionPostProcessorTest {
 
@@ -52,7 +53,7 @@ public class SpringPortSelectionPostProcessorTest {
         Assert.assertEquals("9999", environment.getProperty(SpringPortSelectionPostProcessor.MANAGEMENT_SERVER_PORT));
         Assert.assertEquals("9998", environment.getProperty(SpringPortSelectionPostProcessor.SERVER_PORT));
         Assert.assertEquals("9998", environment.getProperty(SpringPortSelectionPostProcessor.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
-        Assert.assertEquals("9997", environment.getProperty("ot.httpserver.connector.https.port"));
+        Assert.assertEquals("9997", environment.getProperty("ot.httpserver.connector.my-https.port"));
         Assert.assertEquals("9996", environment.getProperty(SpringPortSelectionPostProcessor.JMX_PORT));
     }
 }
