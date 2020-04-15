@@ -25,6 +25,7 @@ import org.springframework.lang.NonNull;
 public class SpringPortSelectionPostProcessor implements EnvironmentPostProcessor {
 
     private static final String PORT_SELECTOR_PROPERTY_SOURCE = "OtPortSelectorPropertySource";
+
     static final String MANAGEMENT_SERVER_PORT = "management.server.port";
     static final String JMX_PORT = "ot.jmx.port";
     static final String HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT = "ot.httpserver.connector.default-http.port";
@@ -39,7 +40,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
                 .ifPresent(this::injectPortSelectorPropertySource);
     }
 
-    private  void  injectPortSelectorPropertySource(ConfigurableEnvironment environment) {
+    private void injectPortSelectorPropertySource(ConfigurableEnvironment environment) {
         environment.getPropertySources()
                 .remove(PORT_SELECTOR_PROPERTY_SOURCE);
         environment.getPropertySources()
