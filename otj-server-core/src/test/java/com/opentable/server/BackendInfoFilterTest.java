@@ -22,7 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -36,16 +35,12 @@ import org.springframework.test.context.junit4.SpringRunner;
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
         "PORT_ACTUATOR=9999",
-        "management.server.port=50",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
 })
 public class BackendInfoFilterTest {
 
     @Inject
     private LoopbackRequest request;
-
-    @Inject
-    private Environment environment;
 
     @Test
     public void test() {
@@ -65,10 +60,5 @@ public class BackendInfoFilterTest {
         }
     }
 
-    @Test
-    // Shows PORT_ACTUATOR is picked up and takes precedence over a previously configured port value
-    public void testActuator() {
-        Assert.assertEquals("9999", environment.getProperty(ActuatorPostSelectionPostProcessor.ACTUATOR_ENV_KEY));
-    }
 
 }

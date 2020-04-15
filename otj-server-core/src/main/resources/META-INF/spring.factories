@@ -1,2 +1,2 @@
 org.springframework.context.ApplicationListener=com.opentable.server.ServerLoggingConfiguration
-org.springframework.boot.env.EnvironmentPostProcessor=com.opentable.server.ActuatorPostSelectionPostProcessor
+org.springframework.boot.env.EnvironmentPostProcessor=com.opentable.server.SpringPortSelectionPostProcessor

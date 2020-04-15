@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.OptionalInt;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -27,6 +26,7 @@ import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 
 import org.slf4j.Logger;
@@ -41,7 +41,6 @@ import org.springframework.stereotype.Component;
 import com.opentable.server.JmxConfiguration.JmxmpServer;
 import com.opentable.service.AppInfo;
 import com.opentable.service.K8sInfo;
-import com.opentable.service.PortSelector;
 
 /**
  * JMX Configuration.
@@ -78,6 +77,9 @@ public class JmxConfiguration {
         private static final Logger LOG = LoggerFactory.getLogger(JmxmpServer.class);
         static final String WILDCARD_BIND = "0.0.0.0"; // NOPMD
 
+        @Value("${ot.jmx.port:#{null}}")
+        private Integer jmxPort;
+
         @Value("${ot.jmx.address:#{null}}")
         private String jmxAddress;
 
@@ -90,29 +92,25 @@ public class JmxConfiguration {
         private final MBeanServer mbs;
         private final K8sInfo k8sInfo;
         private final AppInfo appInfo;
-        private final PortSelector portSelector;
 
         private JMXConnectorServer server;
 
 
         @Inject
-        JmxmpServer(K8sInfo k8sInfo, AppInfo app, PortSelector portSelector,  MBeanServer mbs) {
+        JmxmpServer(K8sInfo k8sInfo, AppInfo app, MBeanServer mbs) {
             this.mbs = mbs;
             this.k8sInfo = k8sInfo;
             this.appInfo = app;
-            this.portSelector = portSelector;
         }
 
         @PostConstruct
         public void start() throws IOException {
             // Always need this - effectively it's a noop since old code references PORT1 directly.
-            PortSelector.PortSelection portSelection = portSelector.getJMXPort();
-            OptionalInt jmxPort = portSelection.getAsInteger();
-            if (!jmxPort.isPresent() || jmxPort.getAsInt() <= 0) {
+            if (jmxPort == null || jmxPort <= 0) {
                 LOG.info("No JMX port set, not exporting. JMX configuration disabled");
                 return;
             } else {
-                LOG.info("jmxPort {}", portSelection);
+                LOG.info("jmxPort {}", jmxPort);
             }
 
             if (k8sInfo.isKubernetes()) {
@@ -136,16 +134,16 @@ public class JmxConfiguration {
                 final String simpleURL = String.format(
                         urlFormat,
                         bind,
-                        jmxPort.getAsInt());
+                        jmxPort);
                 LOG.info("Starting jmx with jmxmp support bound to {} You'll need to connect to this service using the jmxmp jar and protocol, using \n\t{} " +
                         "\n\tSee https://wiki.otcorp.opentable.com/x/YsoIAQ for more information.", bind, simpleURL);
                 LOG.debug("Alternatively, switch ot.jmx.enabled=false in application-deployed.properties and set jvm.properties options (Recommended). Then you can just connect via {}:{}",
-                        appInfo.getTaskHost(), jmxPort.getAsInt());
+                        appInfo.getTaskHost(), jmxPort);
                 logCommandLineOptions(k8sInfo.isKubernetes(), "$TASK_HOST");
                 final String url = String.format(
                         urlFormat,
                         bind,
-                        jmxPort.getAsInt());
+                        jmxPort);
                 server = doLegacy(url);
                 server.start();
             } else {
@@ -204,5 +202,9 @@ public class JmxConfiguration {
             }
         }
 
+        @VisibleForTesting
+        Integer getJmxPort() {
+            return jmxPort;
+        }
     }
 }
