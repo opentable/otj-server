@@ -36,7 +36,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "INSTANCE_NO=3",
         "PORT_ACTUATOR=9999",
         "PORT_HTTP=9998",
-        "PORT_MY=9997",
+        "PORT_MY-HTTPS=9997",
         "PORT_JMX=9996",
 //        "management.server.port=50",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
