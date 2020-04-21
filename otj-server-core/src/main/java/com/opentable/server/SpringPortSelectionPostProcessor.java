@@ -51,7 +51,8 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         /**
          * 1. addLast vs addFirst
          * 2. Is it not possible to prebuild the entire list. That saves (minor) on performance, and more importantly
-         * 3. Debugging is painful here. If we could just see the prematerialized changes, that would be really terrific
+         * 3. Debugging is painful here. If we could just see the prematerialized changes, that would be really terrific,
+         * especially if the source is known. That's why I did my selector that way.
          * 4. Is server.port being supplied even though it isn't going to cause a performance change. What is the
          * interaction of that and the default-http.
          * 5. I fixed what I considered a bug... see below
