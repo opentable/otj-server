@@ -14,11 +14,14 @@
 package com.opentable.server;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.lang.NonNull;
 
@@ -43,6 +46,17 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
     private void injectPortSelectorPropertySource(ConfigurableEnvironment environment) {
         environment.getPropertySources()
                 .remove(PORT_SELECTOR_PROPERTY_SOURCE);
+        // Comments
+
+        /**
+         * 1. addLast vs addFirst
+         * 2. Is it not possible to prebuild the entire list. That saves (minor) on performance, and more importantly
+         * 3. Debugging is painful here. If we could just see the prematerialized changes, that would be really terrific,
+         * especially if the source is known. That's why I did my selector that way.
+         * 4. Is server.port being supplied even though it isn't going to cause a performance change. What is the
+         * interaction of that and the default-http.
+         * 5. I fixed what I considered a bug... see below
+         */
         environment.getPropertySources()
                 .addLast(new PropertySource<Integer>(PORT_SELECTOR_PROPERTY_SOURCE) {
                     @Override
@@ -60,8 +74,8 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
                         }
                         // otj-server named connector
                         if (isK8s && s.matches("ot\\.httpserver\\.connector\\..*-.*\\.port")) {
-                            final String name = s.split("\\.")[3].split("-")[0].toUpperCase(Locale.US);
-                            return Integer.parseInt(environment.getProperty("PORT_" + name, "-1"));
+                            final String name = s.split("\\.")[3].toUpperCase(Locale.US);
+                            return  Integer.parseInt(environment.getProperty("PORT_" + name, "-1"));
                         }
                         // jmx
                         if (JMX_PORT.equalsIgnoreCase(s)) {
