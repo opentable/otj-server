@@ -235,6 +235,18 @@ ot.jmx.port=12345
 ot.jmx.address=127.0.0.1
 ot.jmx.url-format=service:jmx:jmxmp://%s:%s
 ```
+
+### Port selector notes
+* We adding OtPortSelectorPropertySource to the end of the Spring environment, to provide "sensible" defaults in case user not providing own values.
+* The defaults are visible under `ot.port-selector.defaults` node
+```$xslt
+    ot.port-selector.defaults.management.server.port=9999
+    ot.port-selector.defaults.ot.httpserver.connector.default-http.port=9998
+    ot.port-selector.defaults.ot.jmx.port=9996
+    ot.port-selector.defaults.server.port=9998
+```
+* Yo can disable injecting property source by providing `ot.port-selector.enabled=false`
+
 ## Migration from 2.0.0
 
 JaxRS users (if you were using OTJ stack before then this is *probably* you):

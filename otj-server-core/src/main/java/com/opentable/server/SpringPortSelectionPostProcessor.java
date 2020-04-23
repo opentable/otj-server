@@ -14,20 +14,17 @@
 package com.opentable.server;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.lang.NonNull;
 
 public class SpringPortSelectionPostProcessor implements EnvironmentPostProcessor {
 
-    private static final String PORT_SELECTOR_PROPERTY_SOURCE = "OtPortSelectorPropertySource";
+    private static final String PREFIX = "ot.port-selector.defaults.";
 
     static final String MANAGEMENT_SERVER_PORT = "management.server.port";
     static final String JMX_PORT = "ot.jmx.port";
@@ -38,6 +35,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
         Arrays.stream(environment.getActiveProfiles())
                 .filter("deployed"::equals)
+                .filter(i -> "true".equalsIgnoreCase(environment.getProperty("ot.port-selector.enabled", "true")))
                 .findFirst()
                 .map(i -> environment)
                 .ifPresent(this::injectPortSelectorPropertySource);
@@ -45,50 +43,60 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
 
     private void injectPortSelectorPropertySource(ConfigurableEnvironment environment) {
         environment.getPropertySources()
-                .remove(PORT_SELECTOR_PROPERTY_SOURCE);
-        // Comments
-
-        /**
-         * 1. addLast vs addFirst
-         * 2. Is it not possible to prebuild the entire list. That saves (minor) on performance, and more importantly
-         * 3. Debugging is painful here. If we could just see the prematerialized changes, that would be really terrific,
-         * especially if the source is known. That's why I did my selector that way.
-         * 4. Is server.port being supplied even though it isn't going to cause a performance change. What is the
-         * interaction of that and the default-http.
-         * 5. I fixed what I considered a bug... see below
-         */
+                .remove(OtPortSelectorPropertySource.class.getName());
         environment.getPropertySources()
-                .addLast(new PropertySource<Integer>(PORT_SELECTOR_PROPERTY_SOURCE) {
-                    @Override
-                    public Integer getProperty(@NonNull String s) {
-                        boolean isK8s = (!"IS_KUBERNETES".equalsIgnoreCase(s)) && "true".equalsIgnoreCase(environment.getProperty("IS_KUBERNETES", "false"));
-                        // Default spring boot
-                        if (SERVER_PORT.equalsIgnoreCase(s)) {
-                            return Integer.parseInt(environment.getProperty("PORT_HTTP",
-                                    environment.getProperty("PORT0", "0")));
-                        }
-                        // otj-server default connector
-                        if (HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT.equalsIgnoreCase(s)) {
-                            return Integer.parseInt(environment.getProperty("PORT_HTTP",
-                                    environment.getProperty("PORT0", "-1")));
-                        }
-                        // otj-server named connector
-                        if (isK8s && s.matches("ot\\.httpserver\\.connector\\..*-.*\\.port")) {
-                            final String name = s.split("\\.")[3].toUpperCase(Locale.US);
-                            return  Integer.parseInt(environment.getProperty("PORT_" + name, "-1"));
-                        }
-                        // jmx
-                        if (JMX_PORT.equalsIgnoreCase(s)) {
-                            return Integer.parseInt(environment.getProperty("PORT_JMX",
-                                    environment.getProperty("PORT1", "0")));
-                        }
-                        // actuator
-                        if (MANAGEMENT_SERVER_PORT.equalsIgnoreCase(s)) {
-                            return Integer.parseInt(environment.getProperty("PORT_ACTUATOR",
-                                    environment.getProperty("PORT2", "0")));
-                        }
-                        return null;
-                    }
-                });
+                .addLast(new OtPortSelectorPropertySource(environment));
+    }
+
+    protected static class OtPortSelectorPropertySource extends EnumerablePropertySource<Integer> {
+
+        private final ConfigurableEnvironment environment;
+
+        public OtPortSelectorPropertySource(ConfigurableEnvironment environment) {
+            super(OtPortSelectorPropertySource.class.getName());
+            this.environment = environment;
+        }
+
+        @Override
+        public @NonNull String[] getPropertyNames() {
+            return new String[] {
+                    PREFIX + SERVER_PORT,
+                    PREFIX + HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT,
+                    PREFIX + JMX_PORT,
+                    PREFIX + MANAGEMENT_SERVER_PORT
+            };
+        }
+
+        @Override
+        public Integer getProperty(@NonNull String propertyName) {
+            boolean isK8s = (!"IS_KUBERNETES".equalsIgnoreCase(propertyName)) && "true".equalsIgnoreCase(environment.getProperty("IS_KUBERNETES", "false"));
+            final String s = propertyName.replace(PREFIX, "");
+            // Default spring boot
+            if (SERVER_PORT.equalsIgnoreCase(s)) {
+                return Integer.parseInt(environment.getProperty("PORT_HTTP",
+                        environment.getProperty("PORT0", "0")));
+            }
+            // otj-server default connector
+            if (HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT.equalsIgnoreCase(s)) {
+                return Integer.parseInt(environment.getProperty("PORT_HTTP",
+                        environment.getProperty("PORT0", "-1")));
+            }
+            // otj-server named connector
+            if (isK8s && s.matches("ot\\.httpserver\\.connector\\..*-.*\\.port")) {
+                final String name = s.split("\\.")[3].toUpperCase(Locale.US);
+                return  Integer.parseInt(environment.getProperty("PORT_" + name, "-1"));
+            }
+            // jmx
+            if (JMX_PORT.equalsIgnoreCase(s)) {
+                return Integer.parseInt(environment.getProperty("PORT_JMX",
+                        environment.getProperty("PORT1", "0")));
+            }
+            // actuator
+            if (MANAGEMENT_SERVER_PORT.equalsIgnoreCase(s)) {
+                return Integer.parseInt(environment.getProperty("PORT_ACTUATOR",
+                        environment.getProperty("PORT2", "0")));
+            }
+            return null;
+        }
     }
 }
