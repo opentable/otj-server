@@ -15,12 +15,11 @@ package com.opentable.server;
 
 import javax.inject.Inject;
 
-import com.sun.tools.internal.xjc.api.J2SJAXBModel;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -48,7 +47,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class SpringPortSelectionPostProcessorTest {
 
     @Inject
-    private Environment environment;
+    private ConfigurableEnvironment environment;
 
     @Test
     public void testPortSelection() {
@@ -59,5 +58,7 @@ public class SpringPortSelectionPostProcessorTest {
         Assert.assertEquals("9998", environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals("9997", environment.getProperty("ot.httpserver.connector.my-https.port"));
         Assert.assertEquals("9996", environment.getProperty(PortSelector.JMX_PORT));
+
+        environment.getPropertySources().stream().filter(t -> t.getName().equalsIgnoreCase(SpringPortSelectionPostProcessor.class.getName())).findFirst().orElse(null);
     }
 }

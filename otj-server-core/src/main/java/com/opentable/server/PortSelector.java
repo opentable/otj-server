@@ -62,10 +62,9 @@ public class PortSelector {
 
         @Override
         public String toString() {
-            final String sb = "PayloadResult{" + "payload='" + payload + '\'' +
+            return  "PayloadResult{" + "payload='" + payload + '\'' +
                     ", payloadSource=" + portSource +
                     '}';
-            return sb;
         }
     }
 
