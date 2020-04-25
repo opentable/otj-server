@@ -81,7 +81,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         return new OtPortSelectorPropertySource(environment, ImmutableMap.copyOf(portSelectionMap));
     }
 
-    protected static class OtPortSelectorPropertySource extends PropertySource<Integer> {
+    public static class OtPortSelectorPropertySource extends PropertySource<Integer> {
         private final ConfigurableEnvironment environment;
         private final Map<String, PortSelector.PortSelection> portSelectionMap;
         public OtPortSelectorPropertySource(ConfigurableEnvironment environment, Map<String, PortSelector.PortSelection> portSelectionMap) {
@@ -90,9 +90,13 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
             this.portSelectionMap = portSelectionMap;
         }
 
+        public Map<String, PortSelector.PortSelection> getPortSelectionMap() {
+            return portSelectionMap;
+        }
+
         @Override
         public Integer getProperty(@NonNull String propertyName) {
-            if (OnKubernetesCondition.ON_KUBERNETES.equalsIgnoreCase(propertyName)) {
+            if (OnKubernetesCondition.ON_KUBERNETES.equalsIgnoreCase(propertyName) || "ot.httpserver.connector.default.port".equalsIgnoreCase(propertyName)) {
                 return null;
             }
             final boolean isK8s = PortSelector.isKubernetes(environment);
@@ -118,7 +122,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
             // otj-server named connector
             // This is safe, because it won't be queried if it's not in the list, otherwise
             // it would insert a value that shouldn't exist
-            if (isK8s && propertyName.matches("ot\\.httpserver\\.connector\\..*-.*\\.port")) {
+            if (isK8s && propertyName.matches("ot\\.httpserver\\.connector\\..*\\.port")) {
                 final String namedPort = propertyName.split("\\.")[3].toUpperCase(Locale.US);
                 return  Integer.parseInt(environment.getProperty("PORT_" + namedPort, "-1"));
             }

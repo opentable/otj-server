@@ -13,6 +13,8 @@
  */
 package com.opentable.server;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import org.junit.Assert;
@@ -57,8 +59,14 @@ public class SpringPortSelectionPostProcessorTest {
         Assert.assertEquals("9998", environment.getProperty(PortSelector.SERVER_PORT));
         Assert.assertEquals("9998", environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals("9997", environment.getProperty("ot.httpserver.connector.my-https.port"));
+        Assert.assertEquals("-1", environment.getProperty("ot.httpserver.connector.fake.port"));
         Assert.assertEquals("9996", environment.getProperty(PortSelector.JMX_PORT));
 
-        environment.getPropertySources().stream().filter(t -> t.getName().equalsIgnoreCase(SpringPortSelectionPostProcessor.class.getName())).findFirst().orElse(null);
+        SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)
+                environment.getPropertySources().stream().filter(t -> t instanceof SpringPortSelectionPostProcessor.OtPortSelectorPropertySource).findFirst().orElse(null);
+        Assert.assertNotNull(tt);
+        Map<String, PortSelector.PortSelection> portSelectionMap = tt.getPortSelectionMap();
+        Assert.assertEquals(4, portSelectionMap.size());
+        Assert.assertEquals(4, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_PORT_NAMED)).count());
     }
 }
