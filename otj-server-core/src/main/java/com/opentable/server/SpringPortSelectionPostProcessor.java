@@ -14,22 +14,27 @@
 package com.opentable.server;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.lang.NonNull;
+
+import com.opentable.service.OnKubernetesCondition;
 
 public class SpringPortSelectionPostProcessor implements EnvironmentPostProcessor {
 
-    private static final String PREFIX = "ot.port-selector.defaults.";
-
-    static final String MANAGEMENT_SERVER_PORT = "management.server.port";
-    static final String JMX_PORT = "ot.jmx.port";
-    static final String HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT = "ot.httpserver.connector.default-http.port";
-    static final String SERVER_PORT = "server.port";
+    private static final Logger LOG = LoggerFactory.getLogger(SpringPortSelectionPostProcessor.class);
+    private static final String JMX_PROPERTY_SOURCE = "ot-jmx-properties";
 
     @Override
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
@@ -45,57 +50,83 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         environment.getPropertySources()
                 .remove(OtPortSelectorPropertySource.class.getName());
         environment.getPropertySources()
-                .addLast(new OtPortSelectorPropertySource(environment));
+                .remove(JMX_PROPERTY_SOURCE);
+
+        final PortSelector portSelector = new PortSelector(environment);
+        environment.getPropertySources()
+                .addLast(getPortPropertySource(environment, portSelector));
+        environment.getPropertySources()
+                .addLast(getHostPropertySource(environment));
     }
 
-    protected static class OtPortSelectorPropertySource extends EnumerablePropertySource<Integer> {
+    private MapPropertySource getHostPropertySource(ConfigurableEnvironment environment) {
+        /*
+         * fix jmx host names for Kubernetes
+         */
+        final Map<String, Object> map = new HashMap<>();
+        boolean isKubernetes = PortSelector.isKubernetes(environment);
+        if (isKubernetes) {
+            map.put(PortSelector.JMX_ADDRESS, "127.0.0.1"); //NOPMD
+            if (environment.containsProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME)) {
+                map.put(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME, "127.0.0.1"); //NOPMD
+            }
+        }
+        return new MapPropertySource(JMX_PROPERTY_SOURCE, map);
+    }
+    private PropertySource<Integer> getPortPropertySource(ConfigurableEnvironment environment, PortSelector portSelector) {
+        final Map<String, PortSelector.PortSelection> portSelectionMap = portSelector.getPortSelectionMap();
+        final StringBuilder sb = new StringBuilder(4096);
+        portSelectionMap.forEach((key, value) -> {
+            sb.append(key).append(" =  ").append(value.toString());
+            sb.append("\r\n");
+        });
+        //TODO: not sure this is actually being logged?
+        LOG.debug("Port Selector: \n{}", sb.toString());
+        return new OtPortSelectorPropertySource(environment, ImmutableMap.copyOf(portSelectionMap));
+    }
 
+    protected static class OtPortSelectorPropertySource extends PropertySource<Integer> {
         private final ConfigurableEnvironment environment;
-
-        public OtPortSelectorPropertySource(ConfigurableEnvironment environment) {
+        private final Map<String, PortSelector.PortSelection> portSelectionMap;
+        public OtPortSelectorPropertySource(ConfigurableEnvironment environment, Map<String, PortSelector.PortSelection> portSelectionMap) {
             super(OtPortSelectorPropertySource.class.getName());
             this.environment = environment;
-        }
-
-        @Override
-        public @NonNull String[] getPropertyNames() {
-            return new String[] {
-                    PREFIX + SERVER_PORT,
-                    PREFIX + HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT,
-                    PREFIX + JMX_PORT,
-                    PREFIX + MANAGEMENT_SERVER_PORT
-            };
+            this.portSelectionMap = portSelectionMap;
         }
 
         @Override
         public Integer getProperty(@NonNull String propertyName) {
-            boolean isK8s = (!"IS_KUBERNETES".equalsIgnoreCase(propertyName)) && "true".equalsIgnoreCase(environment.getProperty("IS_KUBERNETES", "false"));
-            final String s = propertyName.replace(PREFIX, "");
+            if (OnKubernetesCondition.ON_KUBERNETES.equalsIgnoreCase(propertyName)) {
+                return null;
+            }
+            final boolean isK8s = PortSelector.isKubernetes(environment);
+
             // Default spring boot
-            if (SERVER_PORT.equalsIgnoreCase(s)) {
-                return Integer.parseInt(environment.getProperty("PORT_HTTP",
-                        environment.getProperty("PORT0", "0")));
+            if (PortSelector.SERVER_PORT.equalsIgnoreCase(propertyName)) {
+                return portSelectionMap.get(PortSelector.SERVER_PORT).getAsInteger();
             }
             // otj-server default connector
-            if (HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT.equalsIgnoreCase(s)) {
-                return Integer.parseInt(environment.getProperty("PORT_HTTP",
-                        environment.getProperty("PORT0", "-1")));
+            if (PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT.equalsIgnoreCase(propertyName)) {
+                return portSelectionMap.get(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT).getAsInteger();
             }
-            // otj-server named connector
-            if (isK8s && s.matches("ot\\.httpserver\\.connector\\..*-.*\\.port")) {
-                final String name = s.split("\\.")[3].toUpperCase(Locale.US);
-                return  Integer.parseInt(environment.getProperty("PORT_" + name, "-1"));
-            }
+
             // jmx
-            if (JMX_PORT.equalsIgnoreCase(s)) {
-                return Integer.parseInt(environment.getProperty("PORT_JMX",
-                        environment.getProperty("PORT1", "0")));
+            if (PortSelector.JMX_PORT.equalsIgnoreCase(propertyName)) {
+                return portSelectionMap.get(PortSelector.JMX_PORT).getAsInteger();
             }
             // actuator
-            if (MANAGEMENT_SERVER_PORT.equalsIgnoreCase(s)) {
-                return Integer.parseInt(environment.getProperty("PORT_ACTUATOR",
-                        environment.getProperty("PORT2", "0")));
+            if (PortSelector.MANAGEMENT_SERVER_PORT.equalsIgnoreCase(propertyName)) {
+                return portSelectionMap.get(PortSelector.MANAGEMENT_SERVER_PORT).getAsInteger();
             }
+
+            // otj-server named connector
+            // This is safe, because it won't be queried if it's not in the list, otherwise
+            // it would insert a value that shouldn't exist
+            if (isK8s && propertyName.matches("ot\\.httpserver\\.connector\\..*-.*\\.port")) {
+                final String namedPort = propertyName.split("\\.")[3].toUpperCase(Locale.US);
+                return  Integer.parseInt(environment.getProperty("PORT_" + namedPort, "-1"));
+            }
+
             return null;
         }
     }

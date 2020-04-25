@@ -15,6 +15,8 @@ package com.opentable.server;
 
 import javax.inject.Inject;
 
+import com.sun.tools.internal.xjc.api.J2SJAXBModel;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,9 +38,10 @@ import org.springframework.test.context.junit4.SpringRunner;
         "INSTANCE_NO=3",
         "PORT_ACTUATOR=9999",
         "PORT_HTTP=9998",
+    //    "ot.jmx.port=44444",
         "PORT_MY-HTTPS=9997",
         "PORT_JMX=9996",
-//        "management.server.port=50",
+   //     "management.server.port=50",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
         "IS_KUBERNETES=TRUE"
 })
@@ -48,12 +51,13 @@ public class SpringPortSelectionPostProcessorTest {
     private Environment environment;
 
     @Test
-    // Shows PORT_ACTUATOR is picked up and takes, but has lowest priority
-    public void testActuator() {
-        Assert.assertEquals("9999", environment.getProperty(SpringPortSelectionPostProcessor.MANAGEMENT_SERVER_PORT));
-        Assert.assertEquals("9998", environment.getProperty(SpringPortSelectionPostProcessor.SERVER_PORT));
-        Assert.assertEquals("9998", environment.getProperty(SpringPortSelectionPostProcessor.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
+    public void testPortSelection() {
+        Assert.assertEquals("127.0.0.1", environment.getProperty(PortSelector.JMX_ADDRESS));
+        Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
+        Assert.assertEquals("9999", environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
+        Assert.assertEquals("9998", environment.getProperty(PortSelector.SERVER_PORT));
+        Assert.assertEquals("9998", environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals("9997", environment.getProperty("ot.httpserver.connector.my-https.port"));
-        Assert.assertEquals("9996", environment.getProperty(SpringPortSelectionPostProcessor.JMX_PORT));
+        Assert.assertEquals("9996", environment.getProperty(PortSelector.JMX_PORT));
     }
 }
