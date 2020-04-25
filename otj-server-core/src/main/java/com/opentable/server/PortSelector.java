@@ -120,7 +120,7 @@ public class PortSelector {
                 JMX_PORT,
                  1,
                  "PORT_JMX",
-                null);
+                0);
     }
 
     PortSelection getActuatorPort() {
