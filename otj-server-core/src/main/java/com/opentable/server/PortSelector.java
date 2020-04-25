@@ -30,14 +30,20 @@ public class PortSelector {
     public static class PortSelection {
         private final String payload;
         private final PortSource portSource;
+        private final String sourceInfo;
 
-        public PortSelection(final String payload, final PortSource portSource) {
+        public PortSelection(final String payload, final PortSource portSource, final String sourceInfo) {
             this.payload = payload;
             this.portSource = portSource;
+            this.sourceInfo = sourceInfo;
         }
 
         public static PortSelection empty() {
-            return new PortSelection(null, PortSource.NOT_FOUND);
+            return new PortSelection(null, PortSource.NOT_FOUND, null);
+        }
+
+        public String getSourceInfo() {
+            return sourceInfo;
         }
 
         public PortSource getPortSource() {
@@ -64,6 +70,7 @@ public class PortSelector {
         public String toString() {
             return  "PayloadResult{" + "payload='" + payload + '\'' +
                     ", payloadSource=" + portSource +
+                    ", sourceInfo=" + sourceInfo +
                     '}';
         }
     }
@@ -97,7 +104,7 @@ public class PortSelector {
         if (propertyName != null && environment.containsProperty(propertyName))  {
             String propertyValue = environment.getProperty(propertyName);
             if (propertyValue != null) {
-                return new PortSelection(propertyValue, portSource);
+                return new PortSelection(propertyValue, portSource, propertyName);
             }
         }
         return PortSelection.empty();
@@ -105,7 +112,7 @@ public class PortSelector {
 
     public PortSelection getWithDefault(final String springProperty, final int ordinal, final String namedPort, Integer defaultV) {
         PortSelection portSelection = get(springProperty, ordinal, namedPort );
-        return portSelection.hasValue() ? portSelection : new PortSelection(String.valueOf(defaultV), PortSource.FROM_DEFAULT_VALUE);
+        return portSelection.hasValue() ? portSelection : new PortSelection(String.valueOf(defaultV), PortSource.FROM_DEFAULT_VALUE, String.valueOf(defaultV));
     }
 
     PortSelection getJMXPort() {

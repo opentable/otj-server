@@ -76,12 +76,8 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
     private PropertySource<Integer> getPortPropertySource(ConfigurableEnvironment environment, PortSelector portSelector) {
         final Map<String, PortSelector.PortSelection> portSelectionMap = portSelector.getPortSelectionMap();
         final StringBuilder sb = new StringBuilder(4096);
-        portSelectionMap.forEach((key, value) -> {
-            sb.append(key).append(" =  ").append(value.toString());
-            sb.append("\r\n");
-        });
-        //TODO: not sure this is actually being logged?
-        LOG.debug("Port Selector: \n{}", sb.toString());
+        portSelectionMap.forEach((key, value) -> sb.append(key).append(" ==> ").append(value.toString()).append('\r'));
+        LOG.debug("\nPort Selections: \n{}", sb.toString());
         return new OtPortSelectorPropertySource(environment, ImmutableMap.copyOf(portSelectionMap));
     }
 
