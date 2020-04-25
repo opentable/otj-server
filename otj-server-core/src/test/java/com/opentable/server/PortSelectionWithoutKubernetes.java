@@ -40,7 +40,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "PORT1=20",
         "PORT2=30",
         "PORT_ACTUATOR=9999",
-        "PORT_HTTP=9998",
+        "PORT_HTTP=10001",
     //    "ot.jmx.port=44444",
         "PORT_MY-HTTPS=9997",
         "PORT_JMX=9996",
