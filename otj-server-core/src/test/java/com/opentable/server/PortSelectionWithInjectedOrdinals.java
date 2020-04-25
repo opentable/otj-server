@@ -43,19 +43,21 @@ import org.springframework.test.context.junit4.SpringRunner;
         "IS_KUBERNETES=TRUE"
 })
 public class PortSelectionWithInjectedOrdinals {
+    static String LOCALHOST = "127.0.0.1";
+    static String ASSIGN_NEXT_AVAILABLE = "-1";
 
     @Inject
     private ConfigurableEnvironment environment;
 
     @Test
     public void testPortSelection() {
-        Assert.assertEquals("127.0.0.1", environment.getProperty(PortSelector.JMX_ADDRESS));
+        Assert.assertEquals(LOCALHOST, environment.getProperty(PortSelector.JMX_ADDRESS));
         Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
         Assert.assertEquals(environment.getProperty("PORT2"), environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
         Assert.assertEquals(environment.getProperty("PORT0"), environment.getProperty(PortSelector.SERVER_PORT));
         Assert.assertEquals(environment.getProperty("PORT0"), environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
-        Assert.assertEquals("-1", environment.getProperty("ot.httpserver.connector.my-https.port"));
-        Assert.assertEquals("-1", environment.getProperty("ot.httpserver.connector.fake.port"));
+        Assert.assertEquals(ASSIGN_NEXT_AVAILABLE, environment.getProperty("ot.httpserver.connector.my-https.port"));
+        Assert.assertEquals(ASSIGN_NEXT_AVAILABLE, environment.getProperty("ot.httpserver.connector.fake.port"));
         Assert.assertEquals(environment.getProperty("PORT1"), environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)

@@ -48,13 +48,13 @@ public class PortSelectionAllDefaultsTest {
 
     @Test
     public void testPortSelection() {
-        Assert.assertEquals("127.0.0.1", environment.getProperty(PortSelector.JMX_ADDRESS));
+        Assert.assertEquals(PortSelectionWithInjectedOrdinals.LOCALHOST, environment.getProperty(PortSelector.JMX_ADDRESS));
         Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
         Assert.assertEquals("0", environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
         Assert.assertEquals("8080", environment.getProperty(PortSelector.SERVER_PORT));
-        Assert.assertEquals("-1", environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
-        Assert.assertEquals("-1", environment.getProperty("ot.httpserver.connector.my-https.port"));
-        Assert.assertEquals("-1", environment.getProperty("ot.httpserver.connector.fake.port"));
+        Assert.assertEquals(PortSelectionWithInjectedOrdinals.ASSIGN_NEXT_AVAILABLE, environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
+        Assert.assertEquals(PortSelectionWithInjectedOrdinals.ASSIGN_NEXT_AVAILABLE, environment.getProperty("ot.httpserver.connector.my-https.port"));
+        Assert.assertEquals(PortSelectionWithInjectedOrdinals.ASSIGN_NEXT_AVAILABLE, environment.getProperty("ot.httpserver.connector.fake.port"));
         Assert.assertEquals("0", environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)
