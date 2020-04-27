@@ -67,8 +67,12 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         boolean isKubernetes = PortSelector.isKubernetes(environment);
         if (isKubernetes) {
             map.put(PortSelector.JMX_ADDRESS, "127.0.0.1"); //NOPMD
+            // No point, since this must be a -D system proeprty as java starts up
             if (environment.containsProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME)) {
-                map.put(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME, "127.0.0.1"); //NOPMD
+                if (!"127.0.0.1".equals(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME))) { //NOPMD
+                    LOG.warn("JMX provided but {} should be 127.0.0.1", JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME); //NOPMD
+                }
+//                map.put(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME, "127.0.0.1"); //NOPMD
             }
         }
         return new MapPropertySource(JMX_PROPERTY_SOURCE, map);
