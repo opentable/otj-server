@@ -128,6 +128,8 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
             // otj-server named connector
             // This is safe, because it won't be queried if it's not in the list, otherwise
             // it would insert a value that shouldn't exist
+            //TODO: Discuss with Lu - this would ignore the CURRENT property. I think it should
+            // return null instead?
             if (isK8s && propertyName.matches("ot\\.httpserver\\.connector\\..*\\.port")) {
                 final String namedPort = propertyName.split("\\.")[3].toUpperCase(Locale.US);
                 return  Integer.parseInt(environment.getProperty("PORT_" + namedPort, "-1"));
