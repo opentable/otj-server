@@ -35,11 +35,12 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringPortSelectionPostProcessor.class);
     private static final String JMX_PROPERTY_SOURCE = "ot-jmx-properties";
+    public static final String PROCESSOR_TEST= "processor-test";
 
     @Override
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
         Arrays.stream(environment.getActiveProfiles())
-                .filter("deployed"::equals)
+                .filter(t -> (t.equals("deployed") || t.equals(PROCESSOR_TEST)))
                 .filter(i -> "true".equalsIgnoreCase(environment.getProperty("ot.port-selector.enabled", "true")))
                 .findFirst()
                 .map(i -> environment)
@@ -100,7 +101,8 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
 
         @Override
         public Integer getProperty(@NonNull String propertyName) {
-            if (OnKubernetesCondition.ON_KUBERNETES.equalsIgnoreCase(propertyName) || "ot.httpserver.connector.default.port".equalsIgnoreCase(propertyName)) {
+            if (OnKubernetesCondition.ON_KUBERNETES.equalsIgnoreCase(propertyName)
+                    || "ot.httpserver.connector.default.port".equalsIgnoreCase(propertyName)) {
                 return null;
             }
             final boolean isK8s = PortSelector.isKubernetes(environment);
