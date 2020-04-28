@@ -46,6 +46,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "PORT_JMX=9996",
       //  "management.server.port=50",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
+        "IS_KUBERNETES=false"
 })
 public class PortSelectionWithoutKubernetesTest {
 

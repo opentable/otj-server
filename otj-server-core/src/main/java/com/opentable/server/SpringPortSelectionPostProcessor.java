@@ -30,7 +30,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.lang.NonNull;
 
 import com.opentable.service.OnKubernetesCondition;
-
+//TODO: make sure dmitry tested with Cloud Config - concerned about order of precedence
 public class SpringPortSelectionPostProcessor implements EnvironmentPostProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringPortSelectionPostProcessor.class);
@@ -101,6 +101,8 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
 
         @Override
         public Integer getProperty(@NonNull String propertyName) {
+            // First, short circuit and return nothing here.
+            // These prevent infinite loops
             if (OnKubernetesCondition.ON_KUBERNETES.equalsIgnoreCase(propertyName)
                     || "ot.httpserver.connector.default.port".equalsIgnoreCase(propertyName)) {
                 return null;
