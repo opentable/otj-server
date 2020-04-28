@@ -115,7 +115,7 @@ public class PortSelector {
 
     private PortSelection get(String propertyName, PortSource portSource) {
         if (propertyName != null && environment.containsProperty(propertyName))  {
-            String propertyValue = environment.getProperty(propertyName);
+            final String propertyValue = environment.getProperty(propertyName);
             if (propertyValue != null) {
                 return new PortSelection(propertyValue, portSource, propertyName);
             }
@@ -124,7 +124,7 @@ public class PortSelector {
     }
 
     public PortSelection getWithDefault(final String springProperty, final int ordinal, final String namedPort, int defaultV) {
-        PortSelection portSelection = get(springProperty, ordinal, namedPort );
+        final PortSelection portSelection = get(springProperty, ordinal, namedPort );
         return portSelection.hasValue() ? portSelection : new PortSelection(String.valueOf(defaultV), PortSource.FROM_DEFAULT_VALUE, String.valueOf(defaultV));
     }
 
@@ -144,8 +144,8 @@ public class PortSelector {
 
     public Map<String, PortSelection> getPortSelectionMap() {
         final Map<String, PortSelector.PortSelection> portSelectionMap = new HashMap<>();
-        // server.port
 
+        // server.port
         //TODO: won't this conflict with the default-http? Discuss with Dmitry.
         //TODO: Dmitry, the docs I found claimed ssl is on by default? and keystore is what in combo activates it
         String namedPort = Boolean.parseBoolean(
@@ -153,10 +153,10 @@ public class PortSelector {
         //TODO: discuss with dmitry: shouldn't the default be null? eg not flipping this on at all
         portSelectionMap.put(SERVER_PORT, getWithDefault(SERVER_PORT, 0, namedPort, 8080 ));
 
+        // ot.httpserver.connector.default-http.port
         namedPort = "http".equalsIgnoreCase(
                 environment.getProperty(HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PROTOCOL, "http")) ? "PORT_HTTP"
                 : "PORT_HTTPS";
-        // ot.httpserver.connector.default-http.port
         portSelectionMap.put(HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT,
                 getWithDefault(HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT, 0, namedPort, -1));
 
@@ -165,6 +165,7 @@ public class PortSelector {
         // actuator
         //TODO: discuss with dmitry: shouldn't the default be null? eg not flipping this on at all
         portSelectionMap.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
+
         return portSelectionMap;
     }
 }
