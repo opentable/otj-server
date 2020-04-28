@@ -135,7 +135,8 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
             // This is safe, because it won't be queried if it's not in the list, otherwise
             // it would insert a value that shouldn't exist
             //TODO: Discuss with Lu - this would ignore the CURRENT property. I think it should
-            // return null instead?
+            // return null instead? Because otherwise this PropertySource will force to -1, something
+            // that was handled earlier
             //TODO: Dmitry since not all PropertySources are enumerable, I don't think this can be calculated statically, sigh
             if (isK8s && propertyName.matches("ot\\.httpserver\\.connector\\..*\\.port")) {
                 final String namedPort = propertyName.split("\\.")[3].toUpperCase(Locale.US);
