@@ -123,7 +123,7 @@ public class PortSelector {
         return PortSelection.empty();
     }
 
-    public PortSelection getWithDefault(final String springProperty, final int ordinal, final String namedPort, Integer defaultV) {
+    public PortSelection getWithDefault(final String springProperty, final int ordinal, final String namedPort, int defaultV) {
         PortSelection portSelection = get(springProperty, ordinal, namedPort );
         return portSelection.hasValue() ? portSelection : new PortSelection(String.valueOf(defaultV), PortSource.FROM_DEFAULT_VALUE, String.valueOf(defaultV));
     }
