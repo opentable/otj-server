@@ -108,6 +108,11 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
             }
             final boolean isK8s = PortSelector.isKubernetes(environment);
 
+            //TODO: How strongly do you feel about case insensitivity dmitry?
+            // Otherwise most of this could collapse down to
+//            if (portSelectionMap.containsKey(propertyName)) {
+//                return portSelectionMap.get(propertyName).getAsInteger();
+//            }
             // Default spring boot
             if (PortSelector.SERVER_PORT.equalsIgnoreCase(propertyName)) {
                 return portSelectionMap.get(PortSelector.SERVER_PORT).getAsInteger();
@@ -131,6 +136,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
             // it would insert a value that shouldn't exist
             //TODO: Discuss with Lu - this would ignore the CURRENT property. I think it should
             // return null instead?
+            //TODO: Dmitry since not all PropertySources are enumerable, I don't think this can be calculated statically, sigh
             if (isK8s && propertyName.matches("ot\\.httpserver\\.connector\\..*\\.port")) {
                 final String namedPort = propertyName.split("\\.")[3].toUpperCase(Locale.US);
                 return  Integer.parseInt(environment.getProperty("PORT_" + namedPort, "-1"));
