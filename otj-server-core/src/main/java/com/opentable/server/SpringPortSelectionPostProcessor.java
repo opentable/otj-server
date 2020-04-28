@@ -35,7 +35,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringPortSelectionPostProcessor.class);
     private static final String JMX_PROPERTY_SOURCE = "ot-jmx-properties";
-    public static final String PROCESSOR_TEST= "processor-test";
+    public static final String PROCESSOR_TEST= "environment-processor-test";
 
     @Override
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
@@ -73,7 +73,6 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
                 if (!"127.0.0.1".equals(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME))) { //NOPMD
                     LOG.warn("JMX provided but {} should be 127.0.0.1", JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME); //NOPMD
                 }
-//                map.put(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME, "127.0.0.1"); //NOPMD
             }
         }
         return new MapPropertySource(JMX_PROPERTY_SOURCE, map);
@@ -82,7 +81,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         final Map<String, PortSelector.PortSelection> portSelectionMap = portSelector.getPortSelectionMap();
         final StringBuilder sb = new StringBuilder(4096);
         portSelectionMap.forEach((key, value) -> sb.append(key).append(" ==> ").append(value.toString()).append('\r'));
-        LOG.debug("\nPort Selections: \n{}", sb.toString());
+        LOG.info("\nPort Selections: \n{}", sb.toString());
         return new OtPortSelectorPropertySource(environment, ImmutableMap.copyOf(portSelectionMap));
     }
 
