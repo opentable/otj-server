@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -36,15 +37,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
-        "PORT_ACTUATOR=9999",
-        "PORT_HTTP=9998",
-    //    "ot.jmx.port=44444",
-        "PORT_MY-HTTPS=9997",
-        "PORT_JMX=9996",
-   //     "management.server.port=50",
+        "PORT_ACTUATOR=5558",
+        "PORT_HTTP=5559",
+        "PORT_MY-HTTPS=5560",
+        "PORT_JMX=5561",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
-        "IS_KUBERNETES=TRUE"
+        "IS_KUBERNETES=TRUE",
+        "ot.httpserver.active-connectors=default-http,my-https"
 })
+@DirtiesContext
 public class PortSelectionWithNamedPortsTest {
 
     @Inject
@@ -55,10 +56,8 @@ public class PortSelectionWithNamedPortsTest {
         Assert.assertEquals(PortSelectionWithInjectedOrdinalsTest.LOCALHOST, environment.getProperty(PortSelector.JMX_ADDRESS));
         Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
         Assert.assertEquals(environment.getProperty("PORT_ACTUATOR"), environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
-        Assert.assertEquals(environment.getProperty("PORT_HTTP"), environment.getProperty(PortSelector.SERVER_PORT));
         Assert.assertEquals(environment.getProperty("PORT_HTTP"), environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals(environment.getProperty("PORT_MY-HTTPS"), environment.getProperty("ot.httpserver.connector.my-https.port"));
-        Assert.assertEquals(PortSelectionWithInjectedOrdinalsTest.ASSIGN_NEXT_AVAILABLE, environment.getProperty("ot.httpserver.connector.fake.port"));
         Assert.assertEquals(environment.getProperty("PORT_JMX"), environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)

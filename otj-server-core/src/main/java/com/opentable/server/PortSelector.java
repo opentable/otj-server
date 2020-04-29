@@ -13,25 +13,29 @@
  */
 package com.opentable.server;
 
-import java.util.HashMap;
+import static com.opentable.server.EmbeddedJettyBase.BOOT_CONNECTOR_NAME;
+import static com.opentable.server.EmbeddedJettyBase.DEFAULT_CONNECTOR_NAME;
+
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 
 import com.opentable.service.OnKubernetesCondition;
 
 public class PortSelector {
 
-    private final Environment environment;
     static final String MANAGEMENT_SERVER_PORT = "management.server.port";
     static final String JMX_ADDRESS = "ot.jmx.address";
     static final String JMX_PORT = "ot.jmx.port";
     static final String HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT = "ot.httpserver.connector.default-http.port";
-    private static final String HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PROTOCOL = "ot.httpserver.connector.default-http.protocol";
     static final String SERVER_PORT = "server.port";
     private static final String SERVER_SSL_ENABLED = "server.ssl.enabled";
+
     public enum PortSource {
         FROM_SPRING_PROPERTY,
         FROM_PORT_ORDINAL,
@@ -40,19 +44,24 @@ public class PortSelector {
         NOT_FOUND
     }
 
+    private final Environment environment;
+    private int portIndex = 0;
+
     public static class PortSelection {
         private final String payload;
         private final PortSource portSource;
         private final String sourceInfo;
+        private final String name;
 
-        public PortSelection(final String payload, final PortSource portSource, final String sourceInfo) {
+        public PortSelection(final String name, final String payload, final PortSource portSource, final String sourceInfo) {
+            this.name = name;
             this.payload = payload;
             this.portSource = portSource;
             this.sourceInfo = sourceInfo;
         }
 
-        public static PortSelection empty() {
-            return new PortSelection(null, PortSource.NOT_FOUND, null);
+        public static PortSelection empty(String name) {
+            return new PortSelection(name, null, PortSource.NOT_FOUND, null);
         }
 
         public String getSourceInfo() {
@@ -81,7 +90,7 @@ public class PortSelector {
 
         @Override
         public String toString() {
-            return  "PayloadResult{" + "payload='" + payload + '\'' +
+            return "PayloadResult{" + "payload='" + payload + '\'' +
                     ", payloadSource=" + portSource +
                     ", sourceInfo=" + sourceInfo +
                     '}';
@@ -92,80 +101,62 @@ public class PortSelector {
         this.environment = environment;
     }
 
-    private PortSelection get(
-                                      String springPropertyName,
-                                      int ordinal,
-                                      String portName) {
-        // First the named port - hence on k8s this gets precedence
-        PortSelection portSelection = get(portName, PortSource.FROM_PORT_NAMED);
-        if (!portSelection.hasValue()) {
-            // Then the "official" spring property
-            portSelection =  get(springPropertyName, PortSource.FROM_SPRING_PROPERTY);
-            if (!portSelection.hasValue()) {
-                // Finally the PORTn using a best guess here.
-                portSelection = get("PORT" + ordinal, PortSource.FROM_PORT_ORDINAL);
+    private PortSelection get(String springPropertyName, String namedPort) {
+        PortSelection portSelection = get(springPropertyName, springPropertyName, PortSource.FROM_SPRING_PROPERTY);
+        if (!portSelection.hasValue() || "-1".equals(portSelection.getPayload())) {
+            if (isKubernetes(environment)) {
+                portSelection = get(springPropertyName, namedPort, PortSource.FROM_PORT_NAMED);
+            } else {
+                portSelection = get(springPropertyName, "PORT" + portIndex, PortSource.FROM_PORT_ORDINAL);
+                portIndex++;
             }
         }
         return portSelection;
     }
 
-    public static boolean isKubernetes(ConfigurableEnvironment environment) {
+    public static boolean isKubernetes(Environment environment) {
         return "true".equalsIgnoreCase(environment.getProperty(OnKubernetesCondition.ON_KUBERNETES, "false"));
     }
 
-    private PortSelection get(String propertyName, PortSource portSource) {
-        if (propertyName != null && environment.containsProperty(propertyName))  {
+    private PortSelection get(String name, String propertyName, PortSource portSource) {
+        if (propertyName != null && environment.containsProperty(propertyName)) {
             final String propertyValue = environment.getProperty(propertyName);
             if (propertyValue != null) {
-                return new PortSelection(propertyValue, portSource, propertyName);
+                return new PortSelection(name, propertyValue, portSource, propertyName);
             }
         }
-        return PortSelection.empty();
+        return PortSelection.empty(name);
     }
 
-    public PortSelection getWithDefault(final String springProperty, final int ordinal, final String namedPort, int defaultV) {
-        final PortSelection portSelection = get(springProperty, ordinal, namedPort );
-        return portSelection.hasValue() ? portSelection : new PortSelection(String.valueOf(defaultV), PortSource.FROM_DEFAULT_VALUE, String.valueOf(defaultV));
+    public PortSelection getWithDefault(final String springProperty, final String namedPort, int defaultV) {
+        final PortSelection portSelection = get(springProperty, namedPort);
+        return portSelection.hasValue() ? portSelection : new PortSelection(springProperty, String.valueOf(defaultV), PortSource.FROM_DEFAULT_VALUE, String.valueOf(defaultV));
     }
 
-    PortSelection getJMXPort() {
-        return getWithDefault(
-                JMX_PORT,
-                 1,
-                 "PORT_JMX",
-                0);
+    private PortSelection getJMXPort() {
+        return getWithDefault(JMX_PORT, "PORT_JMX", 0);
     }
 
-    PortSelection getActuatorPort() {
-        return getWithDefault(MANAGEMENT_SERVER_PORT,
-                2,
-                "PORT_ACTUATOR",0);
+    private PortSelection getActuatorPort() {
+        return get(MANAGEMENT_SERVER_PORT, "PORT_ACTUATOR");
     }
 
     public Map<String, PortSelection> getPortSelectionMap() {
-        final Map<String, PortSelector.PortSelection> portSelectionMap = new HashMap<>();
-
-        // server.port
-        //TODO: won't this conflict with the default-http? Discuss with Dmitry.
-        //TODO: Dmitry, the docs I found claimed ssl is on by default? and keystore is what in combo activates it
-        String namedPort = Boolean.parseBoolean(
-                environment.getProperty(SERVER_SSL_ENABLED, "true")) && environment.getProperty("server.ssl.key-store") != null ? "PORT_HTTPS" : "PORT_HTTP";
-        //TODO: discuss with dmitry: shouldn't the default be null? eg not flipping this on at all
-        portSelectionMap.put(SERVER_PORT, getWithDefault(SERVER_PORT, 0, namedPort, 8080 ));
-
-        // ot.httpserver.connector.default-http.port
-        namedPort = "http".equalsIgnoreCase(
-                environment.getProperty(HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PROTOCOL, "http")) ? "PORT_HTTP"
-                : "PORT_HTTPS";
-        portSelectionMap.put(HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT,
-                getWithDefault(HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT, 0, namedPort, -1));
-
-        // jmx
-        portSelectionMap.put(JMX_PORT, getJMXPort());
-        // actuator
-        //TODO: discuss with dmitry: shouldn't the default be null? eg not flipping this on at all
-        portSelectionMap.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
-
-        return portSelectionMap;
+        Map<String, PortSelection> res = Arrays.stream(environment.getProperty("ot.httpserver.active-connectors", "default-http").split(","))
+                .map(connectorName -> {
+                    if (connectorName.equals(BOOT_CONNECTOR_NAME)) {
+                        final boolean sslEnabled = Boolean.parseBoolean(environment.getProperty(SERVER_SSL_ENABLED, "true"))
+                                && environment.getProperty("server.ssl.key-store") != null;
+                        return getWithDefault(SERVER_PORT, sslEnabled ? "PORT_HTTPS" : "PORT_HTTP", 8080);
+                    }
+                    if (connectorName.equals(DEFAULT_CONNECTOR_NAME)) {
+                        final boolean sslEnabled = "https".equalsIgnoreCase(environment.getProperty("ot.httpserver.connector." + connectorName + ".protocol", "http"));
+                        return getWithDefault("ot.httpserver.connector." + connectorName + ".port", sslEnabled ? "PORT_HTTPS" : "PORT_HTTP", 0);
+                    }
+                    return getWithDefault("ot.httpserver.connector." + connectorName + ".port", "PORT_" + connectorName.toUpperCase(Locale.US), 0);
+                }).collect(Collectors.toMap(i -> i.name, Function.identity()));
+        res.put(JMX_PORT, getJMXPort());
+        res.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
+        return res;
     }
 }
