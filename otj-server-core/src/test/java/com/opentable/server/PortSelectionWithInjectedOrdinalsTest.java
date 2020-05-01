@@ -41,6 +41,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "PORT1=5556",
         "PORT2=5557",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
+        "ot.httpserver.connector.default-http.port=-1",
         "IS_KUBERNETES=false"
 })
 @DirtiesContext
