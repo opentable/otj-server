@@ -19,6 +19,7 @@ import static com.opentable.server.EmbeddedJettyBase.DEFAULT_CONNECTOR_NAME;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,16 +46,16 @@ public class PortSelector {
     }
 
     private final Environment environment;
-    private int portIndex = 0;
+    private final AtomicInteger portIndex = new AtomicInteger(0);
 
     public static class PortSelection {
         private final String payload;
         private final PortSource portSource;
         private final String sourceInfo;
-        private final String name;
+        private final String originalPropertyName;
 
-        public PortSelection(final String name, final String payload, final PortSource portSource, final String sourceInfo) {
-            this.name = name;
+        public PortSelection(final String originalPropertyName, final String payload, final PortSource portSource, final String sourceInfo) {
+            this.originalPropertyName = originalPropertyName;
             this.payload = payload;
             this.portSource = portSource;
             this.sourceInfo = sourceInfo;
@@ -102,16 +103,21 @@ public class PortSelector {
     }
 
     private PortSelection get(String springPropertyName, String namedPort) {
-        PortSelection portSelection = get(springPropertyName, springPropertyName, PortSource.FROM_SPRING_PROPERTY);
-        if (!portSelection.hasValue() || "-1".equals(portSelection.getPayload())) {
-            if (isKubernetes(environment)) {
-                portSelection = get(springPropertyName, namedPort, PortSource.FROM_PORT_NAMED);
-            } else {
-                portSelection = get(springPropertyName, "PORT" + portIndex, PortSource.FROM_PORT_ORDINAL);
-                portIndex++;
+        PortSelection portSelection;
+        if (isKubernetes(environment)) {
+            // For k8s, always prefer named ports, even override user supplied property.
+            portSelection = get(springPropertyName, namedPort, PortSource.FROM_PORT_NAMED);
+            if (!portSelection.hasValue()) {
+                portSelection = get(springPropertyName, springPropertyName, PortSource.FROM_SPRING_PROPERTY);
+            }
+        } else {
+            // for singularity, if property not set or set to -1, allocate PORTn
+            portSelection = get(springPropertyName, springPropertyName, PortSource.FROM_SPRING_PROPERTY);
+            if (!portSelection.hasValue() || "-1".equals(portSelection.getPayload())) {
+                portSelection = get(springPropertyName, "PORT" + portIndex.getAndIncrement(), PortSource.FROM_PORT_ORDINAL);
             }
         }
-        return portSelection;
+       return portSelection;
     }
 
     public static boolean isKubernetes(Environment environment) {
@@ -143,6 +149,7 @@ public class PortSelector {
 
     public Map<String, PortSelection> getPortSelectionMap() {
         Map<String, PortSelection> res = Arrays.stream(environment.getProperty("ot.httpserver.active-connectors", "default-http").split(","))
+                .map(String::trim)
                 .map(connectorName -> {
                     if (connectorName.equals(BOOT_CONNECTOR_NAME)) {
                         final boolean sslEnabled = Boolean.parseBoolean(environment.getProperty(SERVER_SSL_ENABLED, "true"))
@@ -154,7 +161,7 @@ public class PortSelector {
                         return getWithDefault("ot.httpserver.connector." + connectorName + ".port", sslEnabled ? "PORT_HTTPS" : "PORT_HTTP", 0);
                     }
                     return getWithDefault("ot.httpserver.connector." + connectorName + ".port", "PORT_" + connectorName.toUpperCase(Locale.US), 0);
-                }).collect(Collectors.toMap(i -> i.name, Function.identity()));
+                }).collect(Collectors.toMap(i -> i.originalPropertyName, Function.identity()));
         res.put(JMX_PORT, getJMXPort());
         res.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
         return res;
