@@ -37,8 +37,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
-    //    "ot.jmx.port=44444",
-   //     "management.server.port=50",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
         "IS_KUBERNETES=TRUE",
         "ot.httpserver.active-connectors=my-https,boot,default-http,fake"
@@ -51,9 +49,13 @@ public class PortSelectionAllDefaultsInKubernetesTest {
 
     @Test
     public void testPortSelection() {
+        // Since we're in kubernetes, should switch to 127.0.0.1
         Assert.assertEquals(PortSelectionWithInjectedOrdinalsWithoutKubernetesTest.LOCALHOST, environment.getProperty(PortSelector.JMX_ADDRESS));
+        // No one defined this
         Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
+        // There's no named port or spring property and no default
         Assert.assertNull(environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
+        // There's no named port, nor spring property, but a default is provied
         Assert.assertEquals("8080", environment.getProperty(PortSelector.SERVER_PORT));
         Assert.assertEquals("0", environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals("0", environment.getProperty("ot.httpserver.connector.my-https.port"));
@@ -67,5 +69,8 @@ public class PortSelectionAllDefaultsInKubernetesTest {
         Assert.assertEquals(6, portSelectionMap.size());
         Assert.assertEquals(5,
                 portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_DEFAULT_VALUE)).count());
+        // The actuator port
+        Assert.assertEquals(1,
+                portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.NOT_FOUND)).count());
     }
 }

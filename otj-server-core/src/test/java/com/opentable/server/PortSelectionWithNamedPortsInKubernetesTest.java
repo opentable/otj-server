@@ -39,6 +39,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "INSTANCE_NO=3",
         "PORT_ACTUATOR=5558",
         "PORT_HTTP=5559",
+        "ot.jmx.address=192.168.2.1",
         "PORT_MY-HTTPS=5560",
         "ot.jmx.port=5561",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
@@ -53,11 +54,15 @@ public class PortSelectionWithNamedPortsInKubernetesTest {
 
     @Test
     public void testPortSelection() {
+        // In kubernetes so set to localhost
         Assert.assertEquals(PortSelectionWithInjectedOrdinalsWithoutKubernetesTest.LOCALHOST, environment.getProperty(PortSelector.JMX_ADDRESS));
+        // Never set.
         Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
+        // Named ports for all of these!
         Assert.assertEquals(environment.getProperty("PORT_ACTUATOR"), environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
         Assert.assertEquals(environment.getProperty("PORT_HTTP"), environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals(environment.getProperty("PORT_MY-HTTPS"), environment.getProperty("ot.httpserver.connector.my-https.port"));
+        // Uses spring property, since named port not specified
         Assert.assertEquals("5561", environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)
@@ -65,7 +70,9 @@ public class PortSelectionWithNamedPortsInKubernetesTest {
         Assert.assertNotNull(tt);
         Map<String, PortSelector.PortSelection> portSelectionMap = tt.getPortSelectionMap();
         Assert.assertEquals(4, portSelectionMap.size());
+        // 3 named ports
         Assert.assertEquals(3, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_PORT_NAMED)).count());
+        // and then there's jmx...
         Assert.assertEquals(1, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_SPRING_PROPERTY)).count());
     }
 }

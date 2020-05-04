@@ -47,16 +47,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext
 public class PortSelectionWithInjectedOrdinalsWithoutKubernetesTest {
     static String LOCALHOST = "127.0.0.1";
-    static String ASSIGN_NEXT_AVAILABLE = "-1";
 
     @Inject
     private ConfigurableEnvironment environment;
 
     @Test
     public void testPortSelection() {
+        // Not set, just a fail safe
         Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
+        // Gets port3, since no property, and last in line
         Assert.assertEquals(environment.getProperty("PORT2"), environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
+        // Gets port0, since no property, and first in line
         Assert.assertEquals(environment.getProperty("PORT0"), environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
+        // Gets port1, since no property, and next to last in line
         Assert.assertEquals(environment.getProperty("PORT1"), environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)
@@ -64,6 +67,7 @@ public class PortSelectionWithInjectedOrdinalsWithoutKubernetesTest {
         Assert.assertNotNull(tt);
         Map<String, PortSelector.PortSelection> portSelectionMap = tt.getPortSelectionMap();
         Assert.assertEquals(3, portSelectionMap.size());
+        // All ordinals
         Assert.assertEquals(3, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_PORT_ORDINAL)).count());
     }
 }

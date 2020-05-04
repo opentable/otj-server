@@ -54,7 +54,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         environment.getPropertySources()
                 .addFirst(getPortPropertySource(environment, portSelector));
         environment.getPropertySources()
-                .addLast(getHostPropertySource(environment));
+                .addFirst(getHostPropertySource(environment));
     }
 
     private MapPropertySource getHostPropertySource(ConfigurableEnvironment environment) {

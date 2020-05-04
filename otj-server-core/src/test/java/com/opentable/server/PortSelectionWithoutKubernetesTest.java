@@ -59,13 +59,16 @@ public class PortSelectionWithoutKubernetesTest {
 
     @Test
     public void testPortSelection() {
+
         Assert.assertNull(environment.getProperty(PortSelector.JMX_ADDRESS));
         Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
         Assert.assertEquals("44444", environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
+        // We have enough ports, so we expect the ordinal port allocator to work
         Assert.assertEquals(environment.getProperty("PORT1"), environment.getProperty(PortSelector.SERVER_PORT));
         Assert.assertEquals(environment.getProperty("PORT0"), environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals(environment.getProperty("PORT2"), environment.getProperty("ot.httpserver.connector.my-https.port"));
         Assert.assertNull( environment.getProperty("ot.httpserver.connector.fake.port"));
+        // And this include jmx...
         Assert.assertEquals(environment.getProperty("PORT3"), environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)
@@ -73,7 +76,9 @@ public class PortSelectionWithoutKubernetesTest {
         Assert.assertNotNull(tt);
         Map<String, PortSelector.PortSelection> portSelectionMap = tt.getPortSelectionMap();
         Assert.assertEquals(5, portSelectionMap.size());
+        // Mostly from ordinal
         Assert.assertEquals(4, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_PORT_ORDINAL)).count());
+        // Except the actuator.
         Assert.assertEquals(1, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_SPRING_PROPERTY)).count());
 
     }
