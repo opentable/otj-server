@@ -218,7 +218,7 @@ public class PortSelector {
         PortSelection serverPort = res.get(PortSelector.SERVER_PORT);
         PortSelection defaultHttpPort = res.get(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT);
         if (serverPort != null && defaultHttpPort != null &&
-                serverPort.getPortSource() != null && serverPort.getPortSource().equals(defaultHttpPort.getPortSource())) {
+                serverPort.getSourceInfo() != null && serverPort.getSourceInfo().equals(defaultHttpPort.getSourceInfo())) {
             LOG.warn("You have defined both the spring boot connector and the default http connector. Under Kubernetes this doesn't function correctly\n.Define a variable PORT_BOOT to workaround this.");
         }
 
