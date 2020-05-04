@@ -15,7 +15,6 @@ package com.opentable.server;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
@@ -28,8 +27,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.lang.NonNull;
-
-import com.opentable.service.OnKubernetesCondition;
 //TODO: make sure dmitry tested with Cloud Config - concerned about order of precedence
 public class SpringPortSelectionPostProcessor implements EnvironmentPostProcessor {
 
@@ -40,7 +37,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
     @Override
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
         Arrays.stream(environment.getActiveProfiles())
-                .filter(t -> (t.equals("deployed") || t.equals(PROCESSOR_TEST)))
+                .filter(t -> ("deployed".equals(t) || PROCESSOR_TEST.equals(t)))
                 .filter(i -> "true".equalsIgnoreCase(environment.getProperty("ot.port-selector.enabled", "true")))
                 .findFirst()
                 .map(i -> environment)
@@ -55,9 +52,9 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
 
         final PortSelector portSelector = new PortSelector(environment);
         environment.getPropertySources()
-                .addLast(getPortPropertySource(environment, portSelector));
+                .addFirst(getPortPropertySource(environment, portSelector));
         environment.getPropertySources()
-                .addLast(getHostPropertySource(environment));
+                .addFirst(getHostPropertySource(environment));
     }
 
     private MapPropertySource getHostPropertySource(ConfigurableEnvironment environment) {
@@ -68,6 +65,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         boolean isKubernetes = PortSelector.isKubernetes(environment);
         if (isKubernetes) {
             map.put(PortSelector.JMX_ADDRESS, "127.0.0.1"); //NOPMD
+            LOG.info("Assigned 127.0.0.1 to JMX address, since it's on kubernetes");
             // No point, since this must be a -D system proeprty as java starts up
             if (environment.containsProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME)) {
                 if (!"127.0.0.1".equals(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME))) { //NOPMD
@@ -86,8 +84,10 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
     }
 
     public static class OtPortSelectorPropertySource extends PropertySource<Integer> {
+
         private final ConfigurableEnvironment environment;
         private final Map<String, PortSelector.PortSelection> portSelectionMap;
+
         public OtPortSelectorPropertySource(ConfigurableEnvironment environment, Map<String, PortSelector.PortSelection> portSelectionMap) {
             super(OtPortSelectorPropertySource.class.getName());
             this.environment = environment;
@@ -100,49 +100,9 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
 
         @Override
         public Integer getProperty(@NonNull String propertyName) {
-            // First, short circuit and return nothing here.
-            // These prevent infinite loops
-            if (OnKubernetesCondition.ON_KUBERNETES.equalsIgnoreCase(propertyName)
-                    || "ot.httpserver.connector.default.port".equalsIgnoreCase(propertyName)) {
-                return null;
+            if (portSelectionMap.containsKey(propertyName)) {
+                return portSelectionMap.get(propertyName).getAsInteger();
             }
-            final boolean isK8s = PortSelector.isKubernetes(environment);
-
-            //TODO: How strongly do you feel about case insensitivity dmitry?
-            // Otherwise most of this could collapse down to
-//            if (portSelectionMap.containsKey(propertyName)) {
-//                return portSelectionMap.get(propertyName).getAsInteger();
-//            }
-            // Default spring boot
-            if (PortSelector.SERVER_PORT.equalsIgnoreCase(propertyName)) {
-                return portSelectionMap.get(PortSelector.SERVER_PORT).getAsInteger();
-            }
-            // otj-server default connector
-            if (PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT.equalsIgnoreCase(propertyName)) {
-                return portSelectionMap.get(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT).getAsInteger();
-            }
-
-            // jmx
-            if (PortSelector.JMX_PORT.equalsIgnoreCase(propertyName)) {
-                return portSelectionMap.get(PortSelector.JMX_PORT).getAsInteger();
-            }
-            // actuator
-            if (PortSelector.MANAGEMENT_SERVER_PORT.equalsIgnoreCase(propertyName)) {
-                return portSelectionMap.get(PortSelector.MANAGEMENT_SERVER_PORT).getAsInteger();
-            }
-
-            // otj-server named connector
-            // This is safe, because it won't be queried if it's not in the list, otherwise
-            // it would insert a value that shouldn't exist
-            //TODO: Discuss with Lu - this would ignore the CURRENT property. I think it should
-            // return null instead? Because otherwise this PropertySource will force to -1, something
-            // that was handled earlier
-            //TODO: Dmitry since not all PropertySources are enumerable, I don't think this can be calculated statically, sigh
-            if (isK8s && propertyName.matches("ot\\.httpserver\\.connector\\..*\\.port")) {
-                final String namedPort = propertyName.split("\\.")[3].toUpperCase(Locale.US);
-                return  Integer.parseInt(environment.getProperty("PORT_" + namedPort, "-1"));
-            }
-
             return null;
         }
     }

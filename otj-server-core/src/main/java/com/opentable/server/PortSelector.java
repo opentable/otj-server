@@ -13,25 +13,33 @@
  */
 package com.opentable.server;
 
-import java.util.HashMap;
+import static com.opentable.server.EmbeddedJettyBase.BOOT_CONNECTOR_NAME;
+import static com.opentable.server.EmbeddedJettyBase.DEFAULT_CONNECTOR_NAME;
+
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.env.ConfigurableEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 
 import com.opentable.service.OnKubernetesCondition;
 
 public class PortSelector {
+    private static final Logger LOG = LoggerFactory.getLogger( PortSelector.class );
 
-    private final Environment environment;
     static final String MANAGEMENT_SERVER_PORT = "management.server.port";
     static final String JMX_ADDRESS = "ot.jmx.address";
     static final String JMX_PORT = "ot.jmx.port";
     static final String HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT = "ot.httpserver.connector.default-http.port";
-    private static final String HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PROTOCOL = "ot.httpserver.connector.default-http.protocol";
     static final String SERVER_PORT = "server.port";
     private static final String SERVER_SSL_ENABLED = "server.ssl.enabled";
+
     public enum PortSource {
         FROM_SPRING_PROPERTY,
         FROM_PORT_ORDINAL,
@@ -40,19 +48,23 @@ public class PortSelector {
         NOT_FOUND
     }
 
+    private final Environment environment;
+
     public static class PortSelection {
         private final String payload;
         private final PortSource portSource;
         private final String sourceInfo;
+        private final String originalPropertyName;
 
-        public PortSelection(final String payload, final PortSource portSource, final String sourceInfo) {
+        public PortSelection(final String originalPropertyName, final String payload, final PortSource portSource, final String sourceInfo) {
+            this.originalPropertyName = originalPropertyName;
             this.payload = payload;
             this.portSource = portSource;
             this.sourceInfo = sourceInfo;
         }
 
-        public static PortSelection empty() {
-            return new PortSelection(null, PortSource.NOT_FOUND, null);
+        public static PortSelection empty(String name) {
+            return new PortSelection(name, null, PortSource.NOT_FOUND, null);
         }
 
         public String getSourceInfo() {
@@ -81,91 +93,159 @@ public class PortSelector {
 
         @Override
         public String toString() {
-            return  "PayloadResult{" + "payload='" + payload + '\'' +
+            return "PayloadResult{" + "payload='" + payload + '\'' +
                     ", payloadSource=" + portSource +
                     ", sourceInfo=" + sourceInfo +
                     '}';
         }
     }
 
+    private final AtomicInteger portIndex = new AtomicInteger(0);
+    private final int maximumPortIndex;
+
     public PortSelector(Environment environment) {
         this.environment = environment;
-    }
-
-    private PortSelection get(
-                                      String springPropertyName,
-                                      int ordinal,
-                                      String portName) {
-        // First the named port - hence on k8s this gets precedence
-        PortSelection portSelection = get(portName, PortSource.FROM_PORT_NAMED);
-        if (!portSelection.hasValue()) {
-            // Then the "official" spring property
-            portSelection =  get(springPropertyName, PortSource.FROM_SPRING_PROPERTY);
-            if (!portSelection.hasValue()) {
-                // Finally the PORTn using a best guess here.
-                portSelection = get("PORT" + ordinal, PortSource.FROM_PORT_ORDINAL);
+        int index = -1;
+        while (true) {
+            index++;
+            if (!environment.containsProperty("PORT" + index)) {
+                break;
             }
         }
-        return portSelection;
+        this.maximumPortIndex = index;
     }
 
-    public static boolean isKubernetes(ConfigurableEnvironment environment) {
+    private synchronized int allocateNewPort(String springPropertyName) {
+        final int nextPort = portIndex.getAndIncrement();
+        final String ordinalPortName = "PORT" + nextPort;
+        if (nextPort > maximumPortIndex) {
+            LOG.warn("Trying to allocate {} for {}, but this port is not defined", ordinalPortName, springPropertyName);
+        } else {
+            LOG.debug("Allocated {} for {} ", ordinalPortName, springPropertyName);
+        }
+        // Regardless of conflict, just return it, though it will fail in some circumstances
+        return nextPort;
+
+    }
+    private PortSelection get(String springPropertyName, String namedPort) {
+        PortSelection portSelection;
+        if (isKubernetes(environment)) {
+            // For k8s, always prefer named ports, even override user supplied property.
+            portSelection = get(springPropertyName, namedPort, PortSource.FROM_PORT_NAMED);
+            if (!portSelection.hasValue()) {
+                portSelection = get(springPropertyName, springPropertyName, PortSource.FROM_SPRING_PROPERTY);
+            }
+        } else {
+            // for singularity, if property not set or set to -1, allocate PORTn
+            portSelection = get(springPropertyName, springPropertyName, PortSource.FROM_SPRING_PROPERTY);
+            //TODO: I still don't like this magic -1, which is arguably only true for otj http
+            if (!portSelection.hasValue() || "-1".equals(portSelection.getPayload())) {
+                final String ordinalPortName = "PORT" + allocateNewPort(springPropertyName);
+                portSelection = get(springPropertyName, ordinalPortName, PortSource.FROM_PORT_ORDINAL);
+            }
+        }
+       return portSelection;
+    }
+
+    public static boolean isKubernetes(Environment environment) {
         return "true".equalsIgnoreCase(environment.getProperty(OnKubernetesCondition.ON_KUBERNETES, "false"));
     }
 
-    private PortSelection get(String propertyName, PortSource portSource) {
-        if (propertyName != null && environment.containsProperty(propertyName))  {
+    private PortSelection get(String name, String propertyName, PortSource portSource) {
+        if (propertyName != null && environment.containsProperty(propertyName)) {
             final String propertyValue = environment.getProperty(propertyName);
             if (propertyValue != null) {
-                return new PortSelection(propertyValue, portSource, propertyName);
+                return new PortSelection(name, propertyValue, portSource, propertyName);
             }
         }
-        return PortSelection.empty();
+        return PortSelection.empty(name);
     }
 
-    public PortSelection getWithDefault(final String springProperty, final int ordinal, final String namedPort, int defaultV) {
-        final PortSelection portSelection = get(springProperty, ordinal, namedPort );
-        return portSelection.hasValue() ? portSelection : new PortSelection(String.valueOf(defaultV), PortSource.FROM_DEFAULT_VALUE, String.valueOf(defaultV));
+    public PortSelection getWithDefault(final String springProperty, final String namedPort, int defaultV) {
+        final PortSelection portSelection = get(springProperty, namedPort);
+        return portSelection.hasValue() ? portSelection : new PortSelection(springProperty, String.valueOf(defaultV), PortSource.FROM_DEFAULT_VALUE, String.valueOf(defaultV));
     }
 
-    PortSelection getJMXPort() {
-        return getWithDefault(
-                JMX_PORT,
-                 1,
-                 "PORT_JMX",
-                0);
+    private PortSelection getJMXPort() {
+        return getWithDefault(JMX_PORT, "PORT_JMX", 0);
     }
 
-    PortSelection getActuatorPort() {
-        return getWithDefault(MANAGEMENT_SERVER_PORT,
-                2,
-                "PORT_ACTUATOR",0);
+    private PortSelection getActuatorPort() {
+        return get(MANAGEMENT_SERVER_PORT, "PORT_ACTUATOR");
     }
 
     public Map<String, PortSelection> getPortSelectionMap() {
-        final Map<String, PortSelector.PortSelection> portSelectionMap = new HashMap<>();
+        Map<String, PortSelection> res = Arrays.stream(environment.getProperty("ot.httpserver.active-connectors", "default-http").split(","))
+                .map(String::trim)
+                .map(connectorName -> {
+                    /* //TODO: discuss with Dmitry and Lu
+                     * Singularity:
+                     *      Try spring property, then ordinal (up to allocated ports), then default value
+                     * Kubernetes:
+                     *      Try named port, then spring property, then default value
+                     * Hence I see following possibilities
+                     * - In Kubernetes, since PORT_HTTP/PORT_HTTPS may clash, boot + default http can have issues
+                     * //TODO: problem - we now log and detect this, because it's not ideal.
+                     * No good workaround really. I'd rather not have a hierarchy of named ports, but that's one workaround
+                     * - In Singularity, this mostly works
+                     *
+                     * Named http connectors are similar. The obvious thing to do in Kubernetes, which I think is fine, is to
+                     * have most people using named ports injected. That seems eminently reasonable.
+                     * //TODO: discuss with lu if this seems reasonable
+                     *
+                     * The other thing worth mulling is corner cases where falling back to ordinal loop is a problem. It shouldn't be
+                     * of course, but it's worth thinking about. Can we catch and warn about this?
+                     * More concretely, if they actually used an Ordinal Port in their spring property, can
+                     * we log conflicts? That would require the constructor to loop through and get all ordinal values
+                     * in a Map<Integer,Integer>. Is this worth it.
+                     */
+                    if (connectorName.equals(BOOT_CONNECTOR_NAME)) {
+                        final boolean sslEnabled = Boolean.parseBoolean(environment.getProperty(SERVER_SSL_ENABLED, "true"))
+                                && environment.getProperty("server.ssl.key-store") != null;
+                        String namedPort = sslEnabled ? "PORT_HTTPS" : "PORT_HTTP";
+                        if (environment.containsProperty("PORT_BOOT")) {
+                            namedPort = "PORT_BOOT";
+                        }
+                        return getWithDefault(SERVER_PORT, namedPort, 8080);
+                    }
+                    if (connectorName.equals(DEFAULT_CONNECTOR_NAME)) {
+                        final boolean sslEnabled = "https".equalsIgnoreCase(environment.getProperty("ot.httpserver.connector." + connectorName + ".protocol", "http"));
+                        return getWithDefault("ot.httpserver.connector." + connectorName + ".port", sslEnabled ? "PORT_HTTPS" : "PORT_HTTP", 0);
+                    }
+                    return getWithDefault("ot.httpserver.connector." + connectorName + ".port", "PORT_" + connectorName.toUpperCase(Locale.US), 0);
+                }).collect(Collectors.toMap(i -> i.originalPropertyName, Function.identity()));
 
-        // server.port
-        //TODO: won't this conflict with the default-http? Discuss with Dmitry.
-        //TODO: Dmitry, the docs I found claimed ssl is on by default? and keystore is what in combo activates it
-        String namedPort = Boolean.parseBoolean(
-                environment.getProperty(SERVER_SSL_ENABLED, "true")) && environment.getProperty("server.ssl.key-store") != null ? "PORT_HTTPS" : "PORT_HTTP";
-        //TODO: discuss with dmitry: shouldn't the default be null? eg not flipping this on at all
-        portSelectionMap.put(SERVER_PORT, getWithDefault(SERVER_PORT, 0, namedPort, 8080 ));
+        PortSelection serverPort = res.get(PortSelector.SERVER_PORT);
+        PortSelection defaultHttpPort = res.get(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT);
+        if (serverPort != null && defaultHttpPort != null &&
+                serverPort.getSourceInfo() != null && serverPort.getSourceInfo().equals(defaultHttpPort.getSourceInfo())) {
+            LOG.warn("You have defined both the spring boot connector and the default http connector. Under Kubernetes this doesn't function correctly\n.Define a variable PORT_BOOT to workaround this.");
+        }
 
-        // ot.httpserver.connector.default-http.port
-        namedPort = "http".equalsIgnoreCase(
-                environment.getProperty(HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PROTOCOL, "http")) ? "PORT_HTTP"
-                : "PORT_HTTPS";
-        portSelectionMap.put(HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT,
-                getWithDefault(HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT, 0, namedPort, -1));
-
-        // jmx
-        portSelectionMap.put(JMX_PORT, getJMXPort());
-        // actuator
-        //TODO: discuss with dmitry: shouldn't the default be null? eg not flipping this on at all
-        portSelectionMap.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
-
-        return portSelectionMap;
+        /*
+         * Singularity:
+         * - Try spring property, then ordinal (up to allocated ports), then default value
+         * Kubernetes:
+         * - Try named port, then spring property, then default value
+         *
+         * JMX
+         *     - In Singularity, they've probably not defined the property (few people do), hence it will usually try to grab a spare port.
+         * The default value is 0 if no ports available, which disables it. (See JMXConfiguration). That's fine. Note the "other"
+         * JMX (via -D) will have some trouble with this rearrangement potentially, which maybe we should talk about.
+         *     - In Kubernetes, the JMX port will normally have a named port if they follow instructions. If they don't, then that's
+         *     problematic, but seems dealable.
+         *
+         * Actuator
+         *      Note: This implementation skips the default value call, so it won't be set that way if they don't have a spare port.
+         *      - In Singularity they probably defined the property if they need it.
+         * //TODO: Dmitry does this have any negative effect if they HAVE a spare port, but didn't really want to turn on?
+         *
+         *      - In Kubernetes they SHOULD have a named port, but otherwise it will try the spring property. Otherwise, it
+         *      disables
+         *
+         */
+        res.put(JMX_PORT, getJMXPort());
+        res.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
+        return res;
     }
 }

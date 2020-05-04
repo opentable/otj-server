@@ -42,6 +42,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles(profiles = "deployed")
 @TestPropertySource(properties = {
         "PORT_JMX=9999",
+        "IS_KUBERNETES=TRUE",
 })
 
 public class JettyJmxExportTest {
