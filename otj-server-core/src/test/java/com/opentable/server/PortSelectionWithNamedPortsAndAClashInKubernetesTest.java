@@ -76,6 +76,7 @@ public class PortSelectionWithNamedPortsAndAClashInKubernetesTest {
         // and then there's jmx...
         Assert.assertEquals(1, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_SPRING_PROPERTY)).count());
         // Note that we have a clash between our server.port and our default.
+        // In PortSelection.
         PortSelector.PortSelection serverPort = portSelectionMap.get(PortSelector.SERVER_PORT);
         PortSelector.PortSelection defaultHttpPort = portSelectionMap.get(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT);
         Assert.assertEquals(serverPort.getSourceInfo(),defaultHttpPort.getSourceInfo());

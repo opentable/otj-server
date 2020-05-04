@@ -185,7 +185,7 @@ public class PortSelector {
                      *      Try named port, then spring property, then default value
                      * Hence I see following possibilities
                      * - In Kubernetes, since PORT_HTTP/PORT_HTTPS may clash, boot + default http can have issues
-                     * //TODO: problem
+                     * //TODO: problem - we now log and detect this, because it's not ideal.
                      * No good workaround really. I'd rather not have a hierarchy of named ports, but that's one workaround
                      * - In Singularity, this mostly works
                      *
@@ -202,7 +202,11 @@ public class PortSelector {
                     if (connectorName.equals(BOOT_CONNECTOR_NAME)) {
                         final boolean sslEnabled = Boolean.parseBoolean(environment.getProperty(SERVER_SSL_ENABLED, "true"))
                                 && environment.getProperty("server.ssl.key-store") != null;
-                        return getWithDefault(SERVER_PORT, sslEnabled ? "PORT_HTTPS" : "PORT_HTTP", 8080);
+                        String namedPort = sslEnabled ? "PORT_HTTPS" : "PORT_HTTP";
+                        if (environment.containsProperty("PORT_BOOT")) {
+                            namedPort = "PORT_BOOT";
+                        }
+                        return getWithDefault(SERVER_PORT, namedPort, 8080);
                     }
                     if (connectorName.equals(DEFAULT_CONNECTOR_NAME)) {
                         final boolean sslEnabled = "https".equalsIgnoreCase(environment.getProperty("ot.httpserver.connector." + connectorName + ".protocol", "http"));
@@ -210,6 +214,14 @@ public class PortSelector {
                     }
                     return getWithDefault("ot.httpserver.connector." + connectorName + ".port", "PORT_" + connectorName.toUpperCase(Locale.US), 0);
                 }).collect(Collectors.toMap(i -> i.originalPropertyName, Function.identity()));
+
+        PortSelection serverPort = res.get(PortSelector.SERVER_PORT);
+        PortSelection defaultHttpPort = res.get(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT);
+        if (serverPort != null && defaultHttpPort != null &&
+                serverPort.getPortSource() != null && serverPort.getPortSource().equals(defaultHttpPort.getPortSource())) {
+            LOG.warn("You have defined both the spring boot connector and the default http connector. Under Kubernetes this doesn't function correctly\n.Define a variable PORT_BOOT to workaround this.");
+        }
+
         /*
          * Singularity:
          * - Try spring property, then ordinal (up to allocated ports), then default value
