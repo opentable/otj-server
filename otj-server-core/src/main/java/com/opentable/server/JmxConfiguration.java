@@ -73,7 +73,7 @@ public class JmxConfiguration {
 
     @Component
     static class JmxmpServer {
-        private static final String JAVA_RMI_SERVER_HOSTNAME = "java.rmi.server.hostname";
+        public static final String JAVA_RMI_SERVER_HOSTNAME = "java.rmi.server.hostname";
         private static final Logger LOG = LoggerFactory.getLogger(JmxmpServer.class);
         static final String WILDCARD_BIND = "0.0.0.0"; // NOPMD
 
