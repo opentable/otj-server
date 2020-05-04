@@ -40,31 +40,32 @@ import org.springframework.test.context.junit4.SpringRunner;
         "PORT_ACTUATOR=5558",
         "PORT_HTTP=5559",
         "PORT_MY-HTTPS=5560",
-        "PORT_JMX=5561",
+        "ot.jmx.port=5561",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
         "IS_KUBERNETES=TRUE",
         "ot.httpserver.active-connectors=default-http,my-https"
 })
 @DirtiesContext
-public class PortSelectionWithNamedPortsTest {
+public class PortSelectionWithNamedPortsInKubernetesTest {
 
     @Inject
     private ConfigurableEnvironment environment;
 
     @Test
     public void testPortSelection() {
-        Assert.assertEquals(PortSelectionWithInjectedOrdinalsTest.LOCALHOST, environment.getProperty(PortSelector.JMX_ADDRESS));
+        Assert.assertEquals(PortSelectionWithInjectedOrdinalsWithoutKubernetesTest.LOCALHOST, environment.getProperty(PortSelector.JMX_ADDRESS));
         Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
         Assert.assertEquals(environment.getProperty("PORT_ACTUATOR"), environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
         Assert.assertEquals(environment.getProperty("PORT_HTTP"), environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals(environment.getProperty("PORT_MY-HTTPS"), environment.getProperty("ot.httpserver.connector.my-https.port"));
-        Assert.assertEquals(environment.getProperty("PORT_JMX"), environment.getProperty(PortSelector.JMX_PORT));
+        Assert.assertEquals("5561", environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)
                 environment.getPropertySources().stream().filter(t -> t instanceof SpringPortSelectionPostProcessor.OtPortSelectorPropertySource).findFirst().orElse(null);
         Assert.assertNotNull(tt);
         Map<String, PortSelector.PortSelection> portSelectionMap = tt.getPortSelectionMap();
         Assert.assertEquals(4, portSelectionMap.size());
-        Assert.assertEquals(4, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_PORT_NAMED)).count());
+        Assert.assertEquals(3, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_PORT_NAMED)).count());
+        Assert.assertEquals(1, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_SPRING_PROPERTY)).count());
     }
 }
