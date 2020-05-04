@@ -1,5 +1,10 @@
 otj-server
 ==========
+3.1.0
+-----
+* Significant refactoring to provide support for Named Ports in Kubernetes. This may
+have some corner-case effects in Singularity as well. See `Port selector notes` in the README.
+
 
 3.0.23
 ------
