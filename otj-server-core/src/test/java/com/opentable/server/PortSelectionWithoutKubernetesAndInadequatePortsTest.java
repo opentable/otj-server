@@ -40,7 +40,6 @@ import org.springframework.test.context.junit4.SpringRunner;
         "PORT0=5562",
         "PORT1=5563",
         "PORT2=5564",
-        "PORT3=5565",
         "PORT_ACTUATOR=9999",
         "PORT_HTTP=10001",
         "PORT_MY-HTTPS=9997",
@@ -52,7 +51,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 })
 @DirtiesContext
-public class PortSelectionWithoutKubernetesTest {
+public class PortSelectionWithoutKubernetesAndInadequatePortsTest {
 
     @Inject
     private ConfigurableEnvironment environment;
@@ -66,15 +65,17 @@ public class PortSelectionWithoutKubernetesTest {
         Assert.assertEquals(environment.getProperty("PORT0"), environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals(environment.getProperty("PORT2"), environment.getProperty("ot.httpserver.connector.my-https.port"));
         Assert.assertNull( environment.getProperty("ot.httpserver.connector.fake.port"));
-        Assert.assertEquals(environment.getProperty("PORT3"), environment.getProperty(PortSelector.JMX_PORT));
+        // We don't have a port!
+        Assert.assertEquals("0", environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)
                 environment.getPropertySources().stream().filter(t -> t instanceof SpringPortSelectionPostProcessor.OtPortSelectorPropertySource).findFirst().orElse(null);
         Assert.assertNotNull(tt);
         Map<String, PortSelector.PortSelection> portSelectionMap = tt.getPortSelectionMap();
         Assert.assertEquals(5, portSelectionMap.size());
-        Assert.assertEquals(4, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_PORT_ORDINAL)).count());
+        Assert.assertEquals(3, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_PORT_ORDINAL)).count());
         Assert.assertEquals(1, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_SPRING_PROPERTY)).count());
+        Assert.assertEquals(1, portSelectionMap.values().stream().filter(q -> q.getPortSource().equals(PortSelector.PortSource.FROM_DEFAULT_VALUE)).count());
 
     }
 }
