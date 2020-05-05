@@ -255,7 +255,7 @@ _Singularity_
 | ot.httpserver.connector.default-http.port | The default otj http server connector | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to 0, which disables. |
 | ot.httpserver.connector.${name}.port | Additional named connectors | The default otj http server connector | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to 0, which disables. |
 | ot.jmx.port | JMX (programmatic) | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to 0, which disables. |
-| server.management.port | Actuator | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to 0, which disables. |
+| server.management.port | Actuator | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to null, which disables. |
 
 The only small difference here is the ordering might change from pre otj-server 3.1.0. We don't expect this to
 be a huge deal, and the selected ports are logged prominently.
@@ -296,7 +296,7 @@ For named connectors or the boot connector, you may have to add customized ports
 | PORT_HTTP/PORT_HTTPS | ot.httpserver.connector.default-http.port | The default otj http server connector | Use PORT_HTTP or PORT_HTTPS depending on whether SSL is enabled.  If the named port is missing, fall back on Spring Property if available, otherwise use 0, which disables. |
 | PORT_$(name) | ot.httpserver.connector.${name}.port | Additional named connectors | For a named connector such as "myhttps" (referenced in the named connector example above), we take the UPPER CASE of this and prepend PORT_ to it. Hence for this example, we'd check for PORT_MYHTTPS first. If the named port is missing, fall back on Spring Property if available, otherwise use 0, which disables. |
 | PORT_JMX | ot.jmx.port | JMX (programmatic) | Use PORT_JMX if defined.  Then try the spring property, if it exists. Finally fall back to 0, which disables. |
-| PORT_ACTUATOR | server.management.port | Actuator | Use PORT_ACTUATOR if defined. Then Check if the Spring Property is set, if so use it. Finally fall back to 0, which disables. |
+| PORT_ACTUATOR | server.management.port | Actuator | Use PORT_ACTUATOR if defined. Then check if the Spring Property is set, if so use it. Finally fall back to null, which disables. |
 
 In addition, in Kubernetes, `ot.jmx.address` will always be set to `127.0.0.1` regardless of any property setting.
 
