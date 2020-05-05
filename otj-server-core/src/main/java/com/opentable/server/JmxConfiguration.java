@@ -133,12 +133,12 @@ public class JmxConfiguration {
 
                 final String simpleURL = String.format(
                         urlFormat,
-                        bind,
+                        k8sInfo.isKubernetes() ? bind : appInfo.getTaskHost(),
                         jmxPort);
                 LOG.info("Starting jmx with jmxmp support bound to {} You'll need to connect to this service using the jmxmp jar and protocol, using \n\t{} " +
                         "\n\tSee https://wiki.otcorp.opentable.com/x/YsoIAQ for more information.", bind, simpleURL);
                 LOG.debug("Alternatively, switch ot.jmx.enabled=false in application-deployed.properties and set jvm.properties options (Recommended). Then you can just connect via {}:{}",
-                        appInfo.getTaskHost(), jmxPort);
+                        k8sInfo.isKubernetes() ? "( with port-forwarding ) 127.0.0.1 " : appInfo.getTaskHost(), jmxPort);
                 logCommandLineOptions(k8sInfo.isKubernetes(), "$TASK_HOST");
                 final String url = String.format(
                         urlFormat,
