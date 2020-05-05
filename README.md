@@ -258,7 +258,8 @@ _Singularity_
 | server.management.port | Actuator | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to null, which disables. |
 
 The only small difference here is the ordering might change from pre otj-server 3.1.0. We don't expect this to
-be a huge deal, and the selected ports are logged prominently.
+be a huge deal, and the selected ports are logged prominently. Also if you are using JPDA (remote debugging), you may
+have to allocate two additional ports, since the actuator will grab the first additional port)
 
 ```
 020-05-04T22:44:33.807Z DEBUG <> [main] com.opentable.server.PortSelector - Allocated PORT0 for ot.httpserver.connector.default-http.port
@@ -299,6 +300,7 @@ For named connectors or the boot connector, you may have to add customized ports
 | PORT_ACTUATOR | server.management.port | Actuator | Use PORT_ACTUATOR if defined. Then check if the Spring Property is set, if so use it. Finally fall back to null, which disables. |
 
 In addition, in Kubernetes, `ot.jmx.address` will always be set to `127.0.0.1` regardless of any property setting.
+If using Remote Debugging in Kubernetes, you'll need to modify the port to $PORT_JPDA, and bind "jpda" in Helm.
 
 _Disabling Port Selection_
 
