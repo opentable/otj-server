@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.lang.NonNull;
@@ -48,11 +49,15 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         environment.getPropertySources()
                 .remove(OtPortSelectorPropertySource.class.getName());
         environment.getPropertySources()
+                .remove(OtPortSelectorInfoPropertySource.class.getName());
+        environment.getPropertySources()
                 .remove(JMX_PROPERTY_SOURCE);
 
         final PortSelector portSelector = new PortSelector(environment);
         environment.getPropertySources()
-                .addFirst(getPortPropertySource(environment, portSelector));
+                .addFirst(getPortPropertySource(portSelector));
+        environment.getPropertySources()
+                .addLast(getPortDebugPropertySource(portSelector));
         environment.getPropertySources()
                 .addFirst(getHostPropertySource(environment));
     }
@@ -66,7 +71,7 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         if (isKubernetes) {
             map.put(PortSelector.JMX_ADDRESS, "127.0.0.1"); //NOPMD
             LOG.info("Assigned 127.0.0.1 to JMX address, since it's on kubernetes");
-            // No point, since this must be a -D system proeprty as java starts up
+            // No point, since this must be a -D system property as java starts up
             if (environment.containsProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME)) {
                 if (!"127.0.0.1".equals(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME))) { //NOPMD
                     LOG.warn("JMX provided but {} should be 127.0.0.1", JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME); //NOPMD
@@ -75,22 +80,24 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         }
         return new MapPropertySource(JMX_PROPERTY_SOURCE, map);
     }
-    private PropertySource<Integer> getPortPropertySource(ConfigurableEnvironment environment, PortSelector portSelector) {
+    private PropertySource<Integer> getPortPropertySource(PortSelector portSelector) {
         final Map<String, PortSelector.PortSelection> portSelectionMap = portSelector.getPortSelectionMap();
         final StringBuilder sb = new StringBuilder(4096);
         portSelectionMap.forEach((key, value) -> sb.append(key).append(" ==> ").append(value.toString()).append('\r'));
         LOG.info("\nPort Selections: \n{}", sb.toString());
-        return new OtPortSelectorPropertySource(environment, ImmutableMap.copyOf(portSelectionMap));
+        return new OtPortSelectorPropertySource(ImmutableMap.copyOf(portSelectionMap));
+    }
+
+    private PropertySource<String> getPortDebugPropertySource(PortSelector portSelector) {
+        return new OtPortSelectorInfoPropertySource(ImmutableMap.copyOf(portSelector.getPortSelectionMap()));
     }
 
     public static class OtPortSelectorPropertySource extends PropertySource<Integer> {
 
-        private final ConfigurableEnvironment environment;
         private final Map<String, PortSelector.PortSelection> portSelectionMap;
 
-        public OtPortSelectorPropertySource(ConfigurableEnvironment environment, Map<String, PortSelector.PortSelection> portSelectionMap) {
+        public OtPortSelectorPropertySource(Map<String, PortSelector.PortSelection> portSelectionMap) {
             super(OtPortSelectorPropertySource.class.getName());
-            this.environment = environment;
             this.portSelectionMap = portSelectionMap;
         }
 
@@ -102,6 +109,35 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         public Integer getProperty(@NonNull String propertyName) {
             if (portSelectionMap.containsKey(propertyName)) {
                 return portSelectionMap.get(propertyName).getAsInteger();
+            }
+            return null;
+        }
+    }
+
+    public static class OtPortSelectorInfoPropertySource extends EnumerablePropertySource<String> {
+
+        private final Map<String, PortSelector.PortSelection> portSelectionMap;
+
+        public OtPortSelectorInfoPropertySource(Map<String, PortSelector.PortSelection> portSelectionMap) {
+            super(OtPortSelectorInfoPropertySource.class.getName());
+            this.portSelectionMap = portSelectionMap;
+        }
+
+        @Override
+        public String[] getPropertyNames() {
+            return portSelectionMap.keySet()
+                    .stream()
+                    .map(s -> "ot.port-selector.info." + s)
+                    .toArray(String[]::new);
+        }
+
+        @Override
+        public Object getProperty(@NonNull String propertyName) {
+            if (propertyName.startsWith("ot.port-selector.info.")) {
+                propertyName = propertyName.replace("ot.port-selector.info.", "");
+                if (portSelectionMap.containsKey(propertyName)) {
+                    return portSelectionMap.get(propertyName).toString();
+                }
             }
             return null;
         }
