@@ -138,7 +138,7 @@ public class PortSelector {
         } else {
             // for singularity, if property not set or set to -1, allocate PORTn
             portSelection = get(springPropertyName, springPropertyName, PortSource.FROM_SPRING_PROPERTY);
-            //TODO: I still don't like this magic -1, which is arguably only true for otj http
+            //TODO: I still don't like this magic -1, which is arguably only true for otj http -ping
             if (!portSelection.hasValue() || "-1".equals(portSelection.getPayload())) {
                 final String ordinalPortName = "PORT" + allocateNewPort(springPropertyName);
                 portSelection = get(springPropertyName, ordinalPortName, PortSource.FROM_PORT_ORDINAL);
@@ -178,20 +178,18 @@ public class PortSelector {
         Map<String, PortSelection> res = Arrays.stream(environment.getProperty("ot.httpserver.active-connectors", "default-http").split(","))
                 .map(String::trim)
                 .map(connectorName -> {
-                    /* //TODO: discuss with Dmitry and Lu
+                    /*
                      * Singularity:
                      *      Try spring property, then ordinal (up to allocated ports), then default value
                      * Kubernetes:
                      *      Try named port, then spring property, then default value
                      * Hence I see following possibilities
-                     * - In Kubernetes, since PORT_HTTP/PORT_HTTPS may clash, boot + default http can have issues
-                     * //TODO: problem - we now log and detect this, because it's not ideal.
-                     * No good workaround really. I'd rather not have a hierarchy of named ports, but that's one workaround
-                     * - In Singularity, this mostly works
+                     * - In Kubernetes, since PORT_HTTP/PORT_HTTPS may clash, boot + default http can have issues.
+                     * We log and detect this and offer PORT_BOOT as a workaround.
                      *
                      * Named http connectors are similar. The obvious thing to do in Kubernetes, which I think is fine, is to
                      * have most people using named ports injected. That seems eminently reasonable.
-                     * //TODO: discuss with lu if this seems reasonable
+                     * //TODO: discuss with lu if this seems reasonable - ping
                      *
                      * The other thing worth mulling is corner cases where falling back to ordinal loop is a problem. It shouldn't be
                      * of course, but it's worth thinking about. Can we catch and warn about this?
@@ -238,7 +236,6 @@ public class PortSelector {
          * Actuator
          *      Note: This implementation skips the default value call, so it won't be set that way if they don't have a spare port.
          *      - In Singularity they probably defined the property if they need it.
-         * //TODO: Dmitry does this have any negative effect if they HAVE a spare port, but didn't really want to turn on?
          *
          *      - In Kubernetes they SHOULD have a named port, but otherwise it will try the spring property. Otherwise, it
          *      disables

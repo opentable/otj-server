@@ -249,10 +249,13 @@ and Singularity. Specifically we are talking about http ports (both otj server a
 
 _Singularity_
 
-* The Http ports mostly follow the old logic.
-    * Check first that the Spring property is already set. (server.port, ot.httpserver.connector.default-http.port, ot.jmx.port, management.server.port and the named connectors)
-    * If that's not set, allocate from existing available PORTx. Log if there's not enough ports.
-    * If that's not set, use a default value (8080 for Spring Boot server.port, 0 otherwise).
+| Property name | Purpose | How it's set |
+| ------------- | ------- | ------------- |
+| server.port  | Default Spring Boot connector, also known as "boot" in connector list. Rarely used | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to 8080. |
+| ot.httpserver.connector.default-http.port | The default otj http server connector | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to 0, which disables. |
+| ot.httpserver.connector.${name}.port | Additional named connectors | The default otj http server connector | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to 0, which disables. |
+| ot.jmx.port | JMX (programmatic) | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to 0, which disables. |
+| server.management.port | Actuator | Check if the Spring Property is set, if so use it. Otherwise allocate one of the existing PORTn automatically, logging if none are available. Finally fall back to 0, which disables. |
 
 The only small difference here is the ordering might change from pre otj-server 3.1.0. We don't expect this to
 be a huge deal, and the selected ports are logged prominently.
@@ -267,34 +270,36 @@ ot.jmx.port ==> PayloadResult{payload='31926', payloadSource=FROM_PORT_ORDINAL, 
 ot.httpserver.connector.default-http.port ==> PayloadResult{payload='31925', payloadSource=FROM_PORT_ORDINAL, sourceInfo=PORT0}
 management.server.port ==> PayloadResult{payload='31927', payloadSource=FROM_PORT_ORDINAL, sourceInfo=PORT2}
 ```    
-
-* The JMX port and Actuator ports work similarly
-    * Check first that the Spring property is already set. (server.port, ot.httpserver.connector.default-http.port, ot.jmx.port, management.server.port and the named connectors)
-    * If that's not set, allocate from existing available PORTx. Log if there's not enough ports.
-    * If that's not set, set to 0 for JMX (which disables JMX), and don't set the actuator port at all.
-    
+   
 _Kubernetes_
 
-In Kubernetes we do support ordinal ports in general, but the otj stack MOSTLY ignores them. Named ports
-get precedence over the Spring Property value, and ordinal ports are not used.
+In Kubernetes we do support ordinal ports in general, but the otj stack MOSTLY ignores them. 
+Named ports get precedence over the Spring Property value, and ordinal ports are not automatically allocated.
 
-* The HTTP Ports work as follows
-    * For the Boot Connector:
-        * We check for PORT_BOOT to be set. You'd have to add this port manually to Helm.
-        * We check for PORT_HTTP or PORT_HTTPS, depending on whether SSL is available. These are normally
-        added automatically to your deployment if you follow our standard recommendation: ports of http, jmx, actuator.
-    * The same is done for the default http connector. If a conflict is detected between this and boot, a warning is logged.
-    * For a named connector such as "myhttps" (referenced in the named connector example above),
-    we take the UPPER CASE of this and prepend PORT_ to it. Hence for this example, we'd
-    check for PORT_MYHTTPS first.
-    * If none of the named ports exist, we fall back to the Spring Property value if any, and thence
-    to the default value.
-* The JMX and Actuator ports check for PORT_JMX and PORT_ACTUATOR first.
-    * If that's missing, they check for the spring property
-    * Then they fall back on their default value, if any.        
-    
+If you follow our instructions in the Developer Migration Guide, your Helm values file will
+include these ports defined:
 
-* You can disable injecting property source by setting `ot.port-selector.enabled=false`. If yoi
+http, jmx, actuator.
+
+
+Hence PORT_HTTP, PORT_JMX, PORT_ACTUATOR will be defined for you.
+(In addition, PORT0, PORT1, PORT2 will be defined in that order - http, jmx, actuator).
+
+For named connectors or the boot connector, you may have to add customized ports.
+
+| Named Port | Property name | Purpose | How it's set |
+| ---------- | ------------- | ------- | ------------ |
+| PORT_BOOT/PORT_HTTP/PORT_HTTPS | server.port  | Default Spring Boot connector, also known as "boot" in connector list. Rarely used | Use PORT_BOOT if it's defined (you'd have to do this manually), otherwise use PORT_HTTP or PORT_HTTPS depending on whether SSL is enabled.  If the named port is missing, fall back on Spring Property if available, otherwise use 8080 |
+| PORT_HTTP/PORT_HTTPS | ot.httpserver.connector.default-http.port | The default otj http server connector | Use PORT_HTTP or PORT_HTTPS depending on whether SSL is enabled.  If the named port is missing, fall back on Spring Property if available, otherwise use 0, which disables. |
+| PORT_$(name) | ot.httpserver.connector.${name}.port | Additional named connectors | For a named connector such as "myhttps" (referenced in the named connector example above), we take the UPPER CASE of this and prepend PORT_ to it. Hence for this example, we'd check for PORT_MYHTTPS first. If the named port is missing, fall back on Spring Property if available, otherwise use 0, which disables. |
+| PORT_JMX | ot.jmx.port | JMX (programmatic) | Use PORT_JMX if defined.  Then try the spring property, if it exists. Finally fall back to 0, which disables. |
+| PORT_ACTUATOR | server.management.port | Actuator | Use PORT_ACTUATOR if defined. Then Check if the Spring Property is set, if so use it. Finally fall back to 0, which disables. |
+
+In addition, in Kubernetes, `ot.jmx.address` will always be set to `127.0.0.1` regardless of any property setting.
+
+_Disabling Port Selection_
+
+You can disable injecting property source by setting `ot.port-selector.enabled=false`. If you
 do, you must statically set all your ports!
 
 ## Migration from 2.0.0

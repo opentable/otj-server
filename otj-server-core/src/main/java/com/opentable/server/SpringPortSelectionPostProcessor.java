@@ -28,7 +28,7 @@ import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.lang.NonNull;
-//TODO: make sure dmitry tested with Cloud Config - concerned about order of precedence
+//TODO: make sure dmitry tested with Cloud Config - concerned about order of precedence - ping
 public class SpringPortSelectionPostProcessor implements EnvironmentPostProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringPortSelectionPostProcessor.class);
