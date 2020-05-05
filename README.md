@@ -281,8 +281,11 @@ include these ports defined:
 
 http, jmx, actuator.
 
+If you need remote debugging:
 
-Hence PORT_HTTP, PORT_JMX, PORT_ACTUATOR will be defined for you.
+http, jmx, actuator, jpda
+
+Hence PORT_HTTP, PORT_JMX, PORT_ACTUATOR will be defined for you. (Also PORT_JPDA in the last example.)
 (In addition, PORT0, PORT1, PORT2 will be defined in that order - http, jmx, actuator).
 
 For named connectors or the boot connector, you may have to add customized ports.
