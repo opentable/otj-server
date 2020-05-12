@@ -235,14 +235,24 @@ public class PortSelector {
          *
          * Actuator
          *      Note: This implementation skips the default value call, so it won't be set that way if they don't have a spare port.
-         *      - In Singularity they probably defined the property if they need it.
          *
+         *      - In Singularity they probably defined the property if they need it. Otherwise, the check below
+         * will avoid allocating unavailable or unneeded ports in Singularity if actuator support has not been installed.
          *      - In Kubernetes they SHOULD have a named port, but otherwise it will try the spring property. Otherwise, it
          *      disables
          *
          */
+        if (
+                // Singularity or other non vm
+                (!isKubernetes(environment) && (Boolean.parseBoolean(environment.getProperty("ot.spring.boot.actuator.enabled"))))
+                ||
+                        // Kubernetes
+                        (isKubernetes(environment)))
+        {
+            res.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
+        }
         res.put(JMX_PORT, getJMXPort());
-        res.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
+
         return res;
     }
 }
