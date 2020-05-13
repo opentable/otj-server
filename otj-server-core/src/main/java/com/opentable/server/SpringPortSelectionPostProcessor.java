@@ -53,11 +53,11 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         environment.getPropertySources()
                 .remove(JMX_PROPERTY_SOURCE);
 
-        final PortSelector portSelector = new PortSelector(environment);
+        ImmutableMap<String, PortSelector.PortSelection> portSelectionMap = ImmutableMap.copyOf(new PortSelector(environment).getPortSelectionMap());
         environment.getPropertySources()
-                .addFirst(getPortPropertySource(portSelector));
+                .addFirst(getPortPropertySource(portSelectionMap));
         environment.getPropertySources()
-                .addLast(getPortDebugPropertySource(portSelector));
+                .addLast(getPortDebugPropertySource(portSelectionMap));
         environment.getPropertySources()
                 .addFirst(getHostPropertySource(environment));
     }
@@ -80,16 +80,15 @@ public class SpringPortSelectionPostProcessor implements EnvironmentPostProcesso
         }
         return new MapPropertySource(JMX_PROPERTY_SOURCE, map);
     }
-    private PropertySource<Integer> getPortPropertySource(PortSelector portSelector) {
-        final Map<String, PortSelector.PortSelection> portSelectionMap = portSelector.getPortSelectionMap();
+    private PropertySource<Integer> getPortPropertySource(final Map<String, PortSelector.PortSelection> portSelectionMap) {
         final StringBuilder sb = new StringBuilder(4096);
         portSelectionMap.forEach((key, value) -> sb.append(key).append(" ==> ").append(value.toString()).append('\r'));
         LOG.info("\nPort Selections: \n{}", sb.toString());
         return new OtPortSelectorPropertySource(ImmutableMap.copyOf(portSelectionMap));
     }
 
-    private PropertySource<String> getPortDebugPropertySource(PortSelector portSelector) {
-        return new OtPortSelectorInfoPropertySource(ImmutableMap.copyOf(portSelector.getPortSelectionMap()));
+    private PropertySource<String> getPortDebugPropertySource(final Map<String, PortSelector.PortSelection> portSelectionMap) {
+        return new OtPortSelectorInfoPropertySource(portSelectionMap);
     }
 
     public static class OtPortSelectorPropertySource extends PropertySource<Integer> {
