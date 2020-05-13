@@ -37,18 +37,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
-        "PORT0=5562",
-        "PORT1=5563",
-        "PORT2=5564",
-        "PORT3=5565",
-        "PORT_ACTUATOR=9999",
-        "PORT_HTTP=10001",
-        "PORT_MY-HTTPS=9997",
-        "PORT_JMX=9996",
+        "PORT0=5574",
+        "PORT1=5575",
+        "PORT2=5576",
+        "PORT3=5577",
+        "PORT_ACTUATOR=5578",
+        "PORT_HTTP=5579",
+        "PORT_MY-HTTPS=5580",
+        "PORT_JMX=5581",
         "management.server.port=44444",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
         "IS_KUBERNETES=false",
-        "ot.httpserver.active-connectors=default-http,boot,my-https"
+        "ot.httpserver.active-connectors=default-http,boot,my-https",
+        "ot.components.features.otj-actuator.enabled=true"
 
 })
 @DirtiesContext

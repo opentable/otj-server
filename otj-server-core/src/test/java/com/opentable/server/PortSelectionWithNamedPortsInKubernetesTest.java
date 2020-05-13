@@ -37,11 +37,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
-        "PORT_ACTUATOR=5558",
-        "PORT_HTTP=5559",
+        "PORT_ACTUATOR=5562",
+        "PORT_HTTP=5563",
         "ot.jmx.address=192.168.2.1",
-        "PORT_MY-HTTPS=5560",
-        "ot.jmx.port=5561",
+        "PORT_MY-HTTPS=5564",
+        "ot.jmx.port=5565",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
         "IS_KUBERNETES=TRUE",
         "ot.httpserver.active-connectors=default-http,my-https"
@@ -63,7 +63,7 @@ public class PortSelectionWithNamedPortsInKubernetesTest {
         Assert.assertEquals(environment.getProperty("PORT_HTTP"), environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         Assert.assertEquals(environment.getProperty("PORT_MY-HTTPS"), environment.getProperty("ot.httpserver.connector.my-https.port"));
         // Uses spring property, since named port not specified
-        Assert.assertEquals("5561", environment.getProperty(PortSelector.JMX_PORT));
+        Assert.assertEquals("5565", environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)
                 environment.getPropertySources().stream().filter(t -> t instanceof SpringPortSelectionPostProcessor.OtPortSelectorPropertySource).findFirst().orElse(null);

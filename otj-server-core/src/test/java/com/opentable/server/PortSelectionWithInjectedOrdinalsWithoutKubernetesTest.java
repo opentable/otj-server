@@ -42,7 +42,8 @@ import org.springframework.test.context.junit4.SpringRunner;
         "PORT2=5557",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
         "ot.httpserver.connector.default-http.port=-1",
-        "IS_KUBERNETES=false"
+        "IS_KUBERNETES=false",
+        "ot.components.features.otj-actuator.enabled=true"
 })
 @DirtiesContext
 public class PortSelectionWithInjectedOrdinalsWithoutKubernetesTest {
@@ -56,11 +57,11 @@ public class PortSelectionWithInjectedOrdinalsWithoutKubernetesTest {
         // Not set, just a fail safe
         Assert.assertNull(environment.getProperty(JmxConfiguration.JmxmpServer.JAVA_RMI_SERVER_HOSTNAME));
         // Gets port3, since no property, and last in line
-        Assert.assertEquals(environment.getProperty("PORT2"), environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
+        Assert.assertEquals(environment.getProperty("PORT1"), environment.getProperty(PortSelector.MANAGEMENT_SERVER_PORT));
         // Gets port0, since no property, and first in line
         Assert.assertEquals(environment.getProperty("PORT0"), environment.getProperty(PortSelector.HTTPSERVER_CONNECTOR_DEFAULT_HTTP_PORT));
         // Gets port1, since no property, and next to last in line
-        Assert.assertEquals(environment.getProperty("PORT1"), environment.getProperty(PortSelector.JMX_PORT));
+        Assert.assertEquals(environment.getProperty("PORT2"), environment.getProperty(PortSelector.JMX_PORT));
 
         SpringPortSelectionPostProcessor.OtPortSelectorPropertySource tt = (SpringPortSelectionPostProcessor.OtPortSelectorPropertySource)
                 environment.getPropertySources().stream().filter(t -> t instanceof SpringPortSelectionPostProcessor.OtPortSelectorPropertySource).findFirst().orElse(null);
