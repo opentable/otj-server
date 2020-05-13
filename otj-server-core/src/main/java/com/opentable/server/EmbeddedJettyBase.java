@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.IntSupplier;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -69,6 +68,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.PropertyResolver;
+import org.springframework.util.CollectionUtils;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -77,7 +77,6 @@ import com.opentable.logging.jetty.JsonRequestLogConfig;
 import com.opentable.server.HttpServerInfo.ConnectorInfo;
 import com.opentable.spring.SpecializedConfigFactory;
 import com.opentable.util.Optionals;
-import org.springframework.util.CollectionUtils;
 
 /**
  * base class providing common configuration for creating Embedded Jetty instances
@@ -173,7 +172,6 @@ public abstract class EmbeddedJettyBase {
             throw new IllegalStateException("'ot.http.bind-port' is deprecated, refer to otj-server README for replacement");
         }
 
-        final PortIterator ports = new PortIterator(pr);
         final ImmutableMap.Builder<String, ConnectorInfo> connectorInfos = ImmutableMap.builder();
         final ServerConnectorConfig defaultConnector = activeConnectors.get(DEFAULT_CONNECTOR_NAME);
 
@@ -220,7 +218,7 @@ public abstract class EmbeddedJettyBase {
             server.setConnectors(new Connector[0]);
 
             activeConnectors.forEach((name, config) -> {
-                connectorInfos.put(name, createConnector(server, name, ports, config, bootConnector));
+                connectorInfos.put(name, createConnector(server, name, config, bootConnector));
             });
             bootConnector.close();
             this.connectorInfos = connectorInfos.build();
@@ -237,7 +235,7 @@ public abstract class EmbeddedJettyBase {
 
     @SuppressWarnings("resource")
     @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
-    private ConnectorInfo createConnector(Server server, String name, IntSupplier port, ServerConnectorConfig config, ServerConnector bootConnector) {
+    private ConnectorInfo createConnector(Server server, String name,  ServerConnectorConfig config, ServerConnector bootConnector) {
         final List<ConnectionFactory> factories = new ArrayList<>();
 
         final SslContextFactory ssl;
@@ -296,17 +294,17 @@ public abstract class EmbeddedJettyBase {
             LOG.debug("Configuring HTTP connector, setting host and port to Spring's defaults.");
         } else {
             connector.setHost(config.getBindAddress());
-            connector.setPort(selectPort(port, config));
+            connector.setPort(selectPort(config));
         }
 
         server.addConnector(connector);
         return new ServerConnectorInfo(name, connector, config);
     }
 
-    private int selectPort(IntSupplier nextAssignedPort, ServerConnectorConfig connectorConfig) {
+    private int selectPort(ServerConnectorConfig connectorConfig) {
         int configuredPort = connectorConfig.getPort();
         if (configuredPort < 0) {
-            return nextAssignedPort.getAsInt();
+            return 0;
         }
         return configuredPort;
     }

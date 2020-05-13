@@ -15,7 +15,7 @@ package com.opentable.server;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.PropertyResolver;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.opentable.spring.SpecializedConfigFactory;
 
@@ -26,7 +26,7 @@ import com.opentable.spring.SpecializedConfigFactory;
 public class EmbeddedJettyConfiguration {
 
     @Bean
-    public SpecializedConfigFactory<ServerConnectorConfig> connectorConfigs(PropertyResolver pr) {
-        return SpecializedConfigFactory.create(pr, ServerConnectorConfig.class, "ot.httpserver.connector.${name}");
+    public SpecializedConfigFactory<ServerConnectorConfig> connectorConfigs(ConfigurableEnvironment environment) {
+        return SpecializedConfigFactory.create(environment, ServerConnectorConfig.class, "ot.httpserver.connector.${name}");
     }
 }
