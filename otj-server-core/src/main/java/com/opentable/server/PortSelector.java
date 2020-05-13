@@ -222,9 +222,9 @@ public class PortSelector {
 
         /*
          * Singularity:
-         * - Try spring property, then ordinal (up to allocated ports), then default value
+         * - Try spring property, then ordinal (up to allocated ports)
          * Kubernetes:
-         * - Try named port, then spring property, then default value
+         * - Try named port, then spring property
          *
          * JMX
          *     - In Singularity, they've probably not defined the property (few people do), hence it will usually try to grab a spare port.
@@ -242,17 +242,10 @@ public class PortSelector {
          *      disables
          *
          */
-        if (
-                // Singularity or other non vm
-                (!isKubernetes(environment) && (Boolean.parseBoolean(environment.getProperty("ot.spring.boot.actuator.enabled"))))
-                ||
-                        // Kubernetes
-                        (isKubernetes(environment)))
-        {
+        if (isKubernetes(environment) || "true".equals(environment.getProperty("ot.components.features.otj-actuator.enabled", "false"))) {
             res.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
         }
         res.put(JMX_PORT, getJMXPort());
-
         return res;
     }
 }
