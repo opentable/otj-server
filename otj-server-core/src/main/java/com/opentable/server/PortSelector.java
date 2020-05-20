@@ -166,7 +166,7 @@ public class PortSelector {
         return portSelection.hasValue() ? portSelection : new PortSelection(springProperty, String.valueOf(defaultV), PortSource.FROM_DEFAULT_VALUE, String.valueOf(defaultV));
     }
 
-    private boolean otjActuatorIsLinked() {
+    private boolean isOtjActuatorLinked() {
         try {
             Class.forName("com.opentable.components.actuate.ActuatorBaseConfiguration");
             return true;
@@ -252,7 +252,7 @@ public class PortSelector {
          *      disables
          *
          */
-        if (isKubernetes(environment) || otjActuatorIsLinked() || "true".equals(environment.getProperty("ot.components.features.otj-actuator.enabled", "false"))) {
+        if (isKubernetes(environment) || isOtjActuatorLinked() || "true".equals(environment.getProperty("ot.components.features.otj-actuator.enabled", "false"))) {
             res.put(MANAGEMENT_SERVER_PORT, getActuatorPort());
         }
         res.put(JMX_PORT, getJMXPort());
