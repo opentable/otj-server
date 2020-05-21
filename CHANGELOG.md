@@ -1,5 +1,10 @@
 otj-server
 ==========
+
+3.1.1, 3.1.2
+----
+* Minor fixes to port selector
+
 3.1.0
 -----
 * Significant refactoring to provide support for Named Ports in Kubernetes. This may
