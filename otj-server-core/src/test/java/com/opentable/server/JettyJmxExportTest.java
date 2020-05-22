@@ -21,12 +21,15 @@ import javax.management.ObjectName;
 
 import com.google.common.collect.Iterables;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -36,6 +39,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 @Import({
     TestMBeanServerConfiguration.class
 })
+@ActiveProfiles(profiles = "deployed")
+@TestPropertySource(properties = {
+        "PORT_JMX=9999",
+        "IS_KUBERNETES=TRUE",
+})
+
 public class JettyJmxExportTest {
 
     @Inject
@@ -43,6 +52,9 @@ public class JettyJmxExportTest {
 
     @Inject
     MBeanServer mbs;
+
+    @Inject
+    JmxConfiguration.JmxmpServer server;
 
     @Test(timeout = 10_000)
     public void testJettyExport() throws Exception {
@@ -55,4 +67,10 @@ public class JettyJmxExportTest {
         Thread.sleep(1000);
         assertThat(mbs.invoke(new ObjectName("com.opentable.server:name=com.opentable.server.JettyDumper,type=JettyDumper"), "dumpJetty", new Object[0], new String[0]).toString()).contains("default-pool");
     }
+
+    @Test
+    public void testPort() {
+        Assert.assertEquals(9999, server.getJmxPort().intValue());
+    }
+
 }

@@ -1,6 +1,28 @@
 otj-server
 ==========
 
+3.1.1, 3.1.2
+----
+* Minor fixes to port selector
+
+3.1.0
+-----
+* Significant refactoring to provide support for Named Ports in Kubernetes. This may
+have some corner-case effects in Singularity as well. See `Port selector notes` in the README.
+
+
+3.0.23
+------
+* K8s logging
+
+3.0.22
+------
+* Fixes Spring Boot white error page handler for all HTTP methods
+
+3.0.21
+------
+* Fixes for Spring Boot changing order of configuration
+
 3.0.20
 ------
 * Revert "OTApplication: Do not set `org.springframework.boot.logging.LoggingSystem=none` property on startup."

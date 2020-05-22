@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-server-parent</artifactId>
-        <version>3.0.21-SNAPSHOT</version>
+        <version>3.1.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>otj-server-jaxrs</artifactId>
@@ -49,11 +49,6 @@
         <dependency>
             <groupId>com.opentable.components</groupId>
             <artifactId>otj-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.opentable.components</groupId>
-            <artifactId>otj-jackson</artifactId>
         </dependency>
 
         <dependency>

@@ -34,16 +34,19 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.opentable.server.mvc.MVCServer;
 import com.opentable.service.ServiceInfo;
@@ -106,6 +109,11 @@ public class TestMvcServerConfiguration {
         @GetMapping("fault")
         public void rspFault() {
             throw new RuntimeException("test");
+        }
+
+        @RequestMapping(path = "faultstatus-exception", method = {RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PATCH, RequestMethod.POST})
+        public void rspStatusException() {
+            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "unauthorized");
         }
 
         @GetMapping("async")
