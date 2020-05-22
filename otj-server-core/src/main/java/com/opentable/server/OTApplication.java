@@ -57,11 +57,18 @@ public final class OTApplication {
      * @return the configured application context
      */
     public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args, Consumer<SpringApplicationBuilder> customize) {
-        //System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
-        if ((System.getProperty("logging.config") == null) && (System.getProperty("logback.configurationFile") != null)) {
-            System.setProperty("logging.config", System.getProperty("logback.configurationFile"));
-            System.clearProperty("logback.configurationFile");
+        // Eventually set in otpl-common-config, this toggles on the spring logging system, which we've long avoided
+        if (Boolean.parseBoolean(System.getProperty("ot.use.spring.logging"))) {
+            // If logging.config hasn't been overridden and logback.configurationFile is set, copy it over, and clear
+            if ((System.getProperty("logging.config") == null) && (System.getProperty("logback.configurationFile") != null)) {
+                System.setProperty("logging.config", System.getProperty("logback.configurationFile"));
+                System.clearProperty("logback.configurationFile");
+            }
+        } else {
+            // Old behavior
+            System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
         }
+
         final SpringApplicationBuilder builder = new SpringApplicationBuilder(applicationClass);
         builder.main(applicationClass);
         customize.accept(builder);
