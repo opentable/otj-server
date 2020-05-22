@@ -58,6 +58,18 @@ public final class OTApplication {
      */
     public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args, Consumer<SpringApplicationBuilder> customize) {
         // Eventually set in otpl-common-config, this toggles on the spring logging system, which we've long avoided
+        /*
+-Dlogback.configurationFile=../config/common/logback.xml
+-Dlogback.statusListenerClass=ch.qos.logback.core.status.OnConsoleStatusListener
+-Dlogging.config=../config/common/logback.xml
+-Dorg.springframework.boot.logging.LoggingSystem=none
+
+old otj server. Would just turn off, and what would happen with logging.config is I assume it would be ignored? Discuss with Dmitry
+new otj server. If ot.use.spring.logging is on, the parameter is set to none there, so I don't see why it would work?
+new otj server. if ot.use.spring.logging is off, we'd basically be the same as old otj server
+
+
+         */
         if (Boolean.parseBoolean(System.getProperty("ot.use.spring.logging"))) {
             // If logging.config hasn't been overridden and logback.configurationFile is set, copy it over, and clear
             if ((System.getProperty("logging.config") == null) && (System.getProperty("logback.configurationFile") != null)) {
