@@ -64,9 +64,6 @@ public final class OTApplication {
                 System.setProperty("logging.config", System.getProperty("logback.configurationFile"));
                 System.clearProperty("logback.configurationFile");
             }
-        } else {
-            // Old behavior
-            System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
         }
 
         final SpringApplicationBuilder builder = new SpringApplicationBuilder(applicationClass);
