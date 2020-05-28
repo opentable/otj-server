@@ -52,7 +52,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "ot.components.features.otj-actuator.enabled=true"
 
 })
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class PortSelectionWithoutKubernetesTest {
 
     @Inject
