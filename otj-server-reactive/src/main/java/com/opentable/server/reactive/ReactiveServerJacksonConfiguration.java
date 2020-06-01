@@ -13,7 +13,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 public class ReactiveServerJacksonConfiguration {
 
     @Bean
-    WebFluxConfigurer webFluxConfigurer(final ObjectMapper objectMapper){
+    WebFluxConfigurer otJacksonWebFluxConfigurer(final ObjectMapper objectMapper){
         return new WebFluxConfigurer() {
             @Override
             public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
@@ -21,6 +21,5 @@ public class ReactiveServerJacksonConfiguration {
                 configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
             }
         };
-
     }
 }
