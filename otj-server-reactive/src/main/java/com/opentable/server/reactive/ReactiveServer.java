@@ -37,7 +37,7 @@ import org.springframework.web.reactive.config.DelegatingWebFluxConfiguration;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({
-        ReactiveServerJacksonConfiguration.class,
+        DelegatingWebFluxConfiguration.class
 })
 @ReactiveServerUnconfigured
 public @interface ReactiveServer {
