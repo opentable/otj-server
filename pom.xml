@@ -17,14 +17,14 @@
 
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>3.1.4-SNAPSHOT</version>
+    <version>5.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>243</version>
+        <version>9999-SNAPSHOT</version>
     </parent>
 
 
@@ -36,6 +36,19 @@
     </organization>
 
     <properties>
+        <dep.otj-core.version>5.2.0-SNAPSHOT</dep.otj-core.version>
+        <dep.otj-jvm.version>5.2.0-SNAPSHOT</dep.otj-jvm.version>
+        <dep.otj-scopes.version>5.2.0-SNAPSHOT</dep.otj-scopes.version>
+        <dep.otj-spring.version>5.2.0-SNAPSHOT</dep.otj-spring.version>
+        <dep.otj-httpheaders.version>5.2.0-SNAPSHOT</dep.otj-httpheaders.version>
+        <dep.otj-logging.version>5.2.0-SNAPSHOT</dep.otj-logging.version>
+        <dep.otj-executors.version>5.2.0-SNAPSHOT</dep.otj-executors.version>
+        <dep.otj-conservedheaders.version>5.2.0-SNAPSHOT</dep.otj-conservedheaders.version>
+        <dep.otj-metrics.version>5.2.0-SNAPSHOT</dep.otj-metrics.version>
+        <dep.otj-jaxrs.version>5.2.0-SNAPSHOT</dep.otj-jaxrs.version>
+        <dep.otj-jackson.version>5.2.0-SNAPSHOT</dep.otj-jackson.version>
+        <dep.otj-filterorder.version>5.2.0-SNAPSHOT</dep.otj-filterorder.version>
+        <dep.otj-pausedetector.version>5.2.0-SNAPSHOT</dep.otj-pausedetector.version>
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
