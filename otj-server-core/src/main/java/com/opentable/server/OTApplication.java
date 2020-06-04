@@ -41,6 +41,7 @@ public final class OTApplication {
     private static final String OPT_IN_TO_NEW_BEHAVIOR = "ot.spring.logging";
     public static final String ORG_SPRINGFRAMEWORK_BOOT_LOGGING_LOGGING_SYSTEM = "org.springframework.boot.logging.LoggingSystem";
     public static final String LOGGING_CONFIG = "logging.config";
+    public static final String LEGACY_LOGGING_CONFIG = "logback.configurationFile";
 
     private OTApplication() { }
     /**
@@ -90,12 +91,21 @@ public final class OTApplication {
          * In addition, scenario 1 has an escape hatch, the user can manually set this and opt out.
          */
         final boolean enableSpringLogging = Boolean.parseBoolean(System.getProperty(OPT_IN_TO_NEW_BEHAVIOR));
-        final boolean springLoggingConfigFileExists = StringUtils.isNotBlank(System.getProperty(LOGGING_CONFIG));
-        // In these cases, use old behavior
-        if (!enableSpringLogging || !springLoggingConfigFileExists) {
-            System.setProperty(ORG_SPRINGFRAMEWORK_BOOT_LOGGING_LOGGING_SYSTEM, "none"); // Disable spring system
-            System.clearProperty(LOGGING_CONFIG); // Remove since it shouldn't be in use
+        final boolean springLoggingConfigFileExists = StringUtils.isNotBlank(System.getProperty(LEGACY_LOGGING_CONFIG));
+        if (springLoggingConfigFileExists) {
+            if (enableSpringLogging) {
+                // Copy "logback.configurationFile" property to the "logging.config" and clear old one, to avoid warning
+                // "Ignoring 'logback.configurationFile' system property. Please use 'logging.config' instead."
+                System.setProperty(LOGGING_CONFIG, System.getProperty(LEGACY_LOGGING_CONFIG));
+                System.clearProperty(LEGACY_LOGGING_CONFIG);
+            } else {
+                // Disable spring system logging subsystem initialization
+                // and clear "logging.config" property
+                System.setProperty(ORG_SPRINGFRAMEWORK_BOOT_LOGGING_LOGGING_SYSTEM, "none");
+                System.clearProperty(LOGGING_CONFIG);
+            }
         }
+
         final SpringApplicationBuilder builder = new SpringApplicationBuilder(applicationClass);
         builder.main(applicationClass);
         customize.accept(builder);
