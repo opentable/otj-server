@@ -1,7 +1,11 @@
 otj-server
 ==========
+3.1.4
+----
+* @ReactiveServer using otj-jackson configuration
+* Refactoring of boot connnector
 
-3.1.1, 3.1.2
+3.1.1, 3.1.2, 3.1.3
 ----
 * Minor fixes to port selector
 

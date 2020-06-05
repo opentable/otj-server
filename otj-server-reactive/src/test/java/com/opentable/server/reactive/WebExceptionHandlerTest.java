@@ -15,6 +15,7 @@ package com.opentable.server.reactive;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,17 +62,18 @@ public class WebExceptionHandlerTest extends AbstractTest {
         assertEquals(502, res.getStatus());
         assertEquals("Bad Gateway", res.getError());
         assertEquals("test specific error", res.getMessage());
+        assertTrue(res.getTimestamp().matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*"));
     }
 
     private static class ErrorResponse {
 
-        private long timestamp;
+        private String timestamp;
         private String path;
         private int status;
         private String error;
         private String message;
 
-        public long getTimestamp() {
+        public String getTimestamp() {
             return timestamp;
         }
 

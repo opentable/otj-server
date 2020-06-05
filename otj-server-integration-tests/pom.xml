@@ -23,7 +23,7 @@
     <artifactId>otj-server-parent</artifactId>
     <version>5.2.0-SNAPSHOT</version>
   </parent>
-  
+
   <artifactId>otj-server-integration-tests</artifactId>
 
   <modules>

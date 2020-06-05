@@ -218,7 +218,7 @@ public abstract class EmbeddedJettyBase {
             server.setConnectors(new Connector[0]);
 
             activeConnectors.forEach((name, config) -> {
-                connectorInfos.put(name, createConnector(server, name, config, bootConnector));
+                connectorInfos.put(name, createConnector(server, name, config, bootConnector, pr));
             });
             bootConnector.close();
             this.connectorInfos = connectorInfos.build();
@@ -235,7 +235,7 @@ public abstract class EmbeddedJettyBase {
 
     @SuppressWarnings("resource")
     @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
-    private ConnectorInfo createConnector(Server server, String name,  ServerConnectorConfig config, ServerConnector bootConnector) {
+    private ConnectorInfo createConnector(Server server, String name,  ServerConnectorConfig config, ServerConnector bootConnector, PropertyResolver pr) {
         final List<ConnectionFactory> factories = new ArrayList<>();
 
         final SslContextFactory ssl;
@@ -290,7 +290,7 @@ public abstract class EmbeddedJettyBase {
         connector.setName(name);
         if (BOOT_CONNECTOR_NAME.equals(name) && bootConnector != null) {
             connector.setHost(bootConnector.getHost());
-            connector.setPort(bootConnector.getPort());
+            connector.setPort(Integer.parseInt(pr.getProperty("server.port", "8080").trim()));
             LOG.debug("Configuring HTTP connector, setting host and port to Spring's defaults.");
         } else {
             connector.setHost(config.getBindAddress());

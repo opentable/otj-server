@@ -42,6 +42,8 @@ import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration
         EmbeddedReactiveJetty.class,
         // Conserved headers
         ReactiveServerConservedHeadersConfiguration.class,
+        // Load otj-jackson provided ObjectMapper
+        ReactiveServerJacksonConfiguration.class,
         // Default health check
         HealthHttpReactiveConfiguration.class,
         // Ready check
