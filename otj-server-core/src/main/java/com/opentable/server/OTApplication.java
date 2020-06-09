@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -36,6 +37,12 @@ import org.springframework.core.env.StandardEnvironment;
  * This can change down the road if needed.
  */
 public final class OTApplication {
+
+    private static final String OPT_IN_TO_NEW_BEHAVIOR = "ot.spring.logging";
+    public static final String ORG_SPRINGFRAMEWORK_BOOT_LOGGING_LOGGING_SYSTEM = "org.springframework.boot.logging.LoggingSystem";
+    public static final String LOGGING_CONFIG = "logging.config";
+    public static final String LEGACY_LOGGING_CONFIG = "logback.configurationFile";
+
     private OTApplication() { }
     /**
      * Construct and run a {@link SpringApplication} with the default settings for
@@ -57,7 +64,48 @@ public final class OTApplication {
      * @return the configured application context
      */
     public static ConfigurableApplicationContext run(Class<?> applicationClass, String[] args, Consumer<SpringApplicationBuilder> customize) {
-        System.setProperty("org.springframework.boot.logging.LoggingSystem", "none");
+        /*
+         * Truth table of scenarios
+         *
+         * 1. New Server, New otpl-common-config
+         * Goal: We'd want this to switch over, conditionally to the new system.
+         * Answer: The code below, plus otpl-common-config adding the OPT_IN_TO_NEW_BEHAVIOR and the LOGGING_CONFIG. otpl-common-config never sets
+         * the logging system directly.
+         *
+         * 2. New Server, old otpl-common-config
+         * Goal: We'd want this to have the old behavior, eg turn off spring logging
+         * Answer: The code below will continue to execute old path unless user manually sets OPT_IN_TO_NEW_BEHAVIOR and the LOGGING_CONFIG.
+         * This also covers java8/9/10 which we won't update otpl-common-config for.
+         *
+         * 3. Old Server, New otpl-common-confiig
+         * Goal: We'd want this to "work". Either option is acceptable
+         * Answer: The old otj-server ignores these switches, so assuming it's safe to set LOGGING_CONFIG but set none, we are fine
+         *
+         * 4. Old Server, Old otpl-common-config
+         * Goal: By definition old Spring system
+         * Answer: By definition this works
+         *
+         * 5. Consider these running locally, without otpl-common-config
+         * Answer: Unless they manually sets OPT_IN_TO_NEW_BEHAVIOR and the LOGGING_CONFIG, the old behavior applies
+         *
+         * In addition, scenario 1 has an escape hatch, the user can manually set this and opt out.
+         */
+        final boolean enableSpringLogging = Boolean.parseBoolean(System.getProperty(OPT_IN_TO_NEW_BEHAVIOR));
+        final boolean springLoggingConfigFileExists = StringUtils.isNotBlank(System.getProperty(LEGACY_LOGGING_CONFIG));
+        if (springLoggingConfigFileExists) {
+            if (enableSpringLogging) {
+                // Copy "logback.configurationFile" property to the "logging.config" and clear old one, to avoid warning
+                // "Ignoring 'logback.configurationFile' system property. Please use 'logging.config' instead."
+                System.setProperty(LOGGING_CONFIG, System.getProperty(LEGACY_LOGGING_CONFIG));
+                System.clearProperty(LEGACY_LOGGING_CONFIG);
+            } else {
+                // Disable spring system logging subsystem initialization
+                // and clear "logging.config" property
+                System.setProperty(ORG_SPRINGFRAMEWORK_BOOT_LOGGING_LOGGING_SYSTEM, "none");
+                System.clearProperty(LOGGING_CONFIG);
+            }
+        }
+
         final SpringApplicationBuilder builder = new SpringApplicationBuilder(applicationClass);
         builder.main(applicationClass);
         customize.accept(builder);
