@@ -14,12 +14,14 @@
 package com.opentable.server;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.MapPropertySource;
@@ -37,6 +39,22 @@ import org.springframework.core.env.StandardEnvironment;
  */
 public final class OTApplication {
     private OTApplication() { }
+
+    /**
+     * If you are running a command line app (perhaps a scheduled or run once task), this
+     * allows you to run using no WebApplication setup. We still recommend you import
+     * otj-server-core and add the @NonWebSetup annotation in place of @MVCServer or @ReactiveServer
+     * to import otj-jackson, otj-metrics, and other such otj goodness.
+     * @param applicationClass your application class
+     * @param args args, if any. May be new String[0]
+     * @return The context
+     */
+    public static ConfigurableApplicationContext commandline(Class<?> applicationClass,
+                                                             String[] args) {
+        return run(applicationClass, args, new HashMap<>(),
+                springApplicationBuilder -> springApplicationBuilder.web(WebApplicationType.NONE));
+    }
+
     /**
      * Construct and run a {@link SpringApplication} with the default settings for
      * {code otj-} OpenTable Spring Boot based applications.
