@@ -1,5 +1,14 @@
 otj-server
 ==========
+
+3.1.5
+-----
+* convenience method in OTApplication`commandline`, making
+it easier to implement command line or scheduled job services without
+a web servlet.
+* Switch to spring logging if `ot.spring.logging` is set
+to true.
+
 3.1.4
 ----
 * @ReactiveServer using otj-jackson configuration
