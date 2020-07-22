@@ -84,6 +84,7 @@ import com.opentable.util.Optionals;
  * For example even something as trivial as configuring the worker pool size, socket options,
  * or HTTPS connector is totally unsupported.
  */
+@SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 @Configuration
 @Import(JsonRequestLogConfig.class)
 public abstract class EmbeddedJettyBase {
