@@ -81,6 +81,6 @@ public class SamePortTest {
             .perform(
                 get("/actuator/health"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType("application/vnd.spring-boot.actuator.v2+json;charset=UTF-8"));
+            .andExpect(content().contentType("application/vnd.spring-boot.actuator.v3+json"));
     }
 }

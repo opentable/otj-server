@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+5.2.0
+------
+* Recompile for Spring 5.2
+
 3.1.5
 -----
 * convenience method in OTApplication`commandline`, making
