@@ -37,6 +37,7 @@
 
     <properties>
         <!-- Remove once parent updated -->
+        <basepom.check.fail-duplicate-finder>false</basepom.check.fail-duplicate-finder>
         <dep.mockito.version>3.3.3</dep.mockito.version>
         <dep.scala.version>2.12.10</dep.scala.version>
         <dep.metrics4.version>4.1.7</dep.metrics4.version>
