@@ -1,6 +1,13 @@
 otj-server
 ==========
 
+5.2.1
+=====
+* Remove jax rs api from otj-server.core. The otj-server-jaxrs still
+provides this, so issues will be limited to folks using uribuilder without jaxrs, and
+they should get a compilation error and switch. their usage
+was fragile anyway, depending, on a full jaxrs dep import.
+
 5.2.0
 ------
 * Recompile for Spring 5.2
