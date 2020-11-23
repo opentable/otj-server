@@ -48,6 +48,8 @@ import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
     ExceptionLogFilterConfiguration.class,
     // Filter order
     FilterOrderResolverConfiguration.class,
+    // Low resource monitor
+    EmbeddedJettyLowResourceMonitor.class
 })
 // All the non web stuff
 @NonWebSetup

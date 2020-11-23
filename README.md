@@ -307,6 +307,26 @@ _Disabling Port Selection_
 You can disable injecting property source by setting `ot.port-selector.enabled=false`. If you
 do, you must statically set all your ports!
 
+### Jetty Low resource monitor (otj-server 5.2.2+)
+The low resource helps service to recover from overload condition quickly by limiting the number of idle connections on the server.
+This is effectively applying backpressure to the upstream service(s) and helps maintain SLA in terms of the response time.
+
+_Without monitor:_
+![Withoot monitor](doc/overload.png)
+
+_With monitor:_
+![Withoot monitor](doc/resource-monitor.png)
+
+Default configuration:
+```
+ot.server.low-resource-monitor.enabled=true
+ot.server.low-resource-monitor.low-resource-idle-timeout-ms=100
+ot.server.low-resource-monitor.period-ms=100
+ot.server.low-resource-monitor.monitor-threads=true
+ot.server.low-resource-monitor.max-low-resources-time-ms=100
+ot.server.low-resource-monitor.accepting-in-low-resources=false
+```  
+
 ## Migration from 2.0.0
 
 JaxRS users (if you were using OTJ stack before then this is *probably* you):
