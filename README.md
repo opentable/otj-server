@@ -319,7 +319,7 @@ _With monitor:_
 
 Default configuration:
 ```
-ot.server.low-resource-monitor.enabled=true
+ot.server.low-resource-monitor.enabled=false
 ot.server.low-resource-monitor.low-resource-idle-timeout-ms=100
 ot.server.low-resource-monitor.period-ms=100
 ot.server.low-resource-monitor.monitor-threads=true
