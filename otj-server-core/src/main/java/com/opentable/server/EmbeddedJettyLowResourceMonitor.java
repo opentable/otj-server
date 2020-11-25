@@ -57,8 +57,8 @@ public class EmbeddedJettyLowResourceMonitor {
         @Override
         public boolean matches(ConditionContext context, @NonNull AnnotatedTypeMetadata metadata) {
             final String value = context.getEnvironment().
-                    getProperty("ot.server.low-resource-monitor.enabled", "true");
-            return "true".equals(value);
+                    getProperty("ot.server.low-resource-monitor.enabled", "false");
+            return Boolean.parseBoolean(value);
         }
     }
 
