@@ -37,4 +37,8 @@ public interface ServerConnectorConfig {
     default String getKeystorePassword() {
         return "changeit";
     }
+
+    default long getIdleTimeout() {
+        return 0;
+    }
 }
