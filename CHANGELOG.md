@@ -3,6 +3,7 @@ otj-server
 
 5.2.2
 =====
+* Jetty low resource monitor. 
 * ability to configure IdleTimeout on the connector. 
 
 5.2.1
