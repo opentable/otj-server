@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+5.2.2
+=====
+* ability to configure IdleTimeout on the connector. 
+
 5.2.1
 =====
 * Remove jax rs api from otj-server.core. The otj-server-jaxrs still

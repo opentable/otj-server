@@ -297,6 +297,9 @@ public abstract class EmbeddedJettyBase {
             connector.setHost(config.getBindAddress());
             connector.setPort(selectPort(config));
         }
+        if (config.getIdleTimeout() > 0) {
+            connector.setIdleTimeout(config.getIdleTimeout());
+        }
 
         server.addConnector(connector);
         return new ServerConnectorInfo(name, connector, config);
