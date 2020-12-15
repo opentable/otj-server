@@ -14,7 +14,10 @@
 package com.opentable.server;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +34,7 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
     private static final HeaderBlacklist HEADER_BLACKLIST = HeaderBlacklist.INSTANCE;
     private final ErrorHandler delegate;
 
+    private static final Set<String> HANDLED_HTTP_METHODS = new HashSet<>(Arrays.asList("GET", "POST", "HEAD"));
 
     ConservedHeadersJettyErrorHandler(ErrorHandler delegate, boolean showStacks) {
         this.delegate = delegate;
@@ -54,7 +58,14 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
                         response.setHeader(header.getHeaderName(), value);
                     }
                 });
+            final String method = baseRequest.getMethod();
             this.delegate.handle(target, baseRequest, request, response);
+            // WARN: Temporary workaround
+            // https://github.com/spring-projects/spring-boot/commit/323af718e20d2cd3796dd0273e646a674d532260
+            // Should be removed after spring upgrade!!!!!
+            if (HANDLED_HTTP_METHODS.contains(method)) {
+                baseRequest.setMethod(method);
+            }
         }
     }
 
