@@ -110,11 +110,11 @@ public abstract class EmbeddedJettyBase {
     @Value("${ot.httpserver.active-connectors:default-http}")
     List<String> activeConnectors;
 
-    @Value("${ot.httpserver.ssl-allowed-deprecated-ciphers:}")
-    List<String> allowedDeprecatedCiphers;
-
     @Value("${ot.httpserver.ssl-excluded-protocols:}")
     List<String> excludedProtocols;
+
+    @Value("${ot.httpserver.ssl-excluded-cipher-suits:}")
+    List<String> excludedCipherSuits;
 
     // the following two values (shouldSleepBeforeShutdown, sleepDurationBeforeShutdown) help an application control whether they want a pause before jetty shutdown to ensure that the discovery unannounce has propagated to all clients requesting the application
     @Value("${ot.httpserver.sleep-before-shutdown:#{false}}")
@@ -252,7 +252,9 @@ public abstract class EmbeddedJettyBase {
                 factories.add(new ProxyConnectionFactory());
                 //$FALL-THROUGH$
             case "https":
-                ssl = new SuperSadSslContextFactory(name, config);
+                ssl = new SslContextFactory.Server();
+                ssl.setKeyStorePath(config.getKeystore());
+                ssl.setKeyStorePassword(config.getKeystorePassword());
                 break;
             default:
                 throw new UnsupportedOperationException(String.format("For connector '%s', unsupported protocol '%s'", name, config.getProtocol()));
@@ -278,6 +280,12 @@ public abstract class EmbeddedJettyBase {
                 LOG.warn("Excluding following protocols:");
                 excludedProtocols.forEach(protocol -> LOG.warn("Disabling {}", protocol));
                 ssl.setExcludeProtocols(excludedProtocols.toArray(new String[0]));
+            }
+
+            if (!CollectionUtils.isEmpty(excludedCipherSuits)) {
+                LOG.warn("Excluding following cipher suits:");
+                excludedCipherSuits.forEach(cipher -> LOG.warn("Disabling {}", cipher));
+                ssl.setExcludeCipherSuites(excludedCipherSuits.toArray(new String[0]));
             }
 
             factories.add(new SslConnectionFactory(ssl, http.getProtocol()));
@@ -419,31 +427,6 @@ public abstract class EmbeddedJettyBase {
         // Safe because state of httpActualPort can only go from null => non null
         Preconditions.checkState(httpActualPort != null, "default connector http port not initialized");
         return httpActualPort;
-    }
-
-    class SuperSadSslContextFactory extends SslContextFactory.Server {
-        SuperSadSslContextFactory(String name, ServerConnectorConfig config) {
-            Preconditions.checkState(config.getKeystore() != null, "no keystore specified for '%s'", name);
-            setKeyStorePath(config.getKeystore());
-            setKeyStorePassword(config.getKeystorePassword());
-        }
-
-        @Override
-        protected void removeExcludedCipherSuites(List<String> selectedCiphers) {
-            super.removeExcludedCipherSuites(selectedCiphers);
-
-            if (allowedDeprecatedCiphers.isEmpty()) {
-                return;
-            }
-
-            LOG.warn("***************************************************************************************");
-            LOG.warn("TEMPORARILY ALLOWING VULNERABLE, DEPRECATED SSL CIPHERS FOR BUSTED CLIENTS!!!");
-            allowedDeprecatedCiphers.forEach(cipher ->
-                    LOG.warn("    * {}", cipher)
-            );
-            LOG.warn("***************************************************************************************");
-            selectedCiphers.addAll(allowedDeprecatedCiphers);
-        }
     }
 
     interface WebServerFactoryAdapter<T> {
