@@ -283,7 +283,7 @@ public abstract class EmbeddedJettyBase {
             }
 
             if (!CollectionUtils.isEmpty(excludedCipherSuits)) {
-                LOG.warn("Excluding following cipher suits:");
+                LOG.warn("Excluding following cipher suites:");
                 excludedCipherSuits.forEach(cipher -> LOG.warn("Disabling {}", cipher));
                 ssl.setExcludeCipherSuites(excludedCipherSuits.toArray(new String[0]));
             }
