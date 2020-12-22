@@ -1,6 +1,12 @@
 otj-server
 ==========
 
+5.2.3
+=====
+* update to parent pom 264
+* deleted SuperSadSslFactory
+* introduced ot.httpserver.ssl-excluded-cipher-suits flag
+
 5.2.2
 =====
 * Jetty low resource monitor. 

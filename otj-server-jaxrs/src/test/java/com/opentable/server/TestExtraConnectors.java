@@ -110,11 +110,35 @@ public class TestExtraConnectors {
         return String.format("%s://localhost:%s/beep", protocol, info.getConnectors().get(name).getPort());
     }
 
-    private void withConnectors(String connectorList, Consumer<HttpServerInfo> action) {
+   private void withConnectors(String connectorList, Consumer<HttpServerInfo> action) {
         final Map<String, Object> props = ImmutableMap.<String, Object>builder()
                 .put("PORT0", 32743)
                 .put("PORT1", 32744)
                 .put("ot.httpserver.connector.secure-http.forceSecure", true)
+                /*
+                 adapted from SslContextFactory.DEFAULT_EXCLUDED_CIPHER_SUITES
+                 EXCLUDED_CIPHER_SUITES = {
+                    // Exclude weak / insecure ciphers
+                    "^.*_(MD5|SHA|SHA1)$",
+                    // Exclude ciphers that don't support forward secrecy
+                    "^TLS_RSA_.*$" ....
+                 */
+                .put("ot.httpserver.ssl-excluded-cipher-suits", "" +
+                        "^.*_(MD5|SHA1)$," +                          // we allow ciphers with SHA$, will do selective exclusion
+                        "^TLS_ECDHE_ECDSA_WITH_AES_.*SHA$," +         // exclude SHA$
+                        "^TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA$," +     // exclude SHA$
+                        "^TLS_ECDH_.*_SHA$," +                        // exclude SHA$
+                        "^TLS_DHE_.*_SHA$," +                         // exclude SHA$
+                        "^TLS_RSA_WITH_AES_128_CBC_SHA256$," +        // jetty excludes anything with "^TLS_RSA_.*$",
+                        "^TLS_RSA_WITH_AES_128_GCM_.*$," +            // exclude ^TLS_RSA
+                        "^TLS_RSA_WITH_AES_256_.*$," +                // exclude ^TLS_RSA
+                        "^SSL_.*$," +
+                        "^.*_NULL_.*$," +
+                        "^.*_anon_.*$")
+                // the net effect of the above exclusions is that we end up allowing the desired
+                // legacy ciphers through in particular
+                // i)  TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+                // ii) TLS_RSA_WITH_AES_128_CBC_SHA
                 .put("ot.httpserver.connector.https.protocol", "https")
                 .put("ot.httpserver.connector.https.keystore", keystore)
                 .put("ot.httpserver.connector.https.keystorePassword", PASSWORD)
