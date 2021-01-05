@@ -1,6 +1,12 @@
 otj-server
 ==========
 
+5.2.4
+-----
+* POM 267
+* Recompile against otj-logging 5.2.2
+* Remove many careless dep pins
+
 5.2.3
 =====
 * update to parent pom 264
