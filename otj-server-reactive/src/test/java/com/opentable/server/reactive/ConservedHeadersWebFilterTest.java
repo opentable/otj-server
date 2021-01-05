@@ -124,7 +124,6 @@ public class ConservedHeadersWebFilterTest extends AbstractTest {
      * ensuring that the MDC conserved header values are set correctly even if the thread was re-used.
      */
     @Test
-    @Ignore
     public void testParallelApiCallsLogConservedHeadersInMDCForCorrectRequest() throws NoSuchFieldException, IllegalAccessException {
 
         final ApplicationLogInMemoryAppender appLogAppender = ApplicationLogInMemoryAppender.create(TestReactiveServerConfiguration.MyResource.class);
