@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+Future
+-----
+* POM 271
+* Add Dmitry's test to verify HTTP POST with 404 reacts correctly.
+
 5.2.4
 -----
 * POM 267

@@ -88,6 +88,22 @@ public class RequestLoggingTest extends AbstractTest {
         HttpV1 payload = loggingEvent.getPayload();
         assertEquals(404, payload.getStatus());
         assertEquals("/this/is/not/a/real/path", payload.getUrl());
+        assertEquals("GET", payload.getMethod());
+        assertTrue(payload.getResponseSize() > 100);
+        assertTrue(payload.getDuration() > 0);
+    }
+
+    // Spring issue with 404 POST not returning correctly
+    // Corrected in Spring 2.2.11+
+    @Test
+    public void test404Post() throws InterruptedException {
+        testRestTemplate.postForObject("/this/is/not/a/real/path", null, String.class);
+        Thread.sleep(2000l);
+        RequestLogEvent loggingEvent = (RequestLogEvent) APPENDER.eventStack.pop();
+        HttpV1 payload = loggingEvent.getPayload();
+        assertEquals(404, payload.getStatus());
+        assertEquals("/this/is/not/a/real/path", payload.getUrl());
+        assertEquals("POST", payload.getMethod());
         assertTrue(payload.getResponseSize() > 100);
         assertTrue(payload.getDuration() > 0);
     }
