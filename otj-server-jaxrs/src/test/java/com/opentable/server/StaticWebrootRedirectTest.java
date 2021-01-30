@@ -34,6 +34,7 @@ import com.opentable.jaxrs.StandardFeatureGroup;
 import com.opentable.server.jaxrs.StaticWebrootRedirect;
 import com.opentable.service.ServiceInfo;
 
+// show the defined root responds with a redirect.
 public class StaticWebrootRedirectTest {
     @Inject
     private JAXRSLoopbackRequest request;

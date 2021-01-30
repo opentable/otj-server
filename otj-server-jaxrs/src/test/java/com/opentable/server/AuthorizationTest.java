@@ -62,6 +62,7 @@ import com.opentable.server.jaxrs.ServletInitParameters;
     "ot.httpserver.max-threads=13",
     "ot.httpserver.static-path=static-test"
 })
+// This class primarily tests resteasy's role support
 @DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorizationTest {
 
@@ -71,6 +72,7 @@ public class AuthorizationTest {
     @Inject
     private MetricRegistry metrics;
 
+    // 403 is returned
     @Test(timeout = 10_000)
     public void testAccessDenied_noRole() throws InterruptedException {
         try(Response r = request.of("/nuclear-launch-codes").request().get()){
@@ -145,6 +147,7 @@ public class AuthorizationTest {
         public void init(FilterConfig filterConfig) throws ServletException {
         }
 
+        // Lets us inject a role as a query param - dubious in real life, but useful for tests
         @Override
         public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
                 throws IOException, ServletException {

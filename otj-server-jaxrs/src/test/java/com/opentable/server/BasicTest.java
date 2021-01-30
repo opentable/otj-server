@@ -58,6 +58,8 @@ public class BasicTest {
     @Inject
     MetricRegistry metrics;
 
+    // If the path returns a 500, show that and that response is correct
+    // and that the metrics update
     @Test(timeout = 10_000)
     public void test5xx() throws InterruptedException {
         String responseText = request.of("/5xx").request().get().readEntity(String.class);
@@ -65,12 +67,14 @@ public class BasicTest {
         waitForCount("http-server.500-responses", 1);
     }
 
+    // Normal endpoint returns 200, plus metrics update
     @Test(timeout = 10_000)
     public void testHello() throws InterruptedException {
         assertEquals(TestJaxRsServerConfiguration.HELLO_WORLD, request.of("/").request().get().readEntity(String.class));
         waitForCount("http-server.200-responses", 1);
     }
 
+    // non mapped resource returns a 404, updates the metrics
     @Test(timeout = 10_000)
     public void testMissing() throws InterruptedException {
         try(Response r = request.of("/not/found/omg/wtf/bbq").request().get()){
@@ -79,6 +83,8 @@ public class BasicTest {
         }
     }
 
+
+    // Test static resource configuration
     @Test
     public void testStatic_txt() throws IOException {
         testStatic("static-test/test.txt", "text/plain");
@@ -89,6 +95,7 @@ public class BasicTest {
         testStatic("static-test/test.png", "image/png");
     }
 
+    // Show configuration of thread pool is correct
     @Test
     public void testPoolCustomizations() throws Exception {
         QueuedThreadPool qtp = ej.getThreadPool();

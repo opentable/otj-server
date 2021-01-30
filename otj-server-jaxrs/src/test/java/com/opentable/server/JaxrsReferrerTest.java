@@ -35,11 +35,15 @@ import com.opentable.service.ServiceInfo;
 public class JaxrsReferrerTest {
     private static final String TASK_HOST = "mesos-agent-awesome.otenv.com";
 
+    // This appears to be more a JAXRS Client test than a server test, since it primarily tests
+    // whether certain headers like referring service and TASK_HOST are passed. These are not conserved.
     @Test
     public void test() {
+        // http server....
         try (ConfigurableApplicationContext serverCtx = OTApplication.run(ServerConfiguration.class)) {
             final int serverPort = serverCtx.getBean(HttpServerInfo.class).getPort();
             final String serverTarget = String.format("http://localhost:%s/test", serverPort);
+            // client
             try (ConfigurableApplicationContext clientCtx = OTApplication.run(
                     ClientConfiguration.class,
                     new String[]{},

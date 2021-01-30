@@ -15,8 +15,8 @@ package com.opentable.server;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 import javax.annotation.security.RolesAllowed;
@@ -90,7 +90,7 @@ public class TestJaxRsServerConfiguration {
     @Path("/")
     public static class TestResource {
         private static final Logger LOG = LoggerFactory.getLogger(TestResource.class);
-        private final List<AsyncResponse> waiters = new ArrayList<>();
+        private final List<AsyncResponse> waiters = new CopyOnWriteArrayList<>();
 
         @GET()
         @Path("5xx")

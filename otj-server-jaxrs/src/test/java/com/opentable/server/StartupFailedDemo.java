@@ -13,20 +13,29 @@
  */
 package com.opentable.server;
 
+import org.junit.Assert;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.opentable.service.ServiceInfo;
+
+// Not a test per, but can be adapted to show the jvm hook kicks in. This is helpful for closed context,
+// but not terribly reliable for ApplicationFailed, since the event is only sent if we registered in time
+// Currently doesn't work with AppFailed, so I modified it to emulate a contextclosed forced shutdown
 public class StartupFailedDemo {
     public static void main(String[] args) throws InterruptedException {
         try {
-            SpringApplication.run(App.class, args);
+            ConfigurableApplicationContext context = SpringApplication.run(new Class[] {App.class}, args);
+            context.close();
         } catch (@SuppressWarnings("unused") BeanCreationException e) {
-            // No problem... wait for the T-1000.
-            Thread.sleep(StartupShutdownFailedHandler.timeout.toMillis() * 2);
+            Assert.fail(); // this catch really only applies for appfailedevent
         }
-        throw new RuntimeException("should never be reached");
+        // No problem... wait for the T-1000.
+        Thread.sleep(StartupShutdownFailedHandler.timeout.toMillis() * 2);
+        throw new RuntimeException("should never be reached, since hook should prevent it");
     }
 
     @Configuration
@@ -34,10 +43,12 @@ public class StartupFailedDemo {
     public static class App {
         @Configuration
         public static class BustedConfiguration {
+
             @Bean
-            public Object boom() {
-                throw new RuntimeException("boom");
+            public ServiceInfo serviceInfo() {
+                return () -> "bye";
             }
+
         }
     }
 }

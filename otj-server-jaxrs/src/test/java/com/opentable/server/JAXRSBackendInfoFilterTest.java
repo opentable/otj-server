@@ -36,6 +36,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "INSTANCE_NO=3",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com"
 })
+// NB Core.BackendFilterTest appears redundant and should probably be whacked
 public class JAXRSBackendInfoFilterTest {
     @Inject
     private JAXRSLoopbackRequest request;

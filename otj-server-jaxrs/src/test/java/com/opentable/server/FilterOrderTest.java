@@ -48,6 +48,7 @@ public class FilterOrderTest {
     @Named("test")
     private Client testClient;
 
+    // Test the ordering imposed by otj-filterorder
     @Test
     public void testAB() {
         test(TestConfigurationAB.class);

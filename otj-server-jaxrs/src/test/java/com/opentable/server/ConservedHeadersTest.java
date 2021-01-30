@@ -42,6 +42,7 @@ public class ConservedHeadersTest {
     @Inject
     JAXRSLoopbackRequest request;
 
+    // RequestId, even if not supplied is created AND returned in response
     @Test
     public void createRequestIdIndex() {
         sanityCheck(request.of("/").request().get());
@@ -52,6 +53,7 @@ public class ConservedHeadersTest {
         sanityCheck(request.of("/404/not/found").request().get());
     }
 
+    // Here we prove if we supplied it on the call, it's the one that came in on the response
     @Test
     public void conserveRequestId() {
         final String rid = UUID.randomUUID().toString();
@@ -79,6 +81,7 @@ public class ConservedHeadersTest {
         }
     }
 
+    // Bad requestId are discarded and replaced with a fresh UUID
     @Test
     public void replaceBadRequestId() {
         final String badRid = "not a valid UUID";
@@ -88,6 +91,7 @@ public class ConservedHeadersTest {
         }
     }
 
+    // As with Request Id, so test anonymous id.
     @Test
     public void conserveAnonymousId() {
         final String aid = "fgsfds";

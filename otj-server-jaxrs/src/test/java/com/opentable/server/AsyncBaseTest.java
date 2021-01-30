@@ -27,12 +27,7 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.TestPropertySource;
 
-@TestPropertySource(properties = {
-    "ot.httpserver.max-threads=" + AsyncBaseTest.N_THREADS,
-    "jaxrs.client.default.connectionPoolSize=128"
-})
 public abstract class AsyncBaseTest {
     private static final Logger LOG = LoggerFactory.getLogger(AsyncBaseTest.class);
 
@@ -47,13 +42,16 @@ public abstract class AsyncBaseTest {
     @Test(timeout=30_000)
     public void testAsynchronousServerAndClient() {
         final EmbeddedJettyBase ej = getEmbeddedJetty();
+        // configured correctly
         assertEquals(N_THREADS, ej.getThreadPool().getMaxThreads());
 
+        // Send out 50 async requests to an async server resource
         IntStream.range(0, N_REQUESTS)
             .mapToObj(this::makeRequest)
             // Collect makes sure we send off all the requests before waiting for any
             .collect(Collectors.toList())
             .stream()
+            // join each future
             .map(this::getSafe)
             .forEach(s -> {
                 LOG.info("result received");

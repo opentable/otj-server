@@ -20,6 +20,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 @Named
+// Copy paste and makes core even more redundant.
 class JAXRSLoopbackRequest {
     private final Client client;
     private final Provider<HttpServerInfo> info;

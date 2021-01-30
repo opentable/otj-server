@@ -33,6 +33,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties= {
     "ot.httpserver.max-threads=13"
 })
+//NB: Also seems redundant with Core. Why doesnt MVC have this?
 public class JAXRSEventTest {
     private static final Logger LOG = LoggerFactory.getLogger(JAXRSEventTest.class);
 

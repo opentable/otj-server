@@ -15,11 +15,11 @@ package com.opentable.server;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -27,7 +27,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ContextConfiguration(classes = {
     TestJaxRsServerConfiguration.class
 })
-@Ignore
+@TestPropertySource(properties = {
+        "ot.httpserver.max-threads=" + AsyncBaseTest.N_THREADS,
+        "jaxrs.client.default.connectionPoolSize=128"
+})
 public class AsyncTest extends AsyncBaseTest {
 
     @Inject

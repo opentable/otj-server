@@ -41,6 +41,7 @@ import com.opentable.metrics.jaxrs.MetricsHttpJaxRsConfiguration;
         MetricsHttpJaxRsConfiguration.class,
         MetricsDemo.AnnotatedResource.class,
 })
+// Mostly meaningless test, could be improved by proving the metric is genned, but still...
 public class MetricsDemo {
     public static void main(final String[] args) {
         final SpringApplication app = new SpringApplication(MetricsDemo.class);
@@ -53,7 +54,7 @@ public class MetricsDemo {
         props.put("INSTANCE_NO", "0");
         props.put("OT_ENV_TYPE", "dev");
         props.put("OT_ENV_LOCATION", "sf");
-        //props.put("ot.graphite.graphite-host", "carbon-qa-sf.otenv.com");
+        //props.put("ot.graphite.graphite-host", "carbon-qa-rs.otenv.com");
         return Collections.unmodifiableMap(props);
     }
 
