@@ -44,7 +44,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "PORT_JMX=9999",
         "IS_KUBERNETES=TRUE",
 })
-
+// As the name implies, this proves various mbeans are exported from Jetty
 public class JettyJmxExportTest {
 
     @Inject

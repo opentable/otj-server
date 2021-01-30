@@ -31,6 +31,7 @@ public class EventTestListener {
         this.info = info;
     }
 
+    // The EmbeddedJettyBase has highest precedence set
     @EventListener
     public void containerInitialized(final WebServerInitializedEvent evt) {
         // Should blow up if other didn't first

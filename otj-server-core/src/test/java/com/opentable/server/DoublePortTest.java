@@ -31,6 +31,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import com.opentable.jaxrs.JaxRsClientFactory;
 
+// Tests allocating multiple http ports
 public class DoublePortTest {
     private ConfigurableApplicationContext context;
     private Integer port;
@@ -46,6 +47,7 @@ public class DoublePortTest {
         Assert.assertNull(context);
         Assert.assertNull(port);
         SpringApplication app = new SpringApplication(TestServerConfiguration.class);
+        // Two http ports
         app.setDefaultProperties(ImmutableMap.of(
                 "ot.httpserver.active-connectors", "default-http,extra-http",
                 "ot.httpserver.connector.extra-http.port", secondPort));
@@ -64,6 +66,7 @@ public class DoublePortTest {
         client.close();
     }
 
+    // Show each port returns an expected response when HTTP GET is called
     @Test
     public void testPorts() throws Exception {
         assertNotSame(port, secondPort);

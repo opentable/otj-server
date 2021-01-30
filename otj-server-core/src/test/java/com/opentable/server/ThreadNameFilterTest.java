@@ -36,6 +36,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "INSTANCE_NO=3",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
 })
+// Proves the threadname contains the requestUri - a bit weak of a test tbh
 public class ThreadNameFilterTest {
 
     @Inject

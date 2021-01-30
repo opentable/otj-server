@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContextException;
 
+// Exception is thrown since no port is defined
 public class NoPortTest {
     @Test(expected=ApplicationContextException.class)
     public void testNoPorts() throws Exception {

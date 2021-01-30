@@ -36,14 +36,17 @@ import org.springframework.test.context.junit4.SpringRunner;
         "INSTANCE_NO=3",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
 })
+// Tests returning the OT-Backend stuff in a response
 public class BackendInfoFilterTest {
 
     @Inject
     private LoopbackRequest request;
 
+    //Call an endpoint and verify the OT-Backend prefixes are returned
     @Test
     public void test() {
         try(final Response r = request.of("/").request().get()){
+            System.err.println(r.getStatus());
             final AtomicBoolean sawBackendHeader = new AtomicBoolean();
             r.getHeaders().forEach((name, objs) -> {
                 if (name.toLowerCase().startsWith(BackendInfoFilterConfiguration.HEADER_PREFIX.toLowerCase())) {

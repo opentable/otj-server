@@ -38,6 +38,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         "ot.server.low-resource-monitor.max-low-resources-time-ms=3",
         "ot.server.low-resource-monitor.accepting-in-low-resources=true"
 })
+// Basic test verify setup of Jetty's LowResourceMonitor
 public class LowResourceMonitorTest {
 
     @Inject

@@ -33,6 +33,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(properties= {
     "ot.httpserver.max-threads=13",
 })
+// Test injection of the HttpServerInfo
+// This also proves some our WebServerInitializedEvent is firing
 public class EventTest {
     private static final Logger LOG = LoggerFactory.getLogger(EventTest.class);
 

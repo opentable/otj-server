@@ -37,6 +37,7 @@ public class IdleTimeoutTest {
     @Inject
     private Server server;
 
+    // Test that idleTimeout was accepted from the setting
     @Test
     public void test() {
         Assert.assertEquals(1,  server.getConnectors()[0].getIdleTimeout());

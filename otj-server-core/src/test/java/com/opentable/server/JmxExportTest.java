@@ -41,6 +41,7 @@ public class JmxExportTest {
                 "com.opentable.server:name=com.opentable.server.JmxExportTest$TestApp$MyManagedBean,"
                         + "type=JmxExportTest.TestApp.MyManagedBean");
 
+        // Imports the managed bean below, proves it exported
         try (final ConfigurableApplicationContext ctx = OTApplication.run(TestApp.class, new String[] {})) {
             assertEquals("TestApp", mbs.getAttribute(name, "Name"));
         }

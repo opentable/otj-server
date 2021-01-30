@@ -19,6 +19,7 @@ import javax.inject.Provider;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
+// Utility class for doing quick loopback HTTP GET tests
 @Named
 public class LoopbackRequest {
 
