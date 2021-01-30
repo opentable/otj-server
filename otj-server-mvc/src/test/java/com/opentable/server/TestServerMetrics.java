@@ -42,7 +42,9 @@ public class TestServerMetrics extends AbstractTest {
         for (int i = 0; i < 51; i++) {
             testRestTemplate.getForObject("/totally/fake", String.class);
         }
-        Thread.sleep(2000l);
+        // This is not a terribly well written test. But without wiring up the reporter it's probably as
+        // good as you can due
+        Thread.sleep(2_000l);
         assertEquals(123, okResponseMeter.getCount() - currentOk);
         assertEquals(51, notFoundResponseMeter.getCount() - currentNotFound);
     }
@@ -60,7 +62,7 @@ public class TestServerMetrics extends AbstractTest {
         for (int i = 0; i < 5; i++) {
             testRestTemplate.getForObject("/totally/fake", String.class);
         }
-        Thread.sleep(2000l);
+        Thread.sleep(2_000l);
         assertEquals(10, okResponseMeter.getCount() - currentOk);
         assertEquals(5, notFoundResponseMeter.getCount() - currentNotFound);
     }

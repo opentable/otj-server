@@ -36,7 +36,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 import com.opentable.server.mvc.LoggingHandlerExceptionResolver;
-
+// Proves Dmitryies stack logger works
 public class ExceptionLoggingTest extends AbstractTest {
 
     @Autowired private TestRestTemplate testRestTemplate;
@@ -48,6 +48,7 @@ public class ExceptionLoggingTest extends AbstractTest {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         APPENDER.setContext(loggerContext);
         APPENDER.start();
+        // Added this capture appender here
         Logger logger = (Logger) LoggerFactory.getLogger(LoggingHandlerExceptionResolver.class);
         logger.addAppender(APPENDER);
         logger.setLevel(Level.ALL);

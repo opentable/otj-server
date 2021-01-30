@@ -34,7 +34,7 @@ import ch.qos.logback.core.AppenderBase;
 import com.opentable.logging.jetty.JsonRequestLog;
 import com.opentable.logging.jetty.RequestLogEvent;
 import com.opentable.logging.otl.HttpV1;
-
+// As the name implies, with the help of an inmemory appender, tests request logging.
 public class RequestLoggingTest extends AbstractTest {
 
     @Autowired private TestRestTemplate testRestTemplate;

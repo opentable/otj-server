@@ -22,7 +22,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-
+// Tests some very basic json marshalling. Probably could be expanded
 public class MessageConverterTest extends AbstractTest {
 
     @Autowired

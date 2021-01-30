@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+// Test all health and ready endpoints, as well as /service-status
 public class HealthCheckTest extends AbstractTest {
 
     @Autowired
@@ -29,6 +29,19 @@ public class HealthCheckTest extends AbstractTest {
     @Test
     public void testHealthEndpoint() {
         ResponseEntity<String> healthResponse = testRestTemplate.getForEntity("/health", String.class);
+        assertThat(healthResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+
+    @Test
+    public void testHealthEndpoint2() {
+        ResponseEntity<String> healthResponse = testRestTemplate.getForEntity("/infra/health", String.class);
+        assertThat(healthResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void testReadyEndpoint2() {
+        ResponseEntity<String> healthResponse = testRestTemplate.getForEntity("/infra/ready", String.class);
         assertThat(healthResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 

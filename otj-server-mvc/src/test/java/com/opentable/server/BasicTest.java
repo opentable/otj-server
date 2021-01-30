@@ -26,16 +26,19 @@ public class BasicTest extends AbstractTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    // Sets the serviceType
     @Test
     public void applicationLoads() {
         assertEquals("test", CommonLogHolder.getServiceType());
     }
 
+    // Port as expected
     @Test
     public void httpServerInfoMatchesEnvironment() {
         assertEquals(port, httpServerInfo.getPort());
     }
 
+    // Basic get call
     @Test
     public void testApiCall() {
         String res = testRestTemplate.getForObject("/api/test", String.class);

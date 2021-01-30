@@ -18,6 +18,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -28,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.opentable.conservedheaders.ConservedHeader;
 
+// Basically calls an endpoint with all major methods, and shows they work
 public class ErrorResponseTest extends AbstractTest {
 
     private static final String REQUEST_ID = ConservedHeader.REQUEST_ID.getHeaderName();
@@ -60,8 +62,14 @@ public class ErrorResponseTest extends AbstractTest {
         harness(HttpMethod.OPTIONS);
     }
 
+    @Test
+    @Ignore("HttpUrlConnection, default option in resttemplate doesn't support patch")
+    public void patch() {
+        harness(HttpMethod.PATCH);
+    }
 
     public void harness(HttpMethod method) {
+        // requestId in == the one out
         final String requestId = UUID.randomUUID().toString();
         ResponseEntity<JsonNode> response = request("/api/faultstatus-exception", method, REQUEST_ID, requestId);
         Assert.assertEquals(requestId, response.getHeaders().get(REQUEST_ID).get(0));

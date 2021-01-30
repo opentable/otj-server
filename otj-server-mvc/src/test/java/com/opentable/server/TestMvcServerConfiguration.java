@@ -19,6 +19,9 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -35,6 +38,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -106,12 +110,24 @@ public class TestMvcServerConfiguration {
             return date.toString();
         }
 
+
+        @GetMapping("/nuclear-launch-codes")
+        @RolesAllowed("POTUS") // This annotation doesn't work without spring security
+        public ResponseEntity<String> getLaunchCode(HttpServletRequest request) {
+            if (!request.isUserInRole("POTUS")) {
+                return ResponseEntity.status(403).header("X-Role-Inferred", request.getUserPrincipal().getName() == null ? "none" : request.getUserPrincipal().getName()).build();
+            }
+            return ResponseEntity.status(200).header("X-Role-Inferred", request.getUserPrincipal().getName())
+            .body("CPE1704TKS");
+        }
+
         @GetMapping("fault")
         public void rspFault() {
             throw new RuntimeException("test");
         }
 
-        @RequestMapping(path = "faultstatus-exception", method = {RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PATCH, RequestMethod.POST})
+        @RequestMapping(path = "faultstatus-exception", method = {RequestMethod.GET, RequestMethod.PUT,
+                RequestMethod.DELETE, RequestMethod.HEAD, RequestMethod.OPTIONS, RequestMethod.PATCH, RequestMethod.POST})
         public void rspStatusException() {
             throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "unauthorized");
         }

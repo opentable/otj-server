@@ -29,7 +29,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.opentable.conservedheaders.ConservedHeader;
 import com.opentable.server.TestMvcServerConfiguration.EchoResponse;
-
+// Very similar to jaxrs
 public class ConservedHeadersTest extends AbstractTest {
 
     private static final String REQUEST_ID = ConservedHeader.REQUEST_ID.getHeaderName();
@@ -38,16 +38,19 @@ public class ConservedHeadersTest extends AbstractTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    // New Id
     @Test
     public void createRequestIdIndex() {
         sanityCheck(request("/api/test", null, null));
     }
 
+    // New Id
     @Test
     public void createRequestId404() {
         sanityCheck(request("/404/not/found", null, null));
     }
 
+    // Conserved if supplied
     @Test
     public void conserveRequestId() {
         final String requestId = UUID.randomUUID().toString();
@@ -56,6 +59,7 @@ public class ConservedHeadersTest extends AbstractTest {
         Assert.assertEquals(requestId, response.getHeaders().get(REQUEST_ID).get(0));
     }
 
+    // Conserved in async
     @Test
     public void conserveRequestIdInAsync() {
         final String requestId = UUID.randomUUID().toString();
@@ -64,6 +68,7 @@ public class ConservedHeadersTest extends AbstractTest {
         Assert.assertEquals(requestId, response.getHeaders().get(REQUEST_ID).get(0));
     }
 
+    // Bad id replaced
     @Test
     public void replaceBadRequestId() {
         final String badRequestId = "not a valid UUID";
@@ -72,6 +77,7 @@ public class ConservedHeadersTest extends AbstractTest {
         Assert.assertNotEquals(badRequestId, response.getHeaders().get(REQUEST_ID).get(0));
     }
 
+    // Same test for anonymous id
     @Test
     public void conserveAnonymousId() {
         final String anonymousId = "fgsfds";
@@ -81,6 +87,7 @@ public class ConservedHeadersTest extends AbstractTest {
 
     }
 
+    // into the server, out via response
     @Test
     public void testRequestIdPassedAlong() {
         String requestId = UUID.randomUUID().toString();
@@ -95,6 +102,7 @@ public class ConservedHeadersTest extends AbstractTest {
         assertEquals(requestId, actualRequestId);
     }
 
+    // Even for an exception
     @Test
     public void conserveRequestIdFault() {
         final String requestId = UUID.randomUUID().toString();
