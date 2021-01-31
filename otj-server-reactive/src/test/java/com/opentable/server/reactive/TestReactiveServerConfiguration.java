@@ -128,7 +128,7 @@ public class TestReactiveServerConfiguration {
                         return Mono.just("Alternate random thing");
                     })
                     .flatMap(e -> {
-                        LOG.info("(TRACE-{}) Inside publisher, before scheduling", trace, e);
+                        LOG.info("(TRACE-{}) Inside publisher, before scheduling, {}", trace, e);
                         return Mono.just(e);
                     })
                     .publishOn(parallelScheduler)

@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
+// Test standard endpoints for health, readiness, and service-status
 public class HealthCheckTest extends AbstractTest {
 
     @Autowired
@@ -30,6 +30,24 @@ public class HealthCheckTest extends AbstractTest {
     @Test
     public void testHealthEndpoint() {
         FluxExchangeResult<String> result = webTestClient.get().uri("/health").exchange().returnResult(String.class);
+        assertEquals(HttpStatus.OK, result.getStatus());
+
+        String response = result.getResponseBody().blockFirst();
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testInfraHealthEndpoint() {
+        FluxExchangeResult<String> result = webTestClient.get().uri("/infra/health").exchange().returnResult(String.class);
+        assertEquals(HttpStatus.OK, result.getStatus());
+
+        String response = result.getResponseBody().blockFirst();
+        assertNotNull(response);
+    }
+
+    @Test
+    public void testReadyEndpoint() {
+        FluxExchangeResult<String> result = webTestClient.get().uri("/infra/ready").exchange().returnResult(String.class);
         assertEquals(HttpStatus.OK, result.getStatus());
 
         String response = result.getResponseBody().blockFirst();

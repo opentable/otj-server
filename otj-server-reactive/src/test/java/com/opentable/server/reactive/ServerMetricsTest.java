@@ -53,9 +53,15 @@ public class ServerMetricsTest extends AbstractTest {
             webTestClient.get().uri("/totally/fake").exchange().expectBody(String.class).returnResult();
         }
         Thread.sleep(2000l);
+        // Do all the metrics filter through?
+        // We expect 123 200s from the /api/test endpoint
         assertEquals(123, okResponseMeter.getCount() - currentOk);
+        // ... and 51 404s from the /totally/fake one
         assertEquals(51, notFoundResponseMeter.getCount() - currentNotFound);
         assertEquals(0, activeSuspended.getCount() - currentSuspended);
+
+        // We expect total request and total dispatches to be 174. Since there were
+        // no async delays, dispatches = requests (at least I think that's the idea
         assertEquals(174, requests.getCount() - currentRequests);
         assertEquals(174, dispatches.getCount() - currentDispatches);
     }
@@ -82,6 +88,7 @@ public class ServerMetricsTest extends AbstractTest {
             webTestClient.get().uri("/totally/fake").exchange().expectBody(String.class).returnResult();
         }
         Thread.sleep(2000l);
+        // Very similar to the non async...
         assertEquals(10, okResponseMeter.getCount() - currentOk);
         assertEquals(5, notFoundResponseMeter.getCount() - currentNotFound);
         assertEquals(0, activeSuspended.getCount() - currentSuspended);

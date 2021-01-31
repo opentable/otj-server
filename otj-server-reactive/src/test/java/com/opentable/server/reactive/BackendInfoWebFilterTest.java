@@ -31,6 +31,7 @@ import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration
         "INSTANCE_NO=3",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
 })
+// Check if the OT-Backend stuff is propagated
 public class BackendInfoWebFilterTest extends AbstractTest {
 
     private static final String HEADER_PREFIX_LOWER_CASE = BackendInfoWebFilterConfiguration.HEADER_PREFIX.toLowerCase();

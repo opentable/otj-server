@@ -30,16 +30,19 @@ public class BasicTest extends AbstractTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    // The context spins up and the service type is set
     @Test
     public void applicationLoads() {
         assertEquals("test", CommonLogHolder.getServiceType());
     }
 
+    // The httpServerInfo is retrievable and matches local.server.port
     @Test
     public void httpServerInfoMatchesEnvironment() {
         assertEquals(port, httpServerInfo.getPort());
     }
 
+    // A basic http get works
     @Test
     public void testApiCall() {
         EntityExchangeResult<String> result = webTestClient.get()

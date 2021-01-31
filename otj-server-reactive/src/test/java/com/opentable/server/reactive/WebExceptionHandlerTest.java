@@ -32,12 +32,14 @@ public class WebExceptionHandlerTest extends AbstractTest {
 
     @Test
     public void testExceptingCall() {
+        // Call an endpoint that throws an exception
         EntityExchangeResult<ErrorResponse> result = webTestClient.get()
                 .uri("/api/fault")
                 .exchange()
                 .expectBody(ErrorResponse.class)
                 .returnResult();
 
+        // Both MVC and WebFlux default to identical responses (The MVC test probes via JsonNode)
         ErrorResponse res = result.getResponseBody();
         assertNotNull(res);
 
@@ -47,6 +49,7 @@ public class WebExceptionHandlerTest extends AbstractTest {
         assertEquals("test", res.getMessage());
     }
 
+    // Check what gets returned for ResponseStatusException being thrown
     @Test
     public void testSpecificExceptingCall() {
         EntityExchangeResult<ErrorResponse> result = webTestClient.get()

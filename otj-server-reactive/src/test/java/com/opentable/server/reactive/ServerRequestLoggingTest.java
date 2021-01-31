@@ -23,7 +23,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import com.opentable.logging.otl.HttpV1;
 import com.opentable.server.reactive.utils.RequestLogInMemoryAppender;
-
+// Check the RequestLogs function given various HTTP calls
+//  The conserved header tests elsewhere complete most of the necessary tests
 public class ServerRequestLoggingTest extends AbstractTest {
 
     @Autowired private TestRestTemplate testRestTemplate;
@@ -35,13 +36,16 @@ public class ServerRequestLoggingTest extends AbstractTest {
         appender = RequestLogInMemoryAppender.create();
     }
 
+    // Call an endpoint returning a single string, http 200
     @Test
     public void testNormalGet() throws InterruptedException {
         String res = testRestTemplate.getForObject("/api/test", String.class);
         assertEquals("test", res);
 
+        // it would better to have some way to flush the appenders
         Thread.sleep(2000l);
 
+        // get the last entry
         HttpV1 payload = appender.getEvents().get(appender.getEvents().size() - 1);
         assertEquals(200, payload.getStatus());
         assertEquals("/api/test", payload.getUrl());
@@ -49,6 +53,7 @@ public class ServerRequestLoggingTest extends AbstractTest {
         assertTrue(payload.getDuration() > 0);
     }
 
+    // Everything should work fine for an "async" get
     @Test
     public void testAsyncGet() throws InterruptedException {
         String res = testRestTemplate.getForObject("/api/async", String.class);
@@ -63,6 +68,7 @@ public class ServerRequestLoggingTest extends AbstractTest {
         assertTrue(payload.getDuration() > 0);
     }
 
+    // Nonexistent path
     @Test
     public void test404() throws InterruptedException {
         testRestTemplate.getForObject("/this/is/not/a/real/path", String.class);
