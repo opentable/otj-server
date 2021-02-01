@@ -236,7 +236,7 @@ public class ConservedHeadersWebFilterTest extends AbstractTest {
         @Override
         public LoggingTestResult call() throws Exception {
 
-            WebTestClient.RequestHeadersSpec spec = webTestClient.get()
+            WebTestClient.RequestHeadersSpec<?> spec = webTestClient.get()
                     .uri("/api/threading/{trace}", trace);
 
             spec = addHeaderToSpec(OTHeaders.REQUEST_ID, requestId, spec);
