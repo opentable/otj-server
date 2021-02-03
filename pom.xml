@@ -43,6 +43,7 @@
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
+        <dep.otj-conservedheaders.version>5.2.1-SNAPSHOT</dep.otj-conservedheaders.version>
     </properties>
 
 
