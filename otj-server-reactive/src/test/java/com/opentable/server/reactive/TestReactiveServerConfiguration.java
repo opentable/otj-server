@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +40,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
+import com.opentable.conservedheaders.ConservedHeader;
 import com.opentable.service.ServiceInfo;
 
 @Configuration
@@ -83,6 +85,12 @@ public class TestReactiveServerConfiguration {
         public Mono<String> test() {
             LOG.info("Called 'test' endpoint");
             return Mono.just("test");
+        }
+
+        @RequestMapping("conservedclaims")
+        public Mono<String> cl() {
+            LOG.info("Called 'test' endpoint");
+            return Mono.just(MDC.get(ConservedHeader.CLAIMS_ID.getHeaderName()));
         }
 
         @GetMapping("echo")

@@ -36,11 +36,13 @@ import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.opentable.conservedheaders.ConservedHeader;
 import com.opentable.jaxrs.JaxRsClientFactory;
 import com.opentable.jaxrs.StandardFeatureGroup;
 import com.opentable.service.ServiceInfo;
@@ -104,6 +106,12 @@ public class TestJaxRsServerConfiguration {
         public Response get5xx2() {
             LOG.info("It is going to happen.");
             throw new InternalServerErrorException("it has happened");
+        }
+
+        @GET
+        @Path("conservedclaims")
+        public String conserved() {
+            return MDC.get(ConservedHeader.CLAIMS_ID.getLogName());
         }
 
         @GET

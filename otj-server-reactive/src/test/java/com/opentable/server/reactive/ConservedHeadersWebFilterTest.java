@@ -68,11 +68,13 @@ public class ConservedHeadersWebFilterTest extends AbstractTest {
     public void testApiCallConservesHeadersOnResponse() {
         final String requestId = UUID.randomUUID().toString();
         final String anonId = UUID.randomUUID().toString();
+        final String claimId = UUID.randomUUID().toString();
 
         EntityExchangeResult<String> result = webTestClient.get()
-                .uri("/api/test")
+                .uri("/api/conservedclaims")
                 .header(OTHeaders.REQUEST_ID, requestId)
                 .header(OTHeaders.ANONYMOUS_ID, anonId)
+                .header(OTHeaders.CLAIMS_ID, claimId)
                 .header("Not-A-Conserved-Header", "some value")
                 .exchange()
                 .expectStatus().isOk()
@@ -82,8 +84,9 @@ public class ConservedHeadersWebFilterTest extends AbstractTest {
                 .expectBody(String.class)
                 .returnResult();
 
+
         final String res = result.getResponseBody();
-        assertEquals("test", res);
+        assertEquals(claimId, res);
     }
 
     @Test
