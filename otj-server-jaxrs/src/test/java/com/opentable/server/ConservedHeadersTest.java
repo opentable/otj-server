@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -38,6 +39,7 @@ import com.opentable.conservedheaders.ConservedHeader;
 public class ConservedHeadersTest {
     private final static String RID = ConservedHeader.REQUEST_ID.getHeaderName();
     private final static String AID = ConservedHeader.ANONYMOUS_ID.getHeaderName();
+    private static final String CLAIMS_ID = ConservedHeader.CLAIMS_ID.getHeaderName();
 
     @Inject
     JAXRSLoopbackRequest request;
@@ -61,6 +63,14 @@ public class ConservedHeadersTest {
             sanityCheck(resp);
             Assert.assertEquals(rid, resp.getHeaderString(RID));
         }
+    }
+
+    // Conserved if supplied
+    @Test
+    public void conserveOtClaims() {
+        final String claimsId = UUID.randomUUID().toString();
+        String response = request.of("/conservedclaims").request().header(CLAIMS_ID, claimsId).get(String.class);
+        Assert.assertEquals(claimsId, response);
     }
 
     @Test

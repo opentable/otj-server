@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -52,6 +53,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.opentable.conservedheaders.ConservedHeader;
 import com.opentable.server.mvc.MVCServer;
 import com.opentable.service.ServiceInfo;
 
@@ -111,6 +113,10 @@ public class TestMvcServerConfiguration {
         }
 
 
+        @GetMapping("conservedclaims")
+        public ResponseEntity<String> conserved() {
+            return ResponseEntity.ok(MDC.get(ConservedHeader.CLAIMS_ID.getLogName()));
+        }
         @GetMapping("/nuclear-launch-codes")
         @RolesAllowed("POTUS") // This annotation doesn't work without spring security
         public ResponseEntity<String> getLaunchCode(HttpServletRequest request) {

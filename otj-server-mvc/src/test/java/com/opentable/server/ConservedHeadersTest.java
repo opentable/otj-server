@@ -33,6 +33,7 @@ import com.opentable.server.TestMvcServerConfiguration.EchoResponse;
 public class ConservedHeadersTest extends AbstractTest {
 
     private static final String REQUEST_ID = ConservedHeader.REQUEST_ID.getHeaderName();
+    private static final String CLAIMS_ID = ConservedHeader.CLAIMS_ID.getHeaderName();
     private static final String ANONYMOUS_ID = ConservedHeader.ANONYMOUS_ID.getHeaderName();
 
     @Autowired
@@ -57,6 +58,14 @@ public class ConservedHeadersTest extends AbstractTest {
         ResponseEntity<String> response = request("/api/test", REQUEST_ID, requestId);
         sanityCheck(response);
         Assert.assertEquals(requestId, response.getHeaders().get(REQUEST_ID).get(0));
+    }
+
+    // Conserved if supplied
+    @Test
+    public void conserveOtClaims() {
+        final String claimsId = UUID.randomUUID().toString();
+        ResponseEntity<String> response = request("/api/conservedclaims", CLAIMS_ID, claimsId);
+        Assert.assertEquals(claimsId, response.getBody());
     }
 
     // Conserved in async
