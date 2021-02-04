@@ -1,13 +1,10 @@
 otj-server
 ==========
 
-5.2.6
+5.2.5
 -----
 * Fixes to work with new otj-conservedheader changes for overriding headers
 * Tests for overriding and conserving headers.
-
-5.2.5
------
 * POM 271
 * Add Dmitry's test to verify HTTP POST with 404 reacts correctly.
 * Patch an issue in conserved headers.
