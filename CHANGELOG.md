@@ -1,5 +1,11 @@
 otj-server
 ==========
+
+5.2.6
+-----
+* Fixes to work with new otj-conservedheader changes for overriding headers
+* Tests for overriding and conserving headers.
+
 5.2.5
 -----
 * POM 271
