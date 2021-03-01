@@ -32,6 +32,7 @@ import com.opentable.server.HttpServerInfo;
 @ActiveProfiles(profiles = "test")
 @TestPropertySource(properties = {
         "info.component=test",
+        "server.error.include-message=always"
 })
 public abstract class AbstractTest {
 
