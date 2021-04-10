@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+5.2.6
+-----
+* Add ot.server.backend.info.enabled to suppress backend filter info
+
 5.2.5
 -----
 * Fixes to work with new otj-conservedheader changes for overriding headers

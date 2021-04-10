@@ -230,6 +230,18 @@ Usually the defaults are okay.  You might tune your thread pool size for heavily
 ot.httpserver.max-threads=32
 ```
 
+## Backend Info 
+
+For historical reasons, and debugging (and some applications and checks depend on it), `otj-server` wires in a servlet/reactive filter that
+exposes information such the backend host, instance number, jar, etc in the HTTP Response.
+
+This is a **security** flaw if leaked to the outside world. Frontdoor includes code to strip this, but it's easy to imagine holes opening:
+
+* Another proxy copies them
+* You aren't connecting via Frontdoor
+
+To suppress this behavior use `ot.server.backend.info.enabled=false`
+
 ### JMX Configuration
 
 ```
