@@ -13,10 +13,6 @@
  */
 package com.opentable.server.reactive;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +21,6 @@ import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.opentable.server.BackendInfoFilterConfiguration;
-import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration;
-
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
