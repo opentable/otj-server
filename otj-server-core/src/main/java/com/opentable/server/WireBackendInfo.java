@@ -17,12 +17,17 @@ import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
+/**
+ * Determines whether the BackendInfo filters are wired up. Those expose useful, but
+ * security dubious information in the HTTP response.
+ */
 public class WireBackendInfo implements Condition {
 
     public static final String OT_SERVER_BACKEND_INFO_ENABLED = "ot.server.backend.info.enabled";
+    private static final String DEFAULT_VALUE = "true";
 
     @Override
     public boolean matches(ConditionContext conditionContext, AnnotatedTypeMetadata annotatedTypeMetadata) {
-        return Boolean.parseBoolean(conditionContext.getEnvironment().getProperty(OT_SERVER_BACKEND_INFO_ENABLED, "true"));
+        return Boolean.parseBoolean(conditionContext.getEnvironment().getProperty(OT_SERVER_BACKEND_INFO_ENABLED, DEFAULT_VALUE));
     }
 }
