@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.opentable</groupId>
-        <artifactId>otj-parent-spring</artifactId>
+        <artifactId>otj-parent-dag-build</artifactId>
         <version>275-2.4.3-SNAPSHOT</version>
     </parent>
 
@@ -36,13 +36,10 @@
     </organization>
 
     <properties>
-
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
-        <!-- Remove once parent updated -->
-        <dep.otj-conservedheaders.version>5.2.1</dep.otj-conservedheaders.version>
     </properties>
 
 
