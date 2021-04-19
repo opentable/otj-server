@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.webapp.AbstractConfiguration;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -80,4 +81,14 @@ public class OTJettyServletWebServerFactory extends JettyServletWebServerFactory
         // always auto-start even if the default connector isn't configured
         return new JettyWebServer(server, true);
     }
+
+    @Override
+    public void setThreadPool(ThreadPool threadPool) {
+        // skip SBT customization
+    }
+
+    public void otSetThreadPool(ThreadPool threadPool) {
+        super.setThreadPool(threadPool);
+    }
+
 }

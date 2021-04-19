@@ -75,7 +75,7 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
             final PropertyResolver pr,
             final Optional<FilterOrderResolver> filterOrderResolver) {
 
-        final JettyServletWebServerFactory factory = new OTJettyServletWebServerFactory(webAppContextCustomizers, showStacks);
+        final OTJettyServletWebServerFactory factory = new OTJettyServletWebServerFactory(webAppContextCustomizers, showStacks);
         JettyWebServerFactoryAdapter factoryAdapter = new JettyWebServerFactoryAdapter(factory);
         this.configureFactoryContainer(requestLogConfig, activeConnectors, pr, factoryAdapter);
 
@@ -90,9 +90,9 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
     }
 
     static class JettyWebServerFactoryAdapter implements WebServerFactoryAdapter<JettyServletWebServerFactory> {
-        private final JettyServletWebServerFactory factory;
+        private final OTJettyServletWebServerFactory factory;
 
-        JettyWebServerFactoryAdapter(JettyServletWebServerFactory factory) {
+        JettyWebServerFactoryAdapter(OTJettyServletWebServerFactory factory) {
             this.factory = factory;
         }
 
@@ -115,7 +115,7 @@ public class EmbeddedJetty extends EmbeddedJettyBase {
 
         @Override
         public void setThreadPool(ThreadPool threadPool) {
-            factory.setThreadPool(threadPool);
+            factory.otSetThreadPool(threadPool);
         }
 
         @Override
