@@ -1,13 +1,10 @@
 otj-server
 ==========
 
-5.2.5
+5.2.6
 -----
-* Fixes to work with new otj-conservedheader changes for overriding headers
-* Tests for overriding and conserving headers.
-* POM 271
-* Add Dmitry's test to verify HTTP POST with 404 reacts correctly.
-* Patch an issue in conserved headers.
+* Add ot.server.backend.info.enabled to suppress backend filter info
+* Remove all usage of JAXRS in test scope of core.
 
 5.2.4
 -----

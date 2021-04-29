@@ -12,46 +12,37 @@
  * limitations under the License.
  */
 package com.opentable.server;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.inject.Inject;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(classes = {
-        TestServerConfiguration.class
-})
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
+        "ot.server.backend.info.enabled=false"
 })
-// Proves the threadname contains the requestUri - a bit weak of a test tbh
-public class ThreadNameFilterTest {
+// Tests returning the OT-Backend stuff in a response
+public class SuppressBackendInfoFilterTest  extends AbstractTest {
 
-    @Inject
-    private LoopbackRequest request;
+    @Autowired
+    private TestRestTemplate testRestTemplate;
 
-    private TestRestTemplate client = new TestRestTemplate();
-
+    //Call an endpoint and verify the OT-Backend prefixes are NOT returned
     @Test
     public void test() {
-        ResponseEntity<String> r  = client.getForEntity(request.of("/threadname"), String.class);
-            final AtomicBoolean sawBackendHeader = new AtomicBoolean();
-            sawBackendHeader.set(r.getBody().contains(":/threadname"));
-            Assert.assertTrue(sawBackendHeader.get());
-
+        ResponseEntity<String> response = testRestTemplate.exchange("/api/test", HttpMethod.GET, null, String.class);
+            Assert.assertEquals(response.getStatusCodeValue(), 200);
+            Assert.assertFalse(response.getHeaders().keySet().stream()
+                    .anyMatch(name ->  name.toLowerCase()
+                            .startsWith(BackendInfoFilterConfiguration.HEADER_PREFIX.toLowerCase())));
     }
 
 }

@@ -29,8 +29,8 @@ import org.springframework.test.context.TestPropertySource;
         "OT_BUILD_TAG=some-service-3.14",
         "INSTANCE_NO=3",
         "TASK_HOST=mesos-slave9001-dev-sf.qasql.opentable.com",
+        "ot.server.backend.info.enabled=true"
 })
-// very similar to the mvc and core ones. More extensive, should be ported back to jaxrs, and core retired
 public class BackendInfoFilterTest extends AbstractTest {
 
     private static final String HEADER_PREFIX_LOWER_CASE = BackendInfoFilterConfiguration.HEADER_PREFIX.toLowerCase();
