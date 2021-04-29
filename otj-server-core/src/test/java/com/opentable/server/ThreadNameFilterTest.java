@@ -16,12 +16,13 @@ package com.opentable.server;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -42,13 +43,15 @@ public class ThreadNameFilterTest {
     @Inject
     private LoopbackRequest request;
 
+    private TestRestTemplate client = new TestRestTemplate();
+
     @Test
     public void test() {
-        try(final Response r = request.of("/threadname").request().get()){
+        ResponseEntity<String> r  = client.getForEntity(request.of("/threadname"), String.class);
             final AtomicBoolean sawBackendHeader = new AtomicBoolean();
-            sawBackendHeader.set(r.readEntity(String.class).contains(":/threadname"));
+            sawBackendHeader.set(r.getBody().contains(":/threadname"));
             Assert.assertTrue(sawBackendHeader.get());
-        }
+
     }
 
 }

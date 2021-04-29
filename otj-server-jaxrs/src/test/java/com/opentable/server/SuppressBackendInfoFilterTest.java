@@ -26,7 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = {
-        TestServerConfiguration.class
+        TestJaxRsServerConfiguration.class
 })
 @TestPropertySource(properties = {
         "OT_BUILD_TAG=some-service-3.14",
@@ -38,7 +38,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class SuppressBackendInfoFilterTest {
 
     @Inject
-    private LoopbackRequest request;
+    private JAXRSLoopbackRequest request;
 
     //Call an endpoint and verify the OT-Backend prefixes are NOT returned
     @Test

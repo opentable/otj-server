@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotSame;
 
 import java.net.ServerSocket;
 
-import javax.ws.rs.client.Client;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -27,20 +26,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ConfigurableApplicationContext;
-
-import com.opentable.jaxrs.JaxRsClientFactory;
 
 // Tests allocating multiple http ports
 public class DoublePortTest {
     private ConfigurableApplicationContext context;
     private Integer port;
     private int secondPort;
-    private Client client;
+    private TestRestTemplate client = new TestRestTemplate();
 
     @Before
     public void before() throws Exception {
-        client = JaxRsClientFactory.testBuilder().build();
         try (ServerSocket ss = new ServerSocket(0)) {
             secondPort = ss.getLocalPort();
         }
@@ -63,7 +60,7 @@ public class DoublePortTest {
         context.stop();
         context.close();
         context = null;
-        client.close();
+       // client.close();
     }
 
     // Show each port returns an expected response when HTTP GET is called
@@ -75,6 +72,6 @@ public class DoublePortTest {
     }
 
     private String readHello(int myPort) {
-        return client.target("http://localhost:" + myPort + "/hello").request().get().readEntity(String.class);
+        return client.getForObject("http://localhost:" + myPort + "/hello", String.class);
     }
 }
