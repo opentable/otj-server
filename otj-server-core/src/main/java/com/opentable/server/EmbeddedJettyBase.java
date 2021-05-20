@@ -101,7 +101,7 @@ public abstract class EmbeddedJettyBase {
 
 
     @Value("${ot.httpserver.max-request-header-size:16384}")
-    private int maxRequestHeaderSize = 16384;
+    private int maxRequestHeaderSize;
 
     // XXX: these should be removed pending https://github.com/spring-projects/spring-boot/issues/5314
     @Value("${ot.httpserver.max-threads:32}")
