@@ -99,6 +99,10 @@ public abstract class EmbeddedJettyBase {
     @Value("${ot.httpserver.shutdown-timeout:PT5s}")
     private Duration shutdownTimeout;
 
+
+    @Value("${ot.httpserver.max-request-header-size:16384}")
+    private int maxRequestHeaderSize = 16384;
+
     // XXX: these should be removed pending https://github.com/spring-projects/spring-boot/issues/5314
     @Value("${ot.httpserver.max-threads:32}")
     private int maxThreads;
@@ -272,6 +276,11 @@ public abstract class EmbeddedJettyBase {
             // Used when SSL is terminated externally, e.g. by nginx or elb
             httpConfig.addCustomizer(new SuperSecureCustomizer());
         }
+
+        if (maxRequestHeaderSize > 0) {
+            httpConfig.setRequestHeaderSize(maxRequestHeaderSize);
+        }
+
         httpConfigCustomizers.ifPresent(c -> c.forEach(h -> h.accept(httpConfig)));
         final HttpConnectionFactory http = new HttpConnectionFactory(httpConfig);
 
