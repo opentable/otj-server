@@ -32,7 +32,8 @@ import com.opentable.server.HttpServerInfo;
 @ActiveProfiles(profiles = "test")
 @TestPropertySource(properties = {
         "info.component=test",
-        "server.error.include-message=always"
+        "server.error.include-message=always",
+        "ot.httpserver.max-request-header-size=10000" // used in a test
 })
 public abstract class AbstractTest {
 

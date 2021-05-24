@@ -19,7 +19,7 @@
   <parent>
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>5.2.6-2.4.3-SNAPSHOT</version>
+    <version>5.2.8-2.4.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>otj-server-core</artifactId>
@@ -195,25 +195,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId> javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-healthchecks</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-jaxrs-client</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.opentable.components</groupId>
-      <artifactId>otj-jaxrs-clientfactory-resteasy</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- spring-boot-test uses this but has it optional :/ -->
     <dependency>
       <groupId>org.mockito</groupId>

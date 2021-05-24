@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -38,6 +39,7 @@ import com.opentable.service.ServiceInfo;
  */
 @Configuration
 @Import(BackendInfoFilterConfiguration.BackendInfoFilter.class)
+@Conditional(WireBackendInfo.class)
 public class BackendInfoFilterConfiguration extends BackendInfoFilterBaseConfiguration {
 
     @Bean

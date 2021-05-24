@@ -15,6 +15,7 @@ package com.opentable.server.reactive.webfilter;
 
 import java.util.Map;
 
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.server.ServerWebExchange;
@@ -24,6 +25,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import com.opentable.server.BackendInfoFilterBaseConfiguration;
+import com.opentable.server.WireBackendInfo;
 import com.opentable.service.AppInfo;
 import com.opentable.service.ServiceInfo;
 
@@ -33,6 +35,7 @@ import com.opentable.service.ServiceInfo;
  */
 @Configuration
 @Import(BackendInfoWebFilterConfiguration.BackendInfoWebFilter.class)
+@Conditional(WireBackendInfo.class)
 public class BackendInfoWebFilterConfiguration extends BackendInfoFilterBaseConfiguration {
 
     public static class BackendInfoWebFilter implements WebFilter {

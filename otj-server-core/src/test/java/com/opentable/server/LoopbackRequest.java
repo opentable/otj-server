@@ -13,27 +13,27 @@
  */
 package com.opentable.server;
 
+import java.net.URI;
+
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
+import javax.inject.Provider;;
+
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 // Utility class for doing quick loopback HTTP GET tests
 @Named
 public class LoopbackRequest {
 
-    private final Client client;
     private final Provider<HttpServerInfo> info;
-
     @Inject
-    private LoopbackRequest(@Named("test") Client client, Provider<HttpServerInfo> info) {
-        this.client = client;
+    private LoopbackRequest(Provider<HttpServerInfo> info) {
         this.info = info;
     }
 
-    public WebTarget of(String path) {
-        return client.target("http://localhost:" + info.get().getPort()).path(path);
+    public URI of(String path) {
+        return UriComponentsBuilder.fromHttpUrl("http://localhost:" + info.get().getPort()).path(path).build().toUri();
     }
 
 }
