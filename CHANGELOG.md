@@ -1,6 +1,11 @@
 otj-server
 ==========
 
+5.2.7
+----
+* Add ot.server.max-request-size (default = 16384) to set the maximum header size. You
+may change as desired, a value of <=0 keeps the Jetty default (8192).
+  
 5.2.6
 -----
 * Add ot.server.backend.info.enabled to suppress backend filter info
