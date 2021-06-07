@@ -17,14 +17,14 @@
 
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>5.2.8-2.4.3-SNAPSHOT</version>
+    <version>5.2.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.opentable</groupId>
-        <artifactId>otj-parent-dag-build</artifactId>
-        <version>286-2.4.3-SNAPSHOT</version>
+        <artifactId>otj-parent-spring</artifactId>
+        <version>286</version>
     </parent>
 
 
@@ -36,6 +36,9 @@
     </organization>
 
     <properties>
+        <dep.otj-webclient.version>5.2.2</dep.otj-webclient.version>
+        <dep.otj-rest-template.version>5.2.2</dep.otj-rest-template.version>
+
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>

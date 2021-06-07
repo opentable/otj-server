@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-server-parent</artifactId>
-        <version>5.2.8-2.4.3-SNAPSHOT</version>
+        <version>5.2.8-SNAPSHOT</version>
     </parent>
 
     <artifactId>otj-server-jaxrs</artifactId>
