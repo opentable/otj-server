@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>271</version>
+        <version>286</version>
     </parent>
 
 
@@ -36,13 +36,13 @@
     </organization>
 
     <properties>
+        <dep.otj-webclient.version>5.2.2</dep.otj-webclient.version>
+        <dep.otj-rest-template.version>5.2.2</dep.otj-rest-template.version>
 
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
-        <!-- Remove once parent updated -->
-        <dep.otj-conservedheaders.version>5.2.1</dep.otj-conservedheaders.version>
     </properties>
 
 

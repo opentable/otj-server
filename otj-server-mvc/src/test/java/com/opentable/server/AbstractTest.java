@@ -30,7 +30,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles(profiles = "test")
 @TestPropertySource(properties = {
     "info.component=test",
-    "ot.httpserver.active-connectors=boot"
+    "ot.httpserver.active-connectors=boot",
+    "server.error.include-message=always"
 })
 public abstract class AbstractTest {
 
