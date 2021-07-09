@@ -26,6 +26,7 @@
     </parent>
 
     <properties>
+        <ot.build.allow-jaxrs>true</ot.build.allow-jaxrs>
         <basepom.check.skip-dependency>true</basepom.check.skip-dependency>
     </properties>
 

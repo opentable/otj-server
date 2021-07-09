@@ -24,6 +24,11 @@
 
     <artifactId>otj-server-jaxrs</artifactId>
     <description>Provides JAXRS wiring into otj-stack</description>
+
+    <properties>
+	<ot.build.allow-jaxrs>true</ot.build.allow-jaxrs>
+    </properties>
+
     <dependencies>
 
         <dependency>
