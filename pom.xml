@@ -64,11 +64,11 @@
                 <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>com.opentable.components</groupId>
-                <artifactId>otj-server-jaxrs</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>com.opentable.components</groupId>-->
+<!--                <artifactId>otj-server-jaxrs</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>com.opentable.components</groupId>
                 <artifactId>otj-server-mvc</artifactId>
@@ -84,10 +84,10 @@
 
     <modules>
         <module>otj-server-core</module>
-        <module>otj-server-jaxrs</module>
+<!--        <module>otj-server-jaxrs</module>-->
         <module>otj-server-mvc</module>
         <module>otj-server-reactive</module>
-        <module>otj-server</module>
+<!--        <module>otj-server</module>-->
         <module>otj-server-integration-tests</module>
     </modules>
 
