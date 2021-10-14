@@ -5,7 +5,6 @@ The OpenTable Java Server component is the main code entry point into the OpenTa
 
  * Graceful shutdown
  * Jetty HTTP server
- * RESTEasy JAX-RS runtime
  * OT Conserved Headers
  * `otj-metrics` integration
  * `otj-jackson` integration
@@ -16,18 +15,17 @@ The OpenTable Java Server component is the main code entry point into the OpenTa
 
 ## Flavors
 
-There are 3 flavors of OTJ Server available:
- * **JAX-RS** - this uses RestEasy to create web services and as a REST client. RestEasy is an implementation of the Java API for RESTful Web Services (JAX-RS) specification.
+There are 2 flavors of OTJ Server available:
  * **MVC** - this uses Spring's Model View Controller (MVC) framework to create web services. For a REST client with this flavor, we recommend otj-rest-template.
  * **Reactive** - this uses Spring's WebFlux reactive framework to create reactive web services. For a REST client with this flavor, we recommend otj-webclient.
  
 ## Differences Between Flavors
 
-For the most part we expect the servers to act the same. One difference is how we handle CORS headers. In JAX-RS we send CORS headers for all requests. In Spring MVC and WebFlux you need to add a `@CrossOrigin` header to the controller when needed.
+For the most part we expect the servers to act the same. One difference is how we handle CORS headers. In the formally supported JAX-RS we send CORS headers for all requests. In Spring MVC and WebFlux you need to add a `@CrossOrigin` header to the controller when needed.
 
 ### Modules
 
-There are 4 modules in this project, the core module is for code shared in common between both flavors.
+There are 3 modules in this project, the core module is for code shared in common between both flavors.
 
 ## Getting Started
 
@@ -36,50 +34,8 @@ Much like Spring boot, you need to create an Application or Main class. There ar
 ## Examples
 
 We have examples projects that show how to use server:
- - https://github.com/opentable/service-demo (JAX-RS)
+ - https://github.com/opentable/reactive-demo (reactive)
  - https://github.com/opentable/service-otj-mvc-demo (Spring MVC)
-  
-### JAX-RS Example
-
-```java
-package com.opentable;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
-import com.opentable.server.JAXRSServer;
-import com.opentable.server.OTApplication;
-import com.opentable.service.ServiceInfo;
-import com.opentable.service.discovery.client.EnableDiscoveryClient;
-
-@Configuration
-@JAXRSServer // This enabled the JAX-RS server
-@EnableDiscoveryClient // This enables the discovery client
-@Import(DemoServerConfiguration.class) // Imports a configuration class, needed as component scanning is disabled by default
-public class DemoServerMain
-{
-    /**
-     * Standard Java entry point.  Almost all of the real work is done in the
-     * {@link JAXRSServer}.
-     */
-    public static void main(String[] args)
-    {
-        OTApplication.run(DemoServerMain.class, args); // Starts the application, equivalent to SpringApplication
-    }
-
-    @Bean
-    public ServiceInfo serviceInfo() { // Every service should create a service info bean
-        return new ServiceInfo() {
-            @Override
-            public String getName() {
-                return "demo-server"; // used for discovery name, metrics, etc.
-            }
-        };
-    }
-}
-```
-
 
 ### Spring MVC Example
 
