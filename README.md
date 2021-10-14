@@ -21,7 +21,7 @@ There are 2 flavors of OTJ Server available:
  
 ## Differences Between Flavors
 
-For the most part we expect the servers to act the same. One difference is how we handle CORS headers. In the formally supported JAX-RS we send CORS headers for all requests. In Spring MVC and WebFlux you need to add a `@CrossOrigin` header to the controller when needed.
+For the most part we expect the servers to act the same. One difference is how we handle CORS headers. In the formerly supported JAX-RS we sent CORS headers for all requests. In Spring MVC and WebFlux you need to add a `@CrossOrigin` header to the controller when needed.
 
 ### Modules
 
@@ -116,7 +116,7 @@ public class ReactiveDemoApplication {
 `otj-server` provides [OTApplication](https://github.com/opentable/otj-server/blob/master/server/src/main/java/com/opentable/server/OTApplication.java)
 which does our initialization and then invokes `SpringApplication.run` to actually boot the service.
 
-The `@JAXRSServer`, `@MVCServer`, `@ReactiveServer` annotations provide the basic necessities for running a web service:
+The `@MVCServer`, `@ReactiveServer` annotations provide the basic necessities for running a web service:
 
 
 ### Jetty Configuration
@@ -295,23 +295,5 @@ ot.server.low-resource-monitor.period-ms=100
 ot.server.low-resource-monitor.monitor-threads=true
 ot.server.low-resource-monitor.max-low-resources-time-ms=100
 ot.server.low-resource-monitor.accepting-in-low-resources=false
-```  
-
-## Migration from 2.0.0
-
-JaxRS users (if you were using OTJ stack before then this is *probably* you):
-
-- Remove otj-server dependency and add `otj-server-core` & `otj-server-jaxrs` dependencies
-- Change annotation from `@RestHttpServer` to `@JaxRSServer`
-
-MVC users:
-
-- Remove `otj-server` dependency and add `otj-server-core` & `otj-server-mvc` dependencies
-- Change annotation from `@RestHttpServer` to `@MVCServer`
-
-If you want to use both:
-- Use both annotations!
-- Use `otj-server-core`, `otj-server-mvc`, `otj-server-jaxrs`
-
-----
+```
 Copyright (C) 2018 OpenTable, Inc.
