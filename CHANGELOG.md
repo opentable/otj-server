@@ -1,6 +1,10 @@
 otj-server
 ==========
 
+5.2.9
+-----
+* Remove JAXRS (phase I - comment out modules)
+
 5.2.7
 ----
 * Add ot.server.max-request-size (default = 16384) to set the maximum header size. You

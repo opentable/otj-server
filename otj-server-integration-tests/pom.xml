@@ -28,7 +28,7 @@
 
   <modules>
     <module>otj-server-actuator-mvc</module>
-    <module>otj-server-actuator-jaxrs</module>
+<!--    <module>otj-server-actuator-jaxrs</module>-->
     <module>otj-server-mvc-cbor</module>
   </modules>
 
