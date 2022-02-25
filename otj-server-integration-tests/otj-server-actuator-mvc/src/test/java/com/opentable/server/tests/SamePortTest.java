@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,14 +57,21 @@ public class SamePortTest {
     private WebApplicationContext context;
 
     private MockMvc mvc;
+    private AutoCloseable autoCloseable;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        autoCloseable = MockitoAnnotations.openMocks(this);
         mvc = MockMvcBuilders.webAppContextSetup(context)
             .build();
     }
 
+    @After
+    public void after() throws Exception {
+        if (autoCloseable != null) {
+            autoCloseable.close();
+        }
+    }
     @Test
     public void applicationLoads() {
         assertEquals("test", CommonLogHolder.getServiceType());

@@ -98,8 +98,7 @@ public class TestReactiveServerConfiguration {
             return webClient.get()
                     .uri("https://postman-echo.com/get")
                     .headers(h -> h.addAll(headers))
-                    .exchange()
-                    .flatMap(clientResponse -> clientResponse.bodyToMono(EchoResponse.class));
+                    .exchangeToMono(clientResponse -> clientResponse.bodyToMono(EchoResponse.class));
         }
 
         @GetMapping("fault")
@@ -114,7 +113,7 @@ public class TestReactiveServerConfiguration {
 
         @GetMapping("async")
         public Mono<String> async() {
-            return Mono.just("test").delayElement(Duration.ofMillis(500), Schedulers.elastic());
+            return Mono.just("test").delayElement(Duration.ofMillis(500), Schedulers.boundedElastic());
         }
 
         @GetMapping("threading/{trace}")
