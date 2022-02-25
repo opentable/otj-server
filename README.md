@@ -289,11 +289,30 @@ _With monitor:_
 
 Default configuration:
 ```
+# enabled at all? default is no
 ot.server.low-resource-monitor.enabled=false
+# timeout to apply to endpoints in low resource state 
 ot.server.low-resource-monitor.low-resource-idle-timeout-ms=100
+# how often to check for low resources
 ot.server.low-resource-monitor.period-ms=100
+# enter low resource mode is threads are low
 ot.server.low-resource-monitor.monitor-threads=true
 ot.server.low-resource-monitor.max-low-resources-time-ms=100
+# accept new connections when in low resource mode
 ot.server.low-resource-monitor.accepting-in-low-resources=false
 ```
-Copyright (C) 2018 OpenTable, Inc.
+
+## Jetty Connection Limits (as of 5.2.10)
+
+The connection limit lets you set an absolute maximum of concurrent connections to your service. You can use it
+judiciously to protect your server from being overwhelmed, particularly in conjunction with the LowResourceMonitor.
+
+Default configuration:
+```
+# enabled at all? default is no
+ot.server.connection-limit.enabled=false
+# stop accepting connections when this limit is hit.
+ot.server.connection-limit.limit=500
+```
+
+Copyright (C) 2022 OpenTable, Inc.
