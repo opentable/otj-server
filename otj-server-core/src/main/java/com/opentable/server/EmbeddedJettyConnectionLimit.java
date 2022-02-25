@@ -34,13 +34,6 @@ public class EmbeddedJettyConnectionLimit {
 
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedJettyConnectionLimit.class);
 
-    /**
-     * connectionLimit number of simultaneous connections to permit, before new connection will stop being accepted.
-     * Ignored if the value is less than or equal to 0, or if ot.server.connection-limit.enabled is not set to true
-     */
-    @Value("${ot.server.connection-limit:500}")
-    private Integer connectionLimit;
-
     public static class InstallEmbeddedJettyConnectionLimit implements Condition {
         @Override
         public boolean matches(ConditionContext context, @NonNull AnnotatedTypeMetadata metadata) {
@@ -50,6 +43,15 @@ public class EmbeddedJettyConnectionLimit {
         }
     }
 
+    /**
+     * connectionLimit - number of simultaneous connections to permit, before new connection will stop being accepted.
+     * Ignored if the value is less than or equal to 0, or if ot.server.connection-limit.enabled is not set to true
+     */
+    private final Integer connectionLimit;
+
+    public EmbeddedJettyConnectionLimit( @Value("${ot.server.connection-limit:500}") Integer connectionLimit) {
+        this.connectionLimit = connectionLimit;
+    }
     ConnectionLimit connectionLimit(int limit, Server server) {
         LOG.debug("Installing ConnectionLimit {}", limit);
         return new ConnectionLimit(limit, server);
