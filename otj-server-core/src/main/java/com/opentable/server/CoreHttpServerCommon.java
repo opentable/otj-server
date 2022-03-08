@@ -49,7 +49,10 @@ import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
     // Filter order
     FilterOrderResolverConfiguration.class,
     // Low resource monitor
-    EmbeddedJettyLowResourceMonitor.class
+    EmbeddedJettyLowResourceMonitor.class,
+    // Connection Limiter
+    EmbeddedJettyConnectionLimit.class,
+
 })
 // All the non web stuff
 @NonWebSetup

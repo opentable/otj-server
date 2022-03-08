@@ -281,6 +281,11 @@ do, you must statically set all your ports!
 The low resource helps service to recover from overload condition quickly by limiting the number of idle connections on the server.
 This is effectively applying backpressure to the upstream service(s) and helps maintain SLA in terms of the response time.
 
+**Note**: Usage of this feature may not work well in Platform 3, given
+the readiness probe can fail as a result. We are studying this matter - currently our recommendation would be
+if you are experimenting with this feature to set the failureThreshold much higher - say 10. Probably a better
+long term solution is for us to experiment with separating the Probe web server port and the main application.
+
 _Without monitor:_
 ![Withoot monitor](doc/overload.png)
 
@@ -307,12 +312,21 @@ ot.server.low-resource-monitor.accepting-in-low-resources=false
 The connection limit lets you set an absolute maximum of concurrent connections to your service. You can use it
 judiciously to protect your server from being overwhelmed, particularly in conjunction with the LowResourceMonitor.
 
+**Note**: Usage of this feature may not work well in Platform 3, given
+the readiness probe can fail as a result. We are studying this matter - currently our recommendation would be
+if you are experimenting with this feature to set the failureThreshold much higher - say 10. Probably a better
+long term solution is for us to experiment with separating the Probe web server port and the main application.
+
 Default configuration:
 ```
 # enabled at all? default is no
 ot.server.connection-limit.enabled=false
 # stop accepting connections when this limit is hit.
+# clients connecting will get an ECONNREFUSED
 ot.server.connection-limit.limit=500
+# optional, defines a timeout on each connector when the limit is reached
+# This will drop ACTIVE connections.
+ot.server.connection-limit.timeout=PT10S
 ```
 
 Copyright (C) 2022 OpenTable, Inc.

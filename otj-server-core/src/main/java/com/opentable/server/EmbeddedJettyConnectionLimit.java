@@ -13,6 +13,7 @@
  */
 package com.opentable.server;
 
+import java.time.Duration;
 import java.util.function.Consumer;
 
 import org.eclipse.jetty.server.ConnectionLimit;
@@ -48,13 +49,20 @@ public class EmbeddedJettyConnectionLimit {
      * Ignored if the value is less than or equal to 0, or if ot.server.connection-limit.enabled is not set to true
      */
     private final Integer connectionLimit;
+    private final Duration idleTimeout;
 
-    public EmbeddedJettyConnectionLimit( @Value("${ot.server.connection-limit:500}") Integer connectionLimit) {
+    public EmbeddedJettyConnectionLimit(@Value("${ot.server.connection-limit:500}") Integer connectionLimit,
+                                        @Value("${ot.server.connection-limit.timeout:#{null}}") Duration idleTimeout) {
         this.connectionLimit = connectionLimit;
+        this.idleTimeout = idleTimeout;
     }
     ConnectionLimit connectionLimit(int limit, Server server) {
-        LOG.debug("Installing ConnectionLimit {}", limit);
-        return new ConnectionLimit(limit, server);
+        LOG.debug("Installing ConnectionLimit {}, {}", limit, idleTimeout);
+        final ConnectionLimit connectionLimit =  new ConnectionLimit(limit, server);
+        if ((idleTimeout != null) && (!idleTimeout.isZero()) && (!idleTimeout.isNegative())) {
+            connectionLimit.setIdleTimeout(idleTimeout.toMillis());
+        }
+        return connectionLimit;
     }
 
     @Bean
