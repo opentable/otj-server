@@ -17,7 +17,7 @@
     <parent>
         <artifactId>otj-server-integration-tests</artifactId>
         <groupId>com.opentable.components</groupId>
-        <version>5.2.10-SNAPSHOT</version>
+        <version>5.2.10</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
