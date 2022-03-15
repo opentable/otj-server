@@ -1,5 +1,9 @@
 otj-server
-==========
+=========
+
+5.2.10
+------
+* Add connection limit option. Combined with the Low Resource Monitor, may be a useful way to protect your service.
 
 5.2.9
 -----
