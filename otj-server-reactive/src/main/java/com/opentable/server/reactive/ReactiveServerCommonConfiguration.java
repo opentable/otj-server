@@ -26,6 +26,7 @@ import com.opentable.conservedheaders.reactive.ReactiveServerConservedHeadersCon
 import com.opentable.metrics.reactive.HealthHttpReactiveConfiguration;
 import com.opentable.metrics.reactive.MetricsHttpReactiveConfiguration;
 import com.opentable.metrics.reactive.ReadyHttpReactiveConfiguration;
+import com.opentable.security.mitigation.ApplySecurityMitigations;
 import com.opentable.server.EmbeddedJettyConfiguration;
 import com.opentable.server.EmbeddedJettyConnectionLimit;
 import com.opentable.server.EmbeddedJettyLowResourceMonitor;
@@ -68,6 +69,7 @@ import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration
         WebFluxAutoConfiguration.class,
         HttpHandlerAutoConfiguration.class,
 })
+@ApplySecurityMitigations
 @NonWebSetup
 class ReactiveServerCommonConfiguration {
 }
