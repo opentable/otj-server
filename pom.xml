@@ -41,7 +41,7 @@
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
         <!-- remove once parent gets updated -->
-        <dep.otj-security-mitigation.version>1.0.0</dep.otj-security-mitigation.version>
+        <dep.otj-security-mitigation.version>1.0.1</dep.otj-security-mitigation.version>
     </properties>
 
 
