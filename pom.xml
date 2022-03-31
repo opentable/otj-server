@@ -54,6 +54,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- remove once updated to POM 326+ -->
             <dependency>
                 <groupId>com.opentable.components</groupId>
                 <artifactId>otj-security-mitigation</artifactId>

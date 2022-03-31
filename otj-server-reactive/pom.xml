@@ -29,6 +29,10 @@
     <dependencies>
         <dependency>
             <groupId>com.opentable.components</groupId>
+            <artifactId>otj-security-mitigation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.opentable.components</groupId>
             <artifactId>otj-core</artifactId>
         </dependency>
 
