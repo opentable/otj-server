@@ -16,6 +16,7 @@ package tests;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,11 +47,19 @@ public class BasicTest {
 
     private MockMvc mvc;
 
+    AutoCloseable autoCloseable;
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        autoCloseable = MockitoAnnotations.openMocks(this);
         mvc = MockMvcBuilders.webAppContextSetup(context)
             .build();
+    }
+
+    @After
+    public void after() throws Exception {
+        if (autoCloseable != null) {
+            autoCloseable.close();
+        }
     }
 
     @Test

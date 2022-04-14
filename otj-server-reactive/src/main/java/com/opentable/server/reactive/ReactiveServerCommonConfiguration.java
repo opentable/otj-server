@@ -26,7 +26,9 @@ import com.opentable.conservedheaders.reactive.ReactiveServerConservedHeadersCon
 import com.opentable.metrics.reactive.HealthHttpReactiveConfiguration;
 import com.opentable.metrics.reactive.MetricsHttpReactiveConfiguration;
 import com.opentable.metrics.reactive.ReadyHttpReactiveConfiguration;
+import com.opentable.security.mitigation.ApplySecurityMitigations;
 import com.opentable.server.EmbeddedJettyConfiguration;
+import com.opentable.server.EmbeddedJettyConnectionLimit;
 import com.opentable.server.EmbeddedJettyLowResourceMonitor;
 import com.opentable.server.EmbeddedReactiveJetty;
 import com.opentable.server.NonWebSetup;
@@ -54,7 +56,9 @@ import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration
         // Filter for transfer of core backend info
         BackendInfoWebFilterConfiguration.class,
         // Low resource monitor
-        EmbeddedJettyLowResourceMonitor.class
+        EmbeddedJettyLowResourceMonitor.class,
+        // Connection Limiter
+        EmbeddedJettyConnectionLimit.class,
         // Support static resources
         // TODO: Need to test serving static resources the WebFlux way. See OTPL-3648.
 })
@@ -65,6 +69,7 @@ import com.opentable.server.reactive.webfilter.BackendInfoWebFilterConfiguration
         WebFluxAutoConfiguration.class,
         HttpHandlerAutoConfiguration.class,
 })
+@ApplySecurityMitigations
 @NonWebSetup
 class ReactiveServerCommonConfiguration {
 }

@@ -281,6 +281,11 @@ do, you must statically set all your ports!
 The low resource helps service to recover from overload condition quickly by limiting the number of idle connections on the server.
 This is effectively applying backpressure to the upstream service(s) and helps maintain SLA in terms of the response time.
 
+**Note**: Usage of this feature may not work well in Platform 3, given
+the readiness probe can fail as a result. We are studying this matter - currently our recommendation would be
+if you are experimenting with this feature to set the failureThreshold much higher - say 10. Probably a better
+long term solution is for us to experiment with separating the Probe web server port and the main application.
+
 _Without monitor:_
 ![Withoot monitor](doc/overload.png)
 
@@ -289,11 +294,39 @@ _With monitor:_
 
 Default configuration:
 ```
+# enabled at all? default is no
 ot.server.low-resource-monitor.enabled=false
+# timeout to apply to endpoints in low resource state 
 ot.server.low-resource-monitor.low-resource-idle-timeout-ms=100
+# how often to check for low resources
 ot.server.low-resource-monitor.period-ms=100
+# enter low resource mode is threads are low
 ot.server.low-resource-monitor.monitor-threads=true
 ot.server.low-resource-monitor.max-low-resources-time-ms=100
+# accept new connections when in low resource mode
 ot.server.low-resource-monitor.accepting-in-low-resources=false
 ```
-Copyright (C) 2018 OpenTable, Inc.
+
+## Jetty Connection Limits (as of 5.2.10)
+
+The connection limit lets you set an absolute maximum of concurrent connections to your service. You can use it
+judiciously to protect your server from being overwhelmed, particularly in conjunction with the LowResourceMonitor.
+
+**Note**: Usage of this feature may not work well in Platform 3, given
+the readiness probe can fail as a result. We are studying this matter - currently our recommendation would be
+if you are experimenting with this feature to set the failureThreshold much higher - say 10. Probably a better
+long term solution is for us to experiment with separating the Probe web server port and the main application.
+
+Default configuration:
+```
+# enabled at all? default is no
+ot.server.connection-limit.enabled=false
+# stop accepting connections when this limit is hit.
+# clients connecting will get an ECONNREFUSED
+ot.server.connection-limit.limit=500
+# optional, defines a timeout on each connector when the limit is reached
+# This will drop ACTIVE connections.
+ot.server.connection-limit.timeout=PT10S
+```
+
+Copyright (C) 2022 OpenTable, Inc.

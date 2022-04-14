@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Optional;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,7 @@ public class SeparatePortTest {
     private static WebApplicationContext context;
 
     private MockMvc mvc;
+    private AutoCloseable autoCloseable;
 
     @Configuration
     public static class EventListenerConfiguration {
@@ -77,9 +79,16 @@ public class SeparatePortTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        autoCloseable = MockitoAnnotations.openMocks(this);
         mvc = MockMvcBuilders.webAppContextSetup(context)
             .build();
+    }
+
+    @After
+    public void after() throws Exception {
+        if (autoCloseable != null) {
+            autoCloseable.close();
+        }
     }
 
     @Test

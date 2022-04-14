@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
+import com.opentable.security.mitigation.ApplySecurityMitigations;
 
 /**
  * Common configuration for REST HTTP Server instances
@@ -49,8 +50,12 @@ import com.opentable.components.filterorder.FilterOrderResolverConfiguration;
     // Filter order
     FilterOrderResolverConfiguration.class,
     // Low resource monitor
-    EmbeddedJettyLowResourceMonitor.class
+    EmbeddedJettyLowResourceMonitor.class,
+    // Connection Limiter
+    EmbeddedJettyConnectionLimit.class,
+
 })
+@ApplySecurityMitigations
 // All the non web stuff
 @NonWebSetup
 public @interface CoreHttpServerCommon {

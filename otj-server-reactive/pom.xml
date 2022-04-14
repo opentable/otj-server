@@ -20,13 +20,17 @@
     <parent>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-server-parent</artifactId>
-        <version>5.2.10-SNAPSHOT</version>
+        <version>5.2.13-SNAPSHOT</version>
     </parent>
 
     <artifactId>otj-server-reactive</artifactId>
     <description>Provides Spring WebFlux wiring into otj-stack</description>
 
     <dependencies>
+        <dependency>
+            <groupId>com.opentable.components</groupId>
+            <artifactId>otj-security-mitigation</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.opentable.components</groupId>
             <artifactId>otj-core</artifactId>
