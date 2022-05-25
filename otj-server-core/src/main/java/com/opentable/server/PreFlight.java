@@ -23,6 +23,7 @@ import java.util.jar.Manifest;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.util.ProcessorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +54,22 @@ public class PreFlight {
         try (InputStream is = url.openStream()) {
             final Manifest mf = new Manifest();
             mf.read(is);
-            final Attributes atts = mf.getMainAttributes();
-            LOG.debug("Starting up: {} version {} - built from commit {}",
-                    atts.getValue(Attributes.Name.IMPLEMENTATION_TITLE),
-                    atts.getValue(Attributes.Name.IMPLEMENTATION_VERSION),
-                    atts.getValue(COMMIT)
-            );
+            final Attributes attributes = mf.getMainAttributes();
+            final StringBuilder sb = new StringBuilder(4096);
+            final String implementationTitle = attributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE);
+            final String implementationVersion = attributes.getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+            final String commit = attributes.getValue(COMMIT);
+            if (StringUtils.isNotBlank(implementationTitle)) {
+                sb.append("Library: ").append(implementationTitle);
+                if (StringUtils.isNotBlank(implementationVersion)) {
+                    sb.append(" -- version: ").append(implementationVersion);
+                }
+                if (StringUtils.isNotBlank(commit)) {
+                    sb.append(" -- commit: ").append(commit);
+                }
+                sb.append('\n');
+            }
+            LOG.debug(sb.toString());
         }
     }
 

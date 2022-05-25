@@ -1,6 +1,10 @@
 otj-server
 =========
 
+5.2.14
+------
+* Minor fix to avoid outputting useless information during PreFlight.
+
 5.2.13
 ------
 * Parent POM-328 [changes see here]( https://github.com/opentable/otj-parent/blob/master/CHANGELOG.md#328)
