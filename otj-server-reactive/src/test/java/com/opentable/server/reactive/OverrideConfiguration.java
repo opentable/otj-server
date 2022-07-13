@@ -26,6 +26,6 @@ public class OverrideConfiguration {
     @Bean
     public ConservedHeaderValueOverrider foo(Environment environment) {
         return new EnvironmentConservedHeaderOverrideProvider(environment,
-                ConservedHeader.CLAIMS_ID.getHeaderName(), ConservedHeader.CLAIMS_ID);
+                ConservedHeader.CLAIMS_ID.getHeaderKey(), ConservedHeader.CLAIMS_ID);
     }
 }

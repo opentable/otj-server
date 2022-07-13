@@ -90,7 +90,7 @@ public class TestReactiveServerConfiguration {
         @RequestMapping("conservedclaims")
         public Mono<String> cl() {
             LOG.info("Called 'test' endpoint");
-            return Mono.just(MDC.get(ConservedHeader.CLAIMS_ID.getHeaderName()));
+            return Mono.just(MDC.get(ConservedHeader.CLAIMS_ID.getMDCKey()));
         }
 
         @GetMapping("echo")

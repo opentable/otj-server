@@ -51,8 +51,8 @@ class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
         if (this.delegate != null) {
             ConservedHeadersFilter.extractHeaders(request, ConservedHeaderOverrideProvider.none())
                 .forEach((header, value) -> {
-                    if (HEADER_BLACKLIST.canCopyToResponse(header.getHeaderName())) {
-                        response.setHeader(header.getHeaderName(), value);
+                    if (HEADER_BLACKLIST.canCopyToResponse(header.getHeaderKey())) {
+                        response.setHeader(header.getHeaderKey(), value);
                     }
                 });
             this.delegate.handle(target, baseRequest, request, response);

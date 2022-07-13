@@ -1,6 +1,11 @@
 otj-server
 =========
 
+5.2.14
+------
+* POM 344
+* Minor OTPL-6894 tweaks
+
 5.2.13
 ------
 * Parent POM-328 [changes see here]( https://github.com/opentable/otj-parent/blob/master/CHANGELOG.md#328)
