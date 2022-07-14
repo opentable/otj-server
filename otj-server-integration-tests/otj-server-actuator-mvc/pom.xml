@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.opentable.components</groupId>
         <artifactId>otj-server-integration-tests</artifactId>
-        <version>5.2.15</version>
+        <version>5.2.16-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -56,8 +56,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>otj-server-parent-5.2.15</tag>
-  </scm>
 </project>
