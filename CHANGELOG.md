@@ -1,7 +1,7 @@
 otj-server
 =========
 
-5.2.14
+5.2.15
 ------
 * POM 344
 * Minor OTPL-6894 tweaks
