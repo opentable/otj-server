@@ -115,7 +115,7 @@ public class TestMvcServerConfiguration {
 
         @GetMapping("conservedclaims")
         public ResponseEntity<String> conserved() {
-            return ResponseEntity.ok(MDC.get(ConservedHeader.CLAIMS_ID.getLogName()));
+            return ResponseEntity.ok(MDC.get(ConservedHeader.CLAIMS_ID.getMDCKey()));
         }
         @GetMapping("/nuclear-launch-codes")
         @RolesAllowed("POTUS") // This annotation doesn't work without spring security

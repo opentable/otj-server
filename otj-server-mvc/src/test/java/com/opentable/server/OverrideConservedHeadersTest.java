@@ -60,7 +60,7 @@ public class OverrideConservedHeadersTest {
         this.httpServerInfo = info.get();
     }
 
-    private static final String CLAIMS_ID = ConservedHeader.CLAIMS_ID.getHeaderName();
+    private static final String CLAIMS_ID = ConservedHeader.CLAIMS_ID.getHeaderKey();
 
     @Autowired
     private TestRestTemplate testRestTemplate;

@@ -32,9 +32,9 @@ import com.opentable.server.TestMvcServerConfiguration.EchoResponse;
 // Very similar to jaxrs
 public class ConservedHeadersTest extends AbstractTest {
 
-    private static final String REQUEST_ID = ConservedHeader.REQUEST_ID.getHeaderName();
-    private static final String CLAIMS_ID = ConservedHeader.CLAIMS_ID.getHeaderName();
-    private static final String ANONYMOUS_ID = ConservedHeader.ANONYMOUS_ID.getHeaderName();
+    private static final String REQUEST_ID = ConservedHeader.REQUEST_ID.getHeaderKey();
+    private static final String CLAIMS_ID = ConservedHeader.CLAIMS_ID.getHeaderKey();
+    private static final String ANONYMOUS_ID = ConservedHeader.ANONYMOUS_ID.getHeaderKey();
 
     @Autowired
     private TestRestTemplate testRestTemplate;

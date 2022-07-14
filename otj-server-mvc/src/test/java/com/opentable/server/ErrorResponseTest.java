@@ -32,7 +32,7 @@ import com.opentable.conservedheaders.ConservedHeader;
 // Basically calls an endpoint with all major methods, and shows they work
 public class ErrorResponseTest extends AbstractTest {
 
-    private static final String REQUEST_ID = ConservedHeader.REQUEST_ID.getHeaderName();
+    private static final String REQUEST_ID = ConservedHeader.REQUEST_ID.getHeaderKey();
 
     @Autowired
     private TestRestTemplate testRestTemplate;
