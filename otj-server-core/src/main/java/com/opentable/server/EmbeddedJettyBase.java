@@ -297,7 +297,7 @@ public abstract class EmbeddedJettyBase {
                 ssl.setExcludeCipherSuites(excludedCipherSuits.toArray(new String[0]));
             }
 
-            factories.add(new SslConnectionFactory(ssl, http.getProtocol()));
+            factories.add(new SslConnectionFactory((SslContextFactory.Server) ssl, http.getProtocol()));
         }
 
         factories.add(http);
