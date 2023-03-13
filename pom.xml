@@ -17,14 +17,14 @@
 
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>5.2.16-SNAPSHOT</version>
+    <version>6.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.opentable</groupId>
         <artifactId>otj-parent-spring</artifactId>
-        <version>344</version>
+        <version>362</version>
     </parent>
 
 
@@ -36,15 +36,26 @@
     </organization>
 
     <properties>
-        <dep.otj-conservedheaders.version>5.2.4</dep.otj-conservedheaders.version>
-        <dep.otj-logging.version>5.3.1</dep.otj-logging.version>
-        <dep.otj-metrics.version>5.3.1</dep.otj-metrics.version>
+        <dep.otj-conservedheaders.version>6.0.0</dep.otj-conservedheaders.version>
+        <dep.otj-logging.version>6.0.0</dep.otj-logging.version>
+        <dep.otj-metrics.version>6.0.0</dep.otj-metrics.version>
 
 
         <basepom.oss.skip-scala-doc>true</basepom.oss.skip-scala-doc>
         <basepom.check.skip-javadoc>false</basepom.check.skip-javadoc>
         <basepom.check.fail-javadoc>false</basepom.check.fail-javadoc>
         <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
+
+        <!-- override jetty9 in parent 9 in old pom
+some are redundant but better safe than sorry TODO: REMOVE ON PARENT UPDATE -->
+        <dep.jetty.version>10.0.12.1</dep.jetty.version>
+        <dep.jetty-server.version>10.0.12</dep.jetty-server.version>
+        <dep.otj-scopes.version>6.0.0</dep.otj-scopes.version>
+        <dep.otj-httpheaders.version>6.0.0</dep.otj-httpheaders.version>
+        <dep.otj-http-common.version>6.0.0</dep.otj-http-common.version>
+        <dep.otj-spring.version>6.0.0</dep.otj-spring.version>
+        <dep.otj-jvm.version>6.0.0</dep.otj-jvm.version>
+        <!-- override end -->
     </properties>
 
 

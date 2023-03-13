@@ -1,4 +1,5 @@
 pkg/
+.DS_Store
 *.o
 *.lo
 *.pc

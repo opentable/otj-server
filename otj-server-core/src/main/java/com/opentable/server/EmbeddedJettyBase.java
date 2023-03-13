@@ -243,7 +243,7 @@ public abstract class EmbeddedJettyBase {
     private ConnectorInfo createConnector(Server server, String name,  ServerConnectorConfig config, ServerConnector bootConnector, PropertyResolver pr) {
         final List<ConnectionFactory> factories = new ArrayList<>();
 
-        final SslContextFactory ssl;
+        final SslContextFactory.Server ssl;
 
         switch (config.getProtocol()) { // NOPMD
             case "proxy+http":
