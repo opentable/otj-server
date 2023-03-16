@@ -29,7 +29,6 @@ import java.util.function.Function;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.management.MBeanServer;
-import javax.net.ssl.SSLEngine;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -43,7 +42,6 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.ProxyConnectionFactory;
-import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -272,15 +270,12 @@ public abstract class EmbeddedJettyBase {
         httpConfig.setSendServerVersion(false);
         httpConfig.setSendXPoweredBy(false);
 
+        // Disable native buffers
+        httpConfig.setUseInputDirectByteBuffers(false);
+        httpConfig.setUseOutputDirectByteBuffers(false);
+
         if (ssl != null) {
-            httpConfig.addCustomizer(new SecureRequestCustomizer() {
-                @Override
-                protected void customize(SSLEngine sslEngine, Request request) {
-                    if (!request.getPathInContext().startsWith("/infra")) {
-                        super.customize(sslEngine, request);
-                    }
-                }
-            });
+            httpConfig.addCustomizer(new SecureRequestCustomizer(false));
         } else if (config.isForceSecure()) {
             // Used when SSL is terminated externally, e.g. by nginx or elb
             httpConfig.addCustomizer(new SuperSecureCustomizer());
