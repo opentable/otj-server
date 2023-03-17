@@ -41,4 +41,12 @@ public interface ServerConnectorConfig {
     default long getIdleTimeout() {
         return 0;
     }
+
+    default boolean isUseDirectBuffers() {
+        return false;
+    }
+
+    default boolean isAllowEmptySni() {
+        return true;
+    }
 }
