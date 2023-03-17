@@ -272,7 +272,7 @@ public abstract class EmbeddedJettyBase {
         httpConfig.setSendServerVersion(false);
         httpConfig.setSendXPoweredBy(false);
 
-        // Disable native buffers
+        // Configure native buffers
         httpConfig.setUseInputDirectByteBuffers(config.isUseDirectBuffers());
         httpConfig.setUseOutputDirectByteBuffers(config.isUseDirectBuffers());
 
