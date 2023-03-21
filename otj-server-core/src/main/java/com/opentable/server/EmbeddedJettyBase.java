@@ -284,7 +284,10 @@ public abstract class EmbeddedJettyBase {
                     if ((sniHost != null) || !config.isAllowEmptySni()) {
                         super.customize(sslEngine, request);
                     } else {
-                        LOG.warn("Host={}, SNI=null, SNI Certificate={}", request.getServerName(), sslEngine.getSession().getValue(X509_CERT));
+                        LOG.warn("Host={}, SNI=null, SNI Certificate={}, peerHost={}, peerPort={}",
+                                request.getServerName(), sslEngine.getSession().getValue(X509_CERT),
+                                sslEngine.getPeerHost(), sslEngine.getPeerPort()
+                        );
                     }
                 }
             });
