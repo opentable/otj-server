@@ -284,9 +284,6 @@ public abstract class EmbeddedJettyBase {
                 protected void customize(SSLEngine sslEngine, Request request) {
                     final String sniHost = (String) sslEngine.getSession().getValue(SslContextFactory.Server.SNI_HOST);
 
-                    BUCKET_LOG.info("<sni-info> SNI Host= {}, requested for= {}, source ip= {}, forwarded for ip= {} ",sniHost, request.getRequestURL(),
-                            request.getRemoteAddr(),  request.getHeader("X-FORWARDED-FOR"));
-
                     if ((sniHost != null) || !config.isAllowEmptySni()) {
                         super.customize(sslEngine, request);  // will default to jetty 10 defaults ie - different sni behaviour from 9
                     } else {
