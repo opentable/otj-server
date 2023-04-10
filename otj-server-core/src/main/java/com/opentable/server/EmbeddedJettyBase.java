@@ -36,6 +36,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableMap;
 
+import com.opentable.bucket.BucketLog;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Connector;
@@ -86,13 +87,14 @@ import com.opentable.util.Optionals;
  * For example even something as trivial as configuring the worker pool size, socket options,
  * or HTTPS connector is totally unsupported.
  */
-@SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
+@SuppressWarnings({"PMD.AbstractClassWithoutAbstractMethod", "PMD.MoreThanOneLogger"})
 @Configuration
 @Import(JsonRequestLogConfig.class)
 public abstract class EmbeddedJettyBase {
     public static final String DEFAULT_CONNECTOR_NAME = "default-http";
     public static final String BOOT_CONNECTOR_NAME = "boot";
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedJettyBase.class);
+    private static final Logger BUCKET_LOG = BucketLog.of(EmbeddedJettyBase.class, 1, Duration.ofSeconds(10)); // 1 per 10 second
 
     @Value("${ot.http.bind-port:#{null}}")
     // Specifying this fails startup
@@ -281,11 +283,15 @@ public abstract class EmbeddedJettyBase {
                 @Override
                 protected void customize(SSLEngine sslEngine, Request request) {
                     final String sniHost = (String) sslEngine.getSession().getValue(SslContextFactory.Server.SNI_HOST);
+
+                    BUCKET_LOG.info("<sni-info> SNI Host= {}, requested for= {}, source ip= {}, forwarded for ip= {} ",sniHost, request.getRequestURL(),
+                            request.getRemoteAddr(),  request.getHeader("X-FORWARDED-FOR"));
+
                     if ((sniHost != null) || !config.isAllowEmptySni()) {
-                        super.customize(sslEngine, request);
+                        super.customize(sslEngine, request);  // will default to jetty 10 defaults ie - different sni behaviour from 9
                     } else {
-                        LOG.warn("Host={}, SNI=null, SNI Certificate={}, peerHost={}, peerPort={}",
-                                request.getServerName(), sslEngine.getSession().getValue(X509_CERT),
+                        BUCKET_LOG.warn("<sni-warn> Host={}, SNI=null, SNI Certificate={}, peerHost={}, peerPort={}",
+                                request.getServerName(),  sslEngine.getSession().getValue(X509_CERT),
                                 sslEngine.getPeerHost(), sslEngine.getPeerPort()
                         );
                     }
