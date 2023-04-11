@@ -287,7 +287,7 @@ public abstract class EmbeddedJettyBase {
                     if ((sniHost != null) || !config.isAllowEmptySni()) {
                         super.customize(sslEngine, request);  // will default to jetty 10 defaults ie - different sni behaviour from 9
                     } else {
-                        BUCKET_LOG.warn("<sni-warn> Host={}, SNI=null, SNI Certificate={}, peerHost={}, peerPort={}",
+                        BUCKET_LOG.warn("SNIHOST Host={}, SNI=null, SNI Certificate={}, peerHost={}, peerPort={}",
                                 request.getServerName(),  sslEngine.getSession().getValue(X509_CERT),
                                 sslEngine.getPeerHost(), sslEngine.getPeerPort()
                         );
