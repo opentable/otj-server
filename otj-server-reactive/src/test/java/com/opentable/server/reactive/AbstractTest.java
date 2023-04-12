@@ -21,6 +21,7 @@ import javax.inject.Provider;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -35,6 +36,7 @@ import com.opentable.server.HttpServerInfo;
         "server.error.include-message=always",
         "ot.httpserver.max-request-header-size=10000" // used in a test
 })
+@DirtiesContext
 public abstract class AbstractTest {
 
     HttpServerInfo httpServerInfo;
