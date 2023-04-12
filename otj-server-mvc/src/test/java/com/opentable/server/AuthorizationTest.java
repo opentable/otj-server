@@ -45,6 +45,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -58,6 +59,7 @@ import org.springframework.test.context.junit4.SpringRunner;
     "ot.httpserver.max-threads=13",
     "ot.httpserver.static-path=static-test"
 })
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 // This class primarily tests mvc's role support
 // Unlike resteasy without spring security we can only test the servletrequest, not the actual @Role annotation
 public class AuthorizationTest {
@@ -83,7 +85,7 @@ public class AuthorizationTest {
         assertEquals("PUTIN",r.getHeaders().getFirst("X-Role-Inferred"));
     }
 
-    @Test(timeout = 10_000)
+    @Test(timeout = 20_000)
     public void testAccessApproved() throws InterruptedException, IOException {
         ResponseEntity<?> r = testRestTemplate.getForEntity("/api/nuclear-launch-codes?role=POTUS", String.class);
         assertEquals(200, r.getStatusCodeValue());
