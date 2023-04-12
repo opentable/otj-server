@@ -21,6 +21,7 @@ import javax.inject.Provider;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -33,6 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
     "ot.httpserver.active-connectors=boot",
     "server.error.include-message=always"
 })
+@DirtiesContext
 public abstract class AbstractTest {
 
     HttpServerInfo httpServerInfo;
