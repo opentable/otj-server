@@ -34,6 +34,7 @@ import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -52,6 +53,7 @@ import com.opentable.logging.CommonLogHolder;
     "management.server.port=0"
 
 })
+@DirtiesContext
 public class SeparatePortTest {
 
     @LocalServerPort

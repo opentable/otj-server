@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.web.server.LocalManagementPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -48,6 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "ot.httpserver.active-connectors=boot"
 
 })
+@DirtiesContext
 public class JettyPoolTest {
 
     @Inject
@@ -55,7 +57,7 @@ public class JettyPoolTest {
 
     @Test(timeout = 10_000)
     public void testJettyDumper() throws Exception {
-        Thread.sleep(1000);
+        Thread.sleep(100);
         assertThat(mbs.invoke(new ObjectName("com.opentable.server:name=com.opentable.server.JettyDumper,type=JettyDumper"), "dumpJetty", new Object[0], new String[0]).toString()).contains("default-pool");
     }
 
