@@ -43,7 +43,7 @@ public interface ServerConnectorConfig {
     }
 
     default boolean isUseDirectBuffers() {
-        return false;
+        return true;
     }
 
     default boolean isAllowEmptySni() {
