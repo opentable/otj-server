@@ -52,7 +52,7 @@ some are redundant but better safe than sorry TODO: REMOVE ON PARENT UPDATE -->
         <dep.jetty-server.version>10.0.12</dep.jetty-server.version>
         <dep.otj-scopes.version>6.0.0</dep.otj-scopes.version>
         <dep.otj-httpheaders.version>6.0.0</dep.otj-httpheaders.version>
-        <dep.otj-http-common.version>5.9.8-SNAPSHOT</dep.otj-http-common.version>
+        <dep.otj-http-common.version>6.0.5-SNAPSHOT</dep.otj-http-common.version>
         <dep.otj-spring.version>6.0.0</dep.otj-spring.version>
         <dep.otj-jvm.version>6.0.0</dep.otj-jvm.version>
         <!-- override end -->
