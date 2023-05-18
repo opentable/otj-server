@@ -129,7 +129,7 @@ Here are a couple of the Spring Boot issues we are tracking:
 [Issue #4657](https://github.com/spring-projects/spring-boot/issues/4657)
 [Issue #5314](https://github.com/spring-projects/spring-boot/issues/5314)
 
-`ot.server.max-request-size` controls the header size. It defaults to 16384
+`ot.httpserver.max-request-header-size` controls the header size. It defaults to 16384
 
 ### Named HTTP Connectors
 
