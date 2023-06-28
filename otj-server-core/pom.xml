@@ -128,6 +128,11 @@
       <artifactId>jetty-io</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-http</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.opentable.components</groupId>
       <artifactId>otj-scopes</artifactId>
     </dependency>

@@ -29,14 +29,12 @@ import java.util.function.Function;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.management.MBeanServer;
-import javax.net.ssl.SSLEngine;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Verify;
 import com.google.common.collect.ImmutableMap;
 
-import com.opentable.bucket.BucketLog;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.ConnectionFactory;
 import org.eclipse.jetty.server.Connector;
@@ -44,8 +42,6 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.ProxyConnectionFactory;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
@@ -87,14 +83,13 @@ import com.opentable.util.Optionals;
  * For example even something as trivial as configuring the worker pool size, socket options,
  * or HTTPS connector is totally unsupported.
  */
-@SuppressWarnings({"PMD.AbstractClassWithoutAbstractMethod", "PMD.MoreThanOneLogger"})
+@SuppressWarnings({"PMD.AbstractClassWithoutAbstractMethod"})
 @Configuration
 @Import(JsonRequestLogConfig.class)
 public abstract class EmbeddedJettyBase {
     public static final String DEFAULT_CONNECTOR_NAME = "default-http";
     public static final String BOOT_CONNECTOR_NAME = "boot";
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedJettyBase.class);
-    private static final Logger BUCKET_LOG = BucketLog.of(EmbeddedJettyBase.class, 1, Duration.ofSeconds(10)); // 1 per 10 second
 
     @Value("${ot.http.bind-port:#{null}}")
     // Specifying this fails startup
@@ -279,21 +274,7 @@ public abstract class EmbeddedJettyBase {
         httpConfig.setUseOutputDirectByteBuffers(config.isUseDirectBuffers());
 
         if (ssl != null) {
-            httpConfig.addCustomizer(new SecureRequestCustomizer() {
-                @Override
-                protected void customize(SSLEngine sslEngine, Request request) {
-                    final String sniHost = (String) sslEngine.getSession().getValue(SslContextFactory.Server.SNI_HOST);
-
-                    if ((sniHost != null) || !config.isAllowEmptySni()) {
-                        super.customize(sslEngine, request);  // will default to jetty 10 defaults ie - different sni behaviour from 9
-                    } else {
-                        BUCKET_LOG.warn("SNIHOST Host={}, SNI=null, SNI Certificate={}, peerHost={}, peerPort={}",
-                                request.getServerName(),  sslEngine.getSession().getValue(X509_CERT),
-                                sslEngine.getPeerHost(), sslEngine.getPeerPort()
-                        );
-                    }
-                }
-            });
+            httpConfig.addCustomizer(new OtSecureRequestCustomizer(config));
         } else if (config.isForceSecure()) {
             // Used when SSL is terminated externally, e.g. by nginx or elb
             httpConfig.addCustomizer(new SuperSecureCustomizer());
