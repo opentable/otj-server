@@ -46,6 +46,14 @@ public interface ServerConnectorConfig {
         return false;
     }
 
+    default boolean isSniRequired() {
+        return false;
+    }
+
+    default boolean isSniHostCheck() {
+        return true;
+    }
+
     default boolean isAllowEmptySni() {
         return true;
     }
