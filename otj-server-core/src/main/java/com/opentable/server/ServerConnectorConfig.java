@@ -51,7 +51,7 @@ public interface ServerConnectorConfig {
     }
 
     default boolean isSniHostCheck() {
-        return false;
+        return true;
     }
 
     default boolean isAllowEmptySni() {

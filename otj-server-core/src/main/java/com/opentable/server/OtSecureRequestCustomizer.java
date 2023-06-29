@@ -42,6 +42,7 @@ public class OtSecureRequestCustomizer extends SecureRequestCustomizer {
                     sslEngine.getPeerHost(),
                     sslEngine.getPeerPort());
                 sniErrorCallback.ifPresent(c -> c.accept(sslEngine, request));
+                throw ex;
             }
         } else {
             BUCKET_LOG.warn("SNIHOST: Host={}, SNI=null, SNI Certificate={}, peerHost={}, peerPort={}",
