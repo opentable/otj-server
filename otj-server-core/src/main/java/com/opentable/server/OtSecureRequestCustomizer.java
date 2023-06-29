@@ -15,7 +15,7 @@ package com.opentable.server;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import javax.net.ssl.SSLEngine;
 
@@ -35,7 +35,7 @@ public class OtSecureRequestCustomizer extends SecureRequestCustomizer {
     private static final Logger LOG = LoggerFactory.getLogger(HttpChannel.class);
     private static final Logger BUCKET_LOG = BucketLog.of(HttpChannel.class, 1, Duration.ofSeconds(10)); // 1 per 10 second
     private final ServerConnectorConfig config;
-    private Optional<BiConsumer<SSLEngine, Request>> sniErrorCallback = Optional.empty();
+    private Optional<BiFunction<SSLEngine, Request, Boolean>> sniErrorCallback = Optional.empty();
 
     public OtSecureRequestCustomizer(ServerConnectorConfig config) {
         super(config.isSniRequired(), config.isSniHostCheck(), -1, false);
@@ -55,8 +55,9 @@ public class OtSecureRequestCustomizer extends SecureRequestCustomizer {
                     sslEngine.getSession().getValue(X509_CERT),
                     sslEngine.getPeerHost(),
                     sslEngine.getPeerPort());
-                sniErrorCallback.ifPresent(c -> c.accept(sslEngine, request));
-                throw ex;
+                if (sniErrorCallback.map(i -> i.apply(sslEngine, request)).orElse(true)) {
+                    throw ex;
+                }
             }
         } else {
             BUCKET_LOG.warn("SNIHOST: Host={}, SNI=null, SNI Certificate={}, peerHost={}, peerPort={}",
@@ -67,7 +68,7 @@ public class OtSecureRequestCustomizer extends SecureRequestCustomizer {
         }
     }
 
-    public void setSniErrorCallback(BiConsumer<SSLEngine, Request> sniErrorCallback) {
+    public void setSniErrorCallback(BiFunction<SSLEngine, Request, Boolean> sniErrorCallback) {
         this.sniErrorCallback = Optional.ofNullable(sniErrorCallback);
     }
 }

@@ -1,5 +1,9 @@
 otj-server
 =========
+6.0.1, 6.0.2, 6.0.3, 6.0.4
+-----
+* More customizable SNI host check
+
 6.0.0
 -----
 * Update Parent Pom to 362 [changes see here]( https://github.com/opentable/otj-parent/blob/master/CHANGELOG.md#362)
