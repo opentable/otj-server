@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import javax.net.ssl.SSLEngine;
 
 import org.eclipse.jetty.http.BadMessageException;
+import org.eclipse.jetty.server.HttpChannel;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -18,8 +19,8 @@ import com.opentable.bucket.BucketLog;
 @SuppressWarnings({"PMD.MoreThanOneLogger"})
 public class OtSecureRequestCustomizer extends SecureRequestCustomizer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OtSecureRequestCustomizer.class);
-    private static final Logger BUCKET_LOG = BucketLog.of(OtSecureRequestCustomizer.class, 1, Duration.ofSeconds(10)); // 1 per 10 second
+    private static final Logger LOG = LoggerFactory.getLogger(HttpChannel.class);
+    private static final Logger BUCKET_LOG = BucketLog.of(HttpChannel.class, 1, Duration.ofSeconds(10)); // 1 per 10 second
     private final ServerConnectorConfig config;
     private Optional<BiConsumer<SSLEngine, Request>> sniErrorCallback = Optional.empty();
 
