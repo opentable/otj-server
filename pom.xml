@@ -17,7 +17,7 @@
 
     <groupId>com.opentable.components</groupId>
     <artifactId>otj-server-parent</artifactId>
-    <version>6.0.5</version>
+    <version>6.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modelVersion>4.0.0</modelVersion>
@@ -63,7 +63,7 @@ some are redundant but better safe than sorry TODO: REMOVE ON PARENT UPDATE -->
         <connection>scm:git:git://github.com/opentable/otj-server.git</connection>
         <developerConnection>scm:git:git@github.com:opentable/otj-server.git</developerConnection>
         <url>http://github.com/opentable/otj-server</url>
-        <tag>otj-server-parent-6.0.5</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencyManagement>
