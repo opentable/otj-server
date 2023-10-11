@@ -28,6 +28,7 @@ import com.opentable.conservedheaders.ConservedHeaderOverrideProvider;
 import com.opentable.conservedheaders.ConservedHeadersFilter;
 import com.opentable.httpheaders.HeaderBlacklist;
 
+@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
 class ConservedHeadersJettyErrorHandler extends ErrorPageErrorHandler {
     private static final HeaderBlacklist HEADER_BLACKLIST = HeaderBlacklist.INSTANCE;
     private final ErrorHandler delegate;
