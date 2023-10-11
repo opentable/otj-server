@@ -1,5 +1,30 @@
 otj-server
 =========
+
+6.0.5
+-----
+With the recent changes to our infrastructure that no longer conserve the host header, and in fact place the original
+information entering the ingress as X-Forwarded-* headers, some libraries, particularly Spring Security rely on special
+plugins from Spring (ForwardedHeaderFilter or Transformer depending on servlet vs reactive), that change the very semantics
+of various request calls to reflect the X-Forwarded headers.
+
+For example in servlets, normally calling `httpServletRequest.getServerName()` returns the `Host` header value. With a `ForwardedHeaderFilter`
+this would return the value of `X-Forwarded-Host` if defined. 
+
+The idea is a "transparent" change, but what if you really wanted the original Host value? What if you only want this
+to apply conditionally. 
+
+Herein we add the following:
+
+* `@EnableForwardedFilter` - add this annotation (there is both a reactive and servlet version), and you will get the behavior
+described above. There is more detail on the specific in the `ForwardedFiltersConfiguration` class provided in the `otj-server-mvc` or
+`otj-server-reactive` versions.
+* In addition you may optionally add one or more beans implementing `ForwardedHeaderCustomizer`. With these, you can further adjust the behavior
+to be conditional - for example, only for some specific paths.  If no beans are injected, the behavior applies unconditionally to
+all incoming server calls.
+* We include one sample `RegexForwardedHeaderCustomizer` that applies a Regex to the path. This is both an example
+and a practical implementation which you may use.
+
 6.0.1, 6.0.2, 6.0.3, 6.0.4
 -----
 * More customizable SNI host check
