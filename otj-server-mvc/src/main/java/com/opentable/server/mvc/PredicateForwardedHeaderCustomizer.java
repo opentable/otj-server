@@ -14,25 +14,29 @@
 package com.opentable.server.mvc;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * A sample customizer that matches a regex to the path
+ * A sample customizer that matches a predicate
  */
-public class RegexForwardedHeaderCustomizer implements ForwardedHeaderCustomizer {
-    private final Pattern pattern;
-
-    public RegexForwardedHeaderCustomizer(Pattern pattern) {
-        this.pattern = pattern;
+public class PredicateForwardedHeaderCustomizer implements ForwardedHeaderCustomizer {
+    public static ForwardedHeaderCustomizer regexURI(String pattern) {
+        return regexURI(Pattern.compile(pattern));
     }
 
-    public RegexForwardedHeaderCustomizer(String pattern) {
-        this(Pattern.compile(pattern));
+    public static ForwardedHeaderCustomizer regexURI(Pattern pattern) {
+        return new PredicateForwardedHeaderCustomizer(httpServletRequest -> pattern.matcher(httpServletRequest.getRequestURI()).matches());
+    }
+
+    Predicate<HttpServletRequest> predicate;
+
+    public PredicateForwardedHeaderCustomizer(Predicate<HttpServletRequest> predicate) {
+        this.predicate = predicate;
     }
 
     @Override
     public boolean shouldFilter(HttpServletRequest httpServletRequest) {
-        // Use the getRequestURI which is the path part of the uri (doesn't include protocol, host, or port)
-        return pattern.matcher(httpServletRequest.getRequestURI()).matches();
+        return predicate.test(httpServletRequest);
     }
 }

@@ -22,7 +22,7 @@ described above. There is more detail on the specific in the `ForwardedFiltersCo
 * In addition you may optionally add one or more beans implementing `ForwardedHeaderCustomizer`. With these, you can further adjust the behavior
 to be conditional - for example, only for some specific paths.  If no beans are injected, the behavior applies unconditionally to
 all incoming server calls.
-* We include one sample `RegexForwardedHeaderCustomizer` that applies a Regex to the path. This is both an example
+* We include one sample `PredicateForwardedHeaderCustomizer` that applies a Predicate to the path. This is both an example
 and a practical implementation which you may use.
 
 6.0.1, 6.0.2, 6.0.3, 6.0.4

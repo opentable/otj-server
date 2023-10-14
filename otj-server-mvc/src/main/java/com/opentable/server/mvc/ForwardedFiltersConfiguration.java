@@ -37,7 +37,7 @@ import java.util.Collection;
  * you really only need X-forwarded-Host if you want the ORIGINAL pre-ingress value.
  * <p/>
  * In these cases, you may (optionally) implement one or more beans implementing the ForwardedHeaderCustomizer, and
- * conditionally configure the filtration behavior. A good example is the RegexForwardedHeaderCustomizer.
+ * conditionally configure the filtration behavior. A good example is the PredicateForwardedHeaderCustomizer.
  */
 @Configuration
 public class ForwardedFiltersConfiguration {
