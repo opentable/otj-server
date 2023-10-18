@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -85,6 +86,11 @@ public class TestReactiveServerConfiguration {
         public Mono<String> test() {
             LOG.info("Called 'test' endpoint");
             return Mono.just("test");
+        }
+
+        @RequestMapping("host")
+        public Mono<String> host(ServerHttpRequest serverHttpRequest) {
+            return Mono.just(serverHttpRequest.getURI().toString());
         }
 
         @RequestMapping("conservedclaims")

@@ -95,6 +95,10 @@ public class TestMvcServerConfiguration {
                 EchoResponse.class).getBody();
         }
 
+        @GetMapping("host")
+        public String host(HttpServletRequest httpServletRequest) {
+            return httpServletRequest.getScheme() +"://" + httpServletRequest.getServerName();
+        }
         @PostMapping("map")
         public @ResponseBody MrBean map(@RequestBody MrBean req) {
             return req;
