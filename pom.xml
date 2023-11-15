@@ -27,7 +27,6 @@
         <version>374</version>
     </parent>
 
-
     <name>Build parent</name>
     <url>http://www.opentable.com</url>
     <organization>
